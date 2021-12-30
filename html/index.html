@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>主机配置</title>
+</head>
+<body>
+<style>
+    .label {
+        width: 160px;
+        text-align: right;
+        display: inline-block;
+    }
+
+    .label_right {
+        text-align: right;
+    }
+</style>
+
+
+<script src="./jQuery.js"></script>
+<!--提交base-->
+<div style="width: 810px;">
+
+    <form name="form_base">
+        <!--int-->
+        <label class="label">width</label>
+        <input type="number" name="width" step="1"/>
+        <!--int-->
+        <label class="label">height</label>
+        <input type="number" name="height" step="1"/>
+        <div class="label_right">
+            <button type="button" id="base_btn">提交</button>
+        </div>
+    </form>
+    <!--distance-->
+    <form name="form_distance">
+        <!--透视变换最左边的直线与Y轴之间的实际测量距离 double float64-->
+        <label class="label">x_distance</label>
+        <input type="number" name="x_distance" step="any">
+        <!--透视变换最左边的直线与X轴之间的实际测量距离 double float64-->
+        <label class="label">y_distance</label>
+        <input type="number" name="y_distance" step="any">
+        <!--double float64-->
+        <label class="label">altitude</label>
+        <input type="number" name="altitude" step="any">
+        <!--double float64-->
+        <label class="label">y_value</label>
+        <input type="number" name="y_value" step="any">
+        <!--double float64-->
+        <label class="label">coefficient</label>
+        <input type="number" name="coefficient" step="any">
+        <!--透视变换用系数矩阵 double[3][3] float64-->
+        <label class="label">matrix00</label>
+        <input type="number" name="matrix00" step="any">
+        <label class="label">matrix01</label>
+        <input type="number" name="matrix01" step="any">
+        <label class="label">matrix02</label>
+        <input type="number" name="matrix02" step="any">
+        <label class="label">matrix10</label>
+        <input type="number" name="matrix10" step="any">
+        <label class="label">matrix11</label>
+        <input type="number" name="matrix11" step="any">
+        <label class="label">matrix12</label>
+        <input type="number" name="matrix12" step="any">
+        <label class="label">matrix20</label>
+        <input type="number" name="matrix20" step="any">
+        <label class="label">matrix21</label>
+        <input type="number" name="matrix21" step="any">
+        <label class="label">matrix22</label>
+        <input type="number" name="matrix22" step="any">
+        <!--雷达偏移量x float64-->
+        <label class="label">radar_x</label>
+        <input type="number" name="radar_x" step="any">
+        <!--雷达偏移量y float64-->
+        <label class="label">radar_y</label>
+        <input type="number" name="radar_y" step="any">
+        <!--校正参数 double float64-->
+        <label class="label">radar_theta</label>
+        <input type="number" name="radar_theta" step="any">
+        <!--宽度米像素 double float64-->
+        <label class="label">MPPW</label>
+        <input type="number" name="MPPW" step="any">
+        <!--宽度米像素 double float64-->
+        <label class="label">MPPH</label>
+        <input type="number" name="MPPH" step="any">
+        <div class="label_right">
+            <button type="button" id="distance_btn">提交</button>
+        </div>
+    </form>
+
+    <!--vibrate_setting-->
+    <form name="form_vibrate_setting">
+        <!--抖动位移x方向阈值 float float64-->
+        <label class="label">x_vibrate_max</label>
+        <input type="number" name="x_vibrate_max" step="any">
+        <!--抖动位移y方向阈值 float float64-->
+        <label class="label">y_vibrate_max</label>
+        <input type="number" name="y_vibrate_max" step="any">
+        <!--float64-->
+        <label class="label">matchBoxX</label>
+        <input type="number" name="matchBoxX" step="any">
+        <label class="label">matchBoxY</label>
+        <input type="number" name="matchBoxY" step="any">
+        <label class="label">matchBoxWidth</label>
+        <input type="number" name="matchBoxWidth" step="any">
+        <label class="label">matchBoxHeight</label>
+        <input type="number" name="matchBoxHeight" step="any">
+        <div class="label_right">
+            <button type="button" id="vibrate_setting_btn">提交</button>
+        </div>
+
+    </form>
+
+    <!--crossing_setting-->
+    <form name="form_crossing_setting">
+        <!--相机朝向 int 1：东 2：南 3：西 4：北-->
+        <label class="label">orientations</label>
+        <input type="number" name="orientations" max="4" min="1" step="1">
+        <!--转换为路口坐标系的偏移量x double float64-->
+        <label class="label">deltax_south</label>
+        <input type="number" name="deltax_south" step="any">
+        <!--转换为路口坐标系的偏移量y double float64-->
+        <label class="label">deltay_south</label>
+        <input type="number" name="deltay_south" step="any">
+        <!--转换为路口坐标系的偏移量x double float64-->
+        <label class="label">deltax_north</label>
+        <input type="number" name="deltax_north" step="any">
+        <!--转换为路口坐标系的偏移量y double float64-->
+        <label class="label">deltay_north</label>
+        <input type="number" name="deltay_north" step="any">
+        <!--转换为路口坐标系的偏移量x double float64-->
+        <label class="label">deltax_west</label>
+        <input type="number" name="deltax_west" step="any">
+        <!--转换为路口坐标系的偏移量y double float64-->
+        <label class="label">deltay_west</label>
+        <input type="number" name="deltay_west" step="any">
+        <!--转换为路口坐标系的偏移量x double float64-->
+        <label class="label">deltax_east</label>
+        <input type="number" name="deltax_east" step="any">
+        <!--转换为路口坐标系的偏移量y double float64-->
+        <label class="label">deltay_east</label>
+        <input type="number" name="deltay_east" step="any">
+        <!--十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label class="label">flag_south</label>
+        <input type="number" name="flag_south" max="1" min="0" step="1">
+        <!--十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label class="label">flag_north</label>
+        <input type="number" name="flag_north" max="1" min="0" step="1">
+        <!--十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label class="label">flag_west</label>
+        <input type="number" name="flag_west" max="1" min="0" step="1">
+        <!--十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label class="label">flag_east</label>
+        <input type="number" name="flag_east" max="1" min="0" step="1">
+        <!--融合前去除重合车辆用偏移量x double float64-->
+        <label class="label">widthX</label>
+        <input type="number" name="widthX" step="any">
+        <!--融合前去除重合车辆用偏移量y double float64-->
+        <label class="label">widthY</label>
+        <input type="number" name="widthY" step="any">
+        <div class="label_right">
+            <button type="button" id="crossing_setting_btn">提交</button>
+        </div>
+    </form>
+
+    <!--real_loc-->
+    <form name="form_real_loc">
+        <!--double float64-->
+        <label class="label">real_left_point_x</label>
+        <input type="number" name="real_left_point_x" step="any">
+        <!--double float64-->
+        <label class="label">real_left_point_y</label>
+        <input type="number" name="real_left_point_y" step="any">
+        <!--double float64-->
+        <label class="label">real_right_point_x</label>
+        <input type="number" name="real_right_point_x" step="any">
+        <!--double float64-->
+        <label class="label">real_right_point_y</label>
+        <input type="number" name="real_right_point_y" step="any">
+        <!--double float64-->
+        <label class="label">real_top_point_x</label>
+        <input type="number" name="real_top_point_x" step="any">
+        <!--double float64-->
+        <label class="label">real_top_point_y</label>
+        <input type="number" name="real_top_point_y" step="any">
+        <!--double float64-->
+        <label class="label">real_bottom_point_x</label>
+        <input type="number" name="real_bottom_point_x" step="any">
+        <!--double float64-->
+        <label class="label">real_bottom_point_y</label>
+        <input type="number" name="real_bottom_point_y" step="any">
+        <div class="label_right">
+            <button type="button" id="real_loc_btn">提交</button>
+        </div>
+    </form>
+
+    <!--pixel_loc-->
+    <form name="form_pixel_loc">
+        <!--double float64-->
+        <label class="label">pixel_left_point_x</label>
+        <input type="number" name="pixel_left_point_x" step="any">
+        <!--double float64-->
+        <label class="label">pixel_left_point_y</label>
+        <input type="number" name="pixel_left_point_y" step="any">
+        <!--double float64-->
+        <label class="label">pixel_right_point_x</label>
+        <input type="number" name="pixel_right_point_x" step="any">
+        <!--double float64-->
+        <label class="label">pixel_right_point_y</label>
+        <input type="number" name="pixel_right_point_y" step="any">
+        <!--double float64-->
+        <label class="label">pixel_top_point_x</label>
+        <input type="number" name="pixel_top_point_x" step="any">
+        <!--double float64-->
+        <label class="label">pixel_top_point_y</label>
+        <input type="number" name="pixel_top_point_y" step="any">
+        <!--double float64-->
+        <label class="label">pixel_bottom_point_x</label>
+        <input type="number" name="pixel_bottom_point_x" step="any">
+        <!--double float64-->
+        <label class="label">pixel_bottom_point_y</label>
+        <input type="number" name="pixel_bottom_point_y" step="any">
+        <div class="label_right">
+            <button type="button" id="pixel_loc_btn">提交</button>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    $(function () {
+        // base
+        $("#base_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.width = parseInt(form_base.width.value)
+            queryBody.height = parseInt(form_base.height.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_base',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+        //distance
+        $("#distance_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.x_distance = parseFloat(form_distance.x_distance.value)
+            queryBody.y_distance = parseFloat(form_distance.y_distance.value)
+            queryBody.altitude = parseFloat(form_distance.altitude.value)
+            queryBody.y_value = parseFloat(form_distance.y_value.value)
+            queryBody.coefficient = parseFloat(form_distance.coefficient.value)
+            queryBody.matrix00 = parseFloat(form_distance.matrix00.value)
+            queryBody.matrix01 = parseFloat(form_distance.matrix01.value)
+            queryBody.matrix02 = parseFloat(form_distance.matrix02.value)
+            queryBody.matrix10 = parseFloat(form_distance.matrix10.value)
+            queryBody.matrix11 = parseFloat(form_distance.matrix11.value)
+            queryBody.matrix12 = parseFloat(form_distance.matrix12.value)
+            queryBody.matrix20 = parseFloat(form_distance.matrix20.value)
+            queryBody.matrix21 = parseFloat(form_distance.matrix21.value)
+            queryBody.matrix22 = parseFloat(form_distance.matrix22.value)
+            queryBody.radar_x = parseFloat(form_distance.radar_x.value)
+            queryBody.radar_y = parseFloat(form_distance.radar_y.value)
+            queryBody.radar_theta = parseFloat(form_distance.radar_theta.value)
+            queryBody.MPPW = parseFloat(form_distance.MPPW.value)
+            queryBody.MPPH = parseFloat(form_distance.MPPH.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_distance',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+        //vibrate_setting
+        $("#vibrate_setting_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.x_vibrate_max = parseFloat(form_vibrate_setting.x_vibrate_max.value)
+            queryBody.y_vibrate_max = parseFloat(form_vibrate_setting.y_vibrate_max.value)
+            queryBody.matchBoxX = parseFloat(form_vibrate_setting.matchBoxX.value)
+            queryBody.matchBoxY = parseFloat(form_vibrate_setting.matchBoxY.value)
+            queryBody.matchBoxWidth = parseFloat(form_vibrate_setting.matchBoxWidth.value)
+            queryBody.matchBoxHeight = parseFloat(form_vibrate_setting.matchBoxHeight.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_vibrate_setting',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+        //crossing_setting
+        $("#crossing_setting_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.orientations = parseInt(form_crossing_setting.orientations.value)
+            queryBody.deltax_south = parseFloat(form_crossing_setting.deltax_south.value)
+            queryBody.deltay_south = parseFloat(form_crossing_setting.deltay_south.value)
+            queryBody.deltax_north = parseFloat(form_crossing_setting.deltax_north.value)
+            queryBody.deltay_north = parseFloat(form_crossing_setting.deltay_north.value)
+            queryBody.deltax_west = parseFloat(form_crossing_setting.deltax_west.value)
+            queryBody.deltay_west = parseFloat(form_crossing_setting.deltay_west.value)
+            queryBody.deltax_east = parseFloat(form_crossing_setting.deltax_east.value)
+            queryBody.deltay_east = parseFloat(form_crossing_setting.deltay_east.value)
+            queryBody.flag_south = parseInt(form_crossing_setting.flag_south.value)
+            queryBody.flag_north = parseInt(form_crossing_setting.flag_north.value)
+            queryBody.flag_west = parseInt(form_crossing_setting.flag_west.value)
+            queryBody.flag_east = parseInt(form_crossing_setting.flag_east.value)
+            queryBody.widthX = parseFloat(form_crossing_setting.widthX.value)
+            queryBody.widthY = parseFloat(form_crossing_setting.widthY.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_crossing_setting',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+        //real_loc
+        $("#real_loc_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.real_left_point_x = parseFloat(form_real_loc.real_left_point_x.value)
+            queryBody.real_left_point_y = parseFloat(form_real_loc.real_left_point_y.value)
+            queryBody.real_right_point_x = parseFloat(form_real_loc.real_right_point_x.value)
+            queryBody.real_right_point_y = parseFloat(form_real_loc.real_right_point_y.value)
+            queryBody.real_top_point_x = parseFloat(form_real_loc.real_top_point_x.value)
+            queryBody.real_top_point_y = parseFloat(form_real_loc.real_top_point_y.value)
+            queryBody.real_bottom_point_x = parseFloat(form_real_loc.real_bottom_point_x.value)
+            queryBody.real_bottom_point_y = parseFloat(form_real_loc.real_bottom_point_y.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_real_loc',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+        //pixel_loc
+        $("#pixel_loc_btn").click(function () {
+            var queryBody = {}
+
+            queryBody.pixel_left_point_x = parseFloat(form_pixel_loc.pixel_left_point_x.value)
+            queryBody.pixel_left_point_y = parseFloat(form_pixel_loc.pixel_left_point_y.value)
+            queryBody.pixel_right_point_x = parseFloat(form_pixel_loc.pixel_right_point_x.value)
+            queryBody.pixel_right_point_y = parseFloat(form_pixel_loc.pixel_right_point_y.value)
+            queryBody.pixel_top_point_x = parseFloat(form_pixel_loc.pixel_top_point_x.value)
+            queryBody.pixel_top_point_y = parseFloat(form_pixel_loc.pixel_top_point_y.value)
+            queryBody.pixel_bottom_point_x = parseFloat(form_pixel_loc.pixel_bottom_point_x.value)
+            queryBody.pixel_bottom_point_y = parseFloat(form_pixel_loc.pixel_bottom_point_y.value)
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'SendConfig_pixel_loc',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                }
+            })
+        });
+    })
+</script>
+
+</body>
+</html>
