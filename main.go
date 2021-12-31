@@ -12,6 +12,9 @@ import (
 */
 
 func main() {
+	//test
+	httpServer.StructAssignTest()
+
 	//默认的端口和配置文件地址
 	var port int
 	var path string

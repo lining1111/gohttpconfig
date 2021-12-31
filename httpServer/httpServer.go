@@ -2,6 +2,7 @@ package httpServer
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/go-ini/ini"
 	"gohttpconfig/iniConfig"
@@ -14,6 +15,13 @@ import (
 var Config *ini.File
 var ConfigPath string
 var IsConfigExist = false
+
+const (
+	ConfigIni = iota
+	ConfigSqlite
+)
+
+var ConfigType = ConfigIni
 
 //dst 要修改的结构体 src 有数据的结构体
 func structAssign(dst interface{}, src interface{}) {
@@ -29,6 +37,36 @@ func structAssign(dst interface{}, src interface{}) {
 			dstElem.FieldByName(name).Set(reflect.ValueOf(srcElem.Field(i).Interface()))
 		}
 	}
+}
+
+func StructAssignTest() {
+	type S struct {
+		A string
+		B int
+	}
+
+	type S0 struct {
+		D int
+	}
+	type S1 struct {
+		S  S
+		C  string
+		S0 S0
+	}
+
+	sa := S1{
+		S: S{
+			A: "nihao",
+			B: 5,
+		},
+		C: "aaa",
+		S0: S0{
+			5,
+		},
+	}
+	sb := S1{}
+
+	structAssign(&sb, &sa)
 
 }
 
@@ -44,271 +82,324 @@ func Run(port int16, configPath string) {
 	}
 
 	http.Handle("/", http.FileServer(http.Dir("html")))
-	http.HandleFunc("/SendConfig_base", sendConfig_base)
-	http.HandleFunc("/SendConfig_distance", sendConfig_distance)
-	http.HandleFunc("/SendConfig_vibrate_setting", sendConfig_vibrate_setting)
-	http.HandleFunc("/SendConfig_crossing_setting", sendConfig_crossing_setting)
-	http.HandleFunc("/SendConfig_real_loc", sendConfig_real_loc)
-	http.HandleFunc("/SendConfig_pixel_loc", sendConfig_pixel_loc)
+	//set
+	http.HandleFunc("/setConfig_base", setConfig_base)
+	http.HandleFunc("/setConfig_distance", setConfig_distance)
+	http.HandleFunc("/setConfig_vibrate_setting", setConfig_vibrate_setting)
+	http.HandleFunc("/setConfig_crossing_setting", setConfig_crossing_setting)
+	http.HandleFunc("/setConfig_real_loc", setConfig_real_loc)
+	http.HandleFunc("/setConfig_pixel_loc", setConfig_pixel_loc)
+	http.HandleFunc("/setConfig_all", setConfig_all)
+	//get
+	http.HandleFunc("/getConfig_base", getConfig_base)
+	http.HandleFunc("/getConfig_distance", getConfig_distance)
+	http.HandleFunc("/getConfig_vibrate_setting", getConfig_vibrate_setting)
+	http.HandleFunc("/getConfig_crossing_setting", getConfig_crossing_setting)
+	http.HandleFunc("/getConfig_real_loc", getConfig_real_loc)
+	http.HandleFunc("/getConfig_pixel_loc", getConfig_pixel_loc)
+	http.HandleFunc("/getConfig_all", getConfig_all)
 
 	defer http.ListenAndServe("localhost:8080", nil)
 }
 
-func sendConfig_pixel_loc(writer http.ResponseWriter, request *http.Request) {
+// 基础函数
+func getConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) error {
+	var jsonP interface{}
+	var iniP interface{}
+
+	switch sectionName {
+	case ini.DefaultSection:
+		jsonP = &msgJson.Info{}
+		iniP = &iniConfig.Info{}
+	case "base":
+		jsonP = &msgJson.Base{}
+		iniP = &iniConfig.Base{}
+	case "distance":
+		jsonP = &msgJson.Distance{}
+		iniP = &iniConfig.Distance{}
+	case "vibrate_setting":
+		jsonP = &msgJson.Vibrate_setting{}
+		iniP = &iniConfig.Vibrate_setting{}
+	case "crossing_setting":
+		jsonP = &msgJson.Crossing_setting{}
+		iniP = &iniConfig.Crossing_setting{}
+	case "real_loc":
+		jsonP = &msgJson.Real_loc{}
+		iniP = &iniConfig.Real_loc{}
+	case "pixel_loc":
+		jsonP = &msgJson.Pixel_loc{}
+		iniP = &iniConfig.Pixel_loc{}
+	}
+
 	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
+	rBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Printf("req body read err:%v\n", err.Error())
-		return
+		return err
 	}
-	fmt.Printf("body:%s\n", body)
+	fmt.Printf("body:%s\n", rBody)
 
 	//2. 配置文件不存在相应失败 退出
 	if !IsConfigExist {
 		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
+		w.Write([]byte("失败：配置文件不存在"))
+		return errors.New("配置文件不存在")
 	}
 
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonPixel_loc := msgJson.Pixel_loc{}
-	err = json.Unmarshal(body, &jsonPixel_loc)
-	if err != nil {
+	//3.读取ini文件指定分区信息，转换为json信息
+	section, errGetsection := Config.GetSection(sectionName)
+	if errGetsection != nil {
+		fmt.Printf("获取分区失败:%v\n", errGetsection.Error())
+		w.Write([]byte("获取分区失败"))
+		return errGetsection
+	}
+	errSection := section.MapTo(iniP)
+	if errSection != nil {
+		fmt.Printf("分区信息转换失败：%v\n", errSection.Error())
+		w.Write([]byte("分区信息转换失败"))
+		return errSection
+	}
+	if sectionName == ini.DefaultSection {
+		structAssign(jsonP.(msgJson.Info).Base, iniP.(iniConfig.Info).Base)
+		structAssign(jsonP.(msgJson.Info).Distance, iniP.(iniConfig.Info).Distance)
+		structAssign(jsonP.(msgJson.Info).Vibrate_setting, iniP.(iniConfig.Info).Vibrate_setting)
+		structAssign(jsonP.(msgJson.Info).Crossing_setting, iniP.(iniConfig.Info).Crossing_setting)
+		structAssign(jsonP.(msgJson.Info).Real_loc, iniP.(iniConfig.Info).Real_loc)
+		structAssign(jsonP.(msgJson.Info).Pixel_loc, iniP.(iniConfig.Info).Pixel_loc)
+	} else {
+		structAssign(jsonP, iniP)
+	}
+	//4 json信息组织回复
+	wBody, errBody := json.Marshal(jsonP)
+	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
+		w.Write([]byte("失败：json解析失败"))
+		return errBody
 	}
-	iniPixel_loc := iniConfig.Pixel_loc{}
-	structAssign(&iniPixel_loc, &jsonPixel_loc)
-	//4 结构体写入ini分区
-	section, _ := Config.NewSection("pixel_loc")
-	err_section := section.ReflectFrom(&iniPixel_loc)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
-	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
-	}
-	writer.Write([]byte("成功：写入分区信息成功"))
+	w.WriteHeader(http.StatusOK)
+	w.Write(wBody)
+	return nil
 }
 
-func sendConfig_real_loc(writer http.ResponseWriter, request *http.Request) {
+func setConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) error {
+
+	var jsonP interface{}
+	var iniP interface{}
+
+	switch sectionName {
+	case ini.DefaultSection:
+		jsonP = &msgJson.Info{}
+		iniP = &iniConfig.Info{}
+	case "base":
+		jsonP = &msgJson.Base{}
+		iniP = &iniConfig.Base{}
+	case "distance":
+		jsonP = &msgJson.Distance{}
+		iniP = &iniConfig.Distance{}
+	case "vibrate_setting":
+		jsonP = &msgJson.Vibrate_setting{}
+		iniP = &iniConfig.Vibrate_setting{}
+	case "crossing_setting":
+		jsonP = &msgJson.Crossing_setting{}
+		iniP = &iniConfig.Crossing_setting{}
+	case "real_loc":
+		jsonP = &msgJson.Real_loc{}
+		iniP = &iniConfig.Real_loc{}
+	case "pixel_loc":
+		jsonP = &msgJson.Pixel_loc{}
+		iniP = &iniConfig.Pixel_loc{}
+	}
+
 	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
+	rBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		fmt.Printf("req body read err:%v\n", err.Error())
-		return
+		return err
 	}
-	fmt.Printf("body:%s\n", body)
+	fmt.Printf("body:%s\n", rBody)
 
 	//2. 配置文件不存在相应失败 退出
 	if !IsConfigExist {
 		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：配置文件不存在"))
+		return errors.New("配置文件不存在")
 	}
 
 	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonReal_loc := msgJson.Real_loc{}
-	err = json.Unmarshal(body, &jsonReal_loc)
+	err = json.Unmarshal(rBody, jsonP)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return err
 	}
-	iniReal_loc := iniConfig.Real_loc{}
-	structAssign(&iniReal_loc, &jsonReal_loc)
+	if sectionName == ini.DefaultSection {
+		structAssign(iniP.(iniConfig.Info).Base, jsonP.(msgJson.Info).Base)
+		structAssign(iniP.(iniConfig.Info).Distance, jsonP.(msgJson.Info).Distance)
+		structAssign(iniP.(iniConfig.Info).Vibrate_setting, jsonP.(msgJson.Info).Vibrate_setting)
+		structAssign(iniP.(iniConfig.Info).Crossing_setting, jsonP.(msgJson.Info).Crossing_setting)
+		structAssign(iniP.(iniConfig.Info).Real_loc, jsonP.(msgJson.Info).Real_loc)
+		structAssign(iniP.(iniConfig.Info).Pixel_loc, jsonP.(msgJson.Info).Pixel_loc)
+	} else {
+		structAssign(iniP, jsonP)
+	}
 	//4 结构体写入ini分区
-	section, _ := Config.NewSection("real_loc")
-	err_section := section.ReflectFrom(&iniReal_loc)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
+	//判断分区名称是否为空
+	if len(sectionName) == 0 {
+		errSection := Config.ReflectFrom(iniP)
+		if errSection != nil {
+			fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
+			w.WriteHeader(http.StatusGone)
+			w.Write([]byte("失败:ini写入分区失败"))
+			return errSection
+		}
+	} else {
+		section, _ := Config.NewSection(sectionName)
+		errSection := section.ReflectFrom(iniP)
+		if errSection != nil {
+			fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
+			w.WriteHeader(http.StatusGone)
+			w.Write([]byte("失败:ini写入分区失败"))
+			return errSection
+		}
 	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
+
+	errSave := Config.SaveTo(ConfigPath)
+	if errSave != nil {
+		fmt.Printf("ini config save fail:%v\n", errSave.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：配置文件分区信息写入失败"))
+		return errSave
 	}
-	writer.Write([]byte("成功：写入分区信息成功"))
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：写入分区信息成功"))
+	return nil
 }
 
-func sendConfig_crossing_setting(writer http.ResponseWriter, request *http.Request) {
-	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		fmt.Printf("req body read err:%v\n", err.Error())
-		return
-	}
-	fmt.Printf("body:%s\n", body)
+//web api
+func getConfig_all(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, ini.DEFAULT_SECTION)
+	case ConfigSqlite:
 
-	//2. 配置文件不存在相应失败 退出
-	if !IsConfigExist {
-		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
 	}
-
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonCrossing_setting := msgJson.Crossing_setting{}
-	err = json.Unmarshal(body, &jsonCrossing_setting)
-	if err != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
-	}
-	iniCrossing_setting := iniConfig.Crossing_setting{}
-	structAssign(&iniCrossing_setting, &jsonCrossing_setting)
-	//4 结构体写入ini分区
-	section, _ := Config.NewSection("crossing_setting")
-	err_section := section.ReflectFrom(&iniCrossing_setting)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
-	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
-	}
-	writer.Write([]byte("成功：写入分区信息成功"))
 }
 
-func sendConfig_vibrate_setting(writer http.ResponseWriter, request *http.Request) {
-	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		fmt.Printf("req body read err:%v\n", err.Error())
-		return
-	}
-	fmt.Printf("body:%s\n", body)
+func getConfig_pixel_loc(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "pixel_loc")
+	case ConfigSqlite:
 
-	//2. 配置文件不存在相应失败 退出
-	if !IsConfigExist {
-		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
 	}
-
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonVibrate_setting := msgJson.Vibrate_setting{}
-	err = json.Unmarshal(body, &jsonVibrate_setting)
-	if err != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
-	}
-	iniVibrate_setting := iniConfig.Vibrate_setting{}
-	structAssign(&iniVibrate_setting, &jsonVibrate_setting)
-	//4 结构体写入ini分区
-	section, _ := Config.NewSection("vibrate_setting")
-	err_section := section.ReflectFrom(&iniVibrate_setting)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
-	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
-	}
-	writer.Write([]byte("成功：写入分区信息成功"))
 }
 
-func sendConfig_distance(writer http.ResponseWriter, request *http.Request) {
-	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		fmt.Printf("req body read err:%v\n", err.Error())
-		return
-	}
-	fmt.Printf("body:%s\n", body)
+func getConfig_real_loc(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "real_loc")
+	case ConfigSqlite:
 
-	//2. 配置文件不存在相应失败 退出
-	if !IsConfigExist {
-		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
 	}
-
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonDistance := msgJson.Distance{}
-	err = json.Unmarshal(body, &jsonDistance)
-	if err != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
-	}
-	iniDistance := iniConfig.Distance{}
-	structAssign(&iniDistance, &jsonDistance)
-	//4 结构体写入ini分区
-	section, _ := Config.NewSection("distance")
-	err_section := section.ReflectFrom(&iniDistance)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
-	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
-	}
-	writer.Write([]byte("成功：写入分区信息成功"))
 }
 
-func sendConfig_base(writer http.ResponseWriter, request *http.Request) {
+func getConfig_crossing_setting(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "crossing_setting")
+	case ConfigSqlite:
 
-	//1.解析http请求
-	body, err := ioutil.ReadAll(request.Body)
-	if err != nil {
-		fmt.Printf("req body read err:%v\n", err.Error())
-		return
 	}
-	fmt.Printf("body:%s\n", body)
+}
 
-	//2. 配置文件不存在相应失败 退出
-	if !IsConfigExist {
-		fmt.Printf("config file not exist\n")
-		writer.Write([]byte("失败：配置文件不存在"))
-		return
-	}
+func getConfig_vibrate_setting(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "vibrate_setting")
+	case ConfigSqlite:
 
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	jsonBase := msgJson.Base{}
-	err = json.Unmarshal(body, &jsonBase)
-	if err != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
-		writer.Write([]byte("失败：json解析失败"))
-		return
 	}
-	iniBase := iniConfig.Base{}
-	structAssign(&iniBase, &jsonBase)
-	//4 结构体写入ini分区
-	section, _ := Config.NewSection("base")
-	err_section := section.ReflectFrom(&iniBase)
-	if err_section != nil {
-		fmt.Printf("ini map jsonBase fail:%v\n", err_section.Error())
-		writer.Write([]byte("失败:ini写入分区失败"))
-		return
+}
+
+func getConfig_distance(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "distance")
+	case ConfigSqlite:
+
 	}
-	err_save := Config.SaveTo(ConfigPath)
-	if err_save != nil {
-		fmt.Printf("ini config save fail:%v\n", err_save.Error())
-		writer.Write([]byte("失败：配置文件分区信息写入失败"))
-		return
+}
+
+func getConfig_base(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		getConfig_ini(writer, request, "base")
+	case ConfigSqlite:
+
 	}
-	writer.Write([]byte("成功：写入分区信息成功"))
+}
+
+func setConfig_all(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, ini.DEFAULT_SECTION)
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_pixel_loc(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "pixel_loc")
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_real_loc(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "real_loc")
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_crossing_setting(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "crossing_setting")
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_vibrate_setting(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "vibrate_setting")
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_distance(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "distance")
+	case ConfigSqlite:
+
+	}
+}
+
+func setConfig_base(writer http.ResponseWriter, request *http.Request) {
+	switch ConfigType {
+	case ConfigIni:
+		setConfig_ini(writer, request, "base")
+	case ConfigSqlite:
+
+	}
 }

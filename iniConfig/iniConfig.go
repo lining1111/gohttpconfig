@@ -83,3 +83,13 @@ type Pixel_loc struct {
 	Pixel_bottom_point_x float64 `ini:"pixel_bottom_point_x"`
 	Pixel_bottom_point_y float64 `ini:"pixel_bottom_point_y"`
 }
+
+//info
+type Info struct {
+	Base             Base             `ini:"base"`
+	Distance         Distance         `ini:"distance"`
+	Vibrate_setting  Vibrate_setting  `ini:"vibrate_setting"`
+	Crossing_setting Crossing_setting `ini:"crossing_setting"`
+	Real_loc         Real_loc         `ini:"real_loc"`
+	Pixel_loc        Pixel_loc        `ini:"pixel_loc"`
+}

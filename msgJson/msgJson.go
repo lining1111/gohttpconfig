@@ -84,6 +84,16 @@ type Pixel_loc struct {
 	Pixel_bottom_point_y float64 `json:"pixel_bottom_point_y"`
 }
 
+//info
+type Info struct {
+	Base             Base             `json:"base"`
+	Distance         Distance         `json:"distance"`
+	Vibrate_setting  Vibrate_setting  `json:"vibrate_setting"`
+	Crossing_setting Crossing_setting `json:"crossing_setting"`
+	Real_loc         Real_loc         `json:"real_loc"`
+	Pixel_loc        Pixel_loc        `json:"pixel_loc"`
+}
+
 //result
 type Result struct {
 	Msg string `json:"msg"`
