@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"gohttpconfig/httpServer"
+	"gohttpconfig/serverHttp"
 	"os"
 )
 
@@ -13,7 +13,7 @@ import (
 
 func main() {
 	//test
-	httpServer.StructAssignTest()
+	serverHttp.StructAssignTest()
 
 	//默认的端口和配置文件地址
 	var port int
@@ -30,6 +30,6 @@ func main() {
 		file, _ = os.Create(path)
 	}
 	file.Close()
-	httpServer.Run(port, path)
+	serverHttp.Run(port, path)
 
 }
