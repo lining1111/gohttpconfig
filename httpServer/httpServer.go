@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"strconv"
 )
 
 var Config *ini.File
@@ -70,7 +71,7 @@ func StructAssignTest() {
 
 }
 
-func Run(port int16, configPath string) {
+func Run(port int, configPath string) {
 	ConfigPath = configPath
 	var err error
 	Config, err = ini.Load(configPath)
@@ -99,11 +100,12 @@ func Run(port int16, configPath string) {
 	http.HandleFunc("/getConfig_pixel_loc", getConfig_pixel_loc)
 	http.HandleFunc("/getConfig_all", getConfig_all)
 
-	defer http.ListenAndServe("localhost:8080", nil)
+	addr := "localhost:" + strconv.Itoa(port)
+	defer http.ListenAndServe(addr, nil)
 }
 
 // 基础函数
-func getConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) error {
+func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) error {
 	var jsonP interface{}
 	var iniP interface{}
 
@@ -160,12 +162,12 @@ func getConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) e
 		return errSection
 	}
 	if sectionName == ini.DefaultSection {
-		structAssign(jsonP.(msgJson.Info).Base, iniP.(iniConfig.Info).Base)
-		structAssign(jsonP.(msgJson.Info).Distance, iniP.(iniConfig.Info).Distance)
-		structAssign(jsonP.(msgJson.Info).Vibrate_setting, iniP.(iniConfig.Info).Vibrate_setting)
-		structAssign(jsonP.(msgJson.Info).Crossing_setting, iniP.(iniConfig.Info).Crossing_setting)
-		structAssign(jsonP.(msgJson.Info).Real_loc, iniP.(iniConfig.Info).Real_loc)
-		structAssign(jsonP.(msgJson.Info).Pixel_loc, iniP.(iniConfig.Info).Pixel_loc)
+		structAssign(&(jsonP.(*msgJson.Info).Base), &(iniP.(*iniConfig.Info).Base))
+		structAssign(&(jsonP.(*msgJson.Info).Distance), &(iniP.(*iniConfig.Info).Distance))
+		structAssign(&(jsonP.(*msgJson.Info).Vibrate_setting), &(iniP.(*iniConfig.Info).Vibrate_setting))
+		structAssign(&(jsonP.(*msgJson.Info).Crossing_setting), &(iniP.(*iniConfig.Info).Crossing_setting))
+		structAssign(&(jsonP.(*msgJson.Info).Real_loc), &(iniP.(*iniConfig.Info).Real_loc))
+		structAssign(&(jsonP.(*msgJson.Info).Pixel_loc), &(iniP.(*iniConfig.Info).Pixel_loc))
 	} else {
 		structAssign(jsonP, iniP)
 	}
@@ -181,7 +183,7 @@ func getConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) e
 	return nil
 }
 
-func setConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) error {
+func setConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) error {
 
 	var jsonP interface{}
 	var iniP interface{}
@@ -235,12 +237,12 @@ func setConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) e
 		return err
 	}
 	if sectionName == ini.DefaultSection {
-		structAssign(iniP.(iniConfig.Info).Base, jsonP.(msgJson.Info).Base)
-		structAssign(iniP.(iniConfig.Info).Distance, jsonP.(msgJson.Info).Distance)
-		structAssign(iniP.(iniConfig.Info).Vibrate_setting, jsonP.(msgJson.Info).Vibrate_setting)
-		structAssign(iniP.(iniConfig.Info).Crossing_setting, jsonP.(msgJson.Info).Crossing_setting)
-		structAssign(iniP.(iniConfig.Info).Real_loc, jsonP.(msgJson.Info).Real_loc)
-		structAssign(iniP.(iniConfig.Info).Pixel_loc, jsonP.(msgJson.Info).Pixel_loc)
+		structAssign(&(iniP.(*iniConfig.Info).Base), &(jsonP.(*msgJson.Info).Base))
+		structAssign(&(iniP.(*iniConfig.Info).Distance), &(jsonP.(*msgJson.Info).Distance))
+		structAssign(&(iniP.(*iniConfig.Info).Vibrate_setting), &(jsonP.(*msgJson.Info).Vibrate_setting))
+		structAssign(&(iniP.(*iniConfig.Info).Crossing_setting), &(jsonP.(*msgJson.Info).Crossing_setting))
+		structAssign(&(iniP.(*iniConfig.Info).Real_loc), &(jsonP.(*msgJson.Info).Real_loc))
+		structAssign(&(iniP.(*iniConfig.Info).Pixel_loc), &(jsonP.(*msgJson.Info).Pixel_loc))
 	} else {
 		structAssign(iniP, jsonP)
 	}
@@ -278,127 +280,127 @@ func setConfig_ini(w http.ResponseWriter, r *http.Request, sectionName string) e
 }
 
 //web api
-func getConfig_all(writer http.ResponseWriter, request *http.Request) {
+func getConfig_all(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, ini.DEFAULT_SECTION)
+		getConfigIni(w, r, ini.DefaultSection)
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_pixel_loc(writer http.ResponseWriter, request *http.Request) {
+func getConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "pixel_loc")
+		getConfigIni(w, r, "pixel_loc")
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_real_loc(writer http.ResponseWriter, request *http.Request) {
+func getConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "real_loc")
+		getConfigIni(w, r, "real_loc")
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_crossing_setting(writer http.ResponseWriter, request *http.Request) {
+func getConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "crossing_setting")
+		getConfigIni(w, r, "crossing_setting")
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_vibrate_setting(writer http.ResponseWriter, request *http.Request) {
+func getConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "vibrate_setting")
+		getConfigIni(w, r, "vibrate_setting")
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_distance(writer http.ResponseWriter, request *http.Request) {
+func getConfig_distance(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "distance")
+		getConfigIni(w, r, "distance")
 	case ConfigSqlite:
 
 	}
 }
 
-func getConfig_base(writer http.ResponseWriter, request *http.Request) {
+func getConfig_base(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		getConfig_ini(writer, request, "base")
+		getConfigIni(w, r, "base")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_all(writer http.ResponseWriter, request *http.Request) {
+func setConfig_all(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, ini.DEFAULT_SECTION)
+		setConfigIni(w, r, ini.DefaultSection)
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_pixel_loc(writer http.ResponseWriter, request *http.Request) {
+func setConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "pixel_loc")
+		setConfigIni(w, r, "pixel_loc")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_real_loc(writer http.ResponseWriter, request *http.Request) {
+func setConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "real_loc")
+		setConfigIni(w, r, "real_loc")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_crossing_setting(writer http.ResponseWriter, request *http.Request) {
+func setConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "crossing_setting")
+		setConfigIni(w, r, "crossing_setting")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_vibrate_setting(writer http.ResponseWriter, request *http.Request) {
+func setConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "vibrate_setting")
+		setConfigIni(w, r, "vibrate_setting")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_distance(writer http.ResponseWriter, request *http.Request) {
+func setConfig_distance(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "distance")
+		setConfigIni(w, r, "distance")
 	case ConfigSqlite:
 
 	}
 }
 
-func setConfig_base(writer http.ResponseWriter, request *http.Request) {
+func setConfig_base(w http.ResponseWriter, r *http.Request) {
 	switch ConfigType {
 	case ConfigIni:
-		setConfig_ini(writer, request, "base")
+		setConfigIni(w, r, "base")
 	case ConfigSqlite:
 
 	}

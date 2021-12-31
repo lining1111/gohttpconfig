@@ -30,6 +30,6 @@ func main() {
 		file, _ = os.Create(path)
 	}
 	file.Close()
-	httpServer.Run(int16(port), path)
+	httpServer.Run(port, path)
 
 }
