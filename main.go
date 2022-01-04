@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"gohttpconfig/db"
 	"gohttpconfig/serverHttp"
 	"os"
 )
@@ -13,7 +14,8 @@ import (
 
 func main() {
 	//test
-	serverHttp.StructAssignTest()
+	//serverHttp.StructAssignTest()
+	//db.DbTest()
 
 	//默认的端口和配置文件地址
 	var port int
@@ -32,6 +34,8 @@ func main() {
 		file, _ = os.Create(path)
 	}
 	file.Close()
+	//打开数据库
+	db.Open(dbPath)
 	serverHttp.Run(port, path)
 
 }
