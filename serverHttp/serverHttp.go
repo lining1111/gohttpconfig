@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	"runtime"
 	"strconv"
 )
 
@@ -106,6 +107,54 @@ func Run(port int, configPath string) {
 }
 
 // 基础函数
+func configStruct2common(dst interface{}, src interface{}, name string) error {
+	switch name {
+	case ini.DefaultSection:
+	case "":
+		common.ConfigStruct2Common_all(dst.(*common.Info), src.(*configStruct.Info))
+	case "base":
+		common.ConfigStruct2Common_base(dst.(*common.Base), src.(*configStruct.Base))
+	case "distance":
+		common.ConfigStruct2Common_distance(dst.(*common.Distance), src.(*configStruct.Distance))
+	case "vibrate_setting":
+		common.ConfigStruct2Common_vibrate_setting(dst.(*common.Vibrate_setting), src.(*configStruct.Vibrate_setting))
+	case "crossing_setting":
+		common.ConfigStruct2Common_crossing_setting(dst.(*common.Crossing_setting), src.(*configStruct.Crossing_setting))
+	case "real_loc":
+		common.ConfigStruct2Common_real_loc(dst.(*common.Real_loc), src.(*configStruct.Real_loc))
+	case "pixel_loc":
+		common.ConfigStruct2Common_pixel_loc(dst.(*common.Pixel_loc), src.(*configStruct.Pixel_loc))
+	default:
+		fmt.Printf("unknown name:%s\n", name)
+		return errors.New("unknown name")
+	}
+	return nil
+}
+
+func common2configStruct(dst interface{}, src interface{}, name string) error {
+	switch name {
+	case ini.DefaultSection:
+	case "":
+		common.Common2ConfigStruct_all(dst.(*configStruct.Info), src.(*common.Info))
+	case "base":
+		common.Common2ConfigStruct_base(dst.(*configStruct.Base), src.(*common.Base))
+	case "distance":
+		common.Common2ConfigStruct_distance(dst.(*configStruct.Distance), src.(*common.Distance))
+	case "vibrate_setting":
+		common.Common2ConfigStruct_vibrate_setting(dst.(*configStruct.Vibrate_setting), src.(*common.Vibrate_setting))
+	case "crossing_setting":
+		common.Common2ConfigStruct_crossing_setting(dst.(*configStruct.Crossing_setting), src.(*common.Crossing_setting))
+	case "real_loc":
+		common.Common2ConfigStruct_real_loc(dst.(*configStruct.Real_loc), src.(*common.Real_loc))
+	case "pixel_loc":
+		common.Common2ConfigStruct_pixel_loc(dst.(*configStruct.Pixel_loc), src.(*common.Pixel_loc))
+	default:
+		fmt.Printf("unknown name:%s\n", name)
+		return errors.New("unknown name")
+	}
+	return nil
+}
+
 func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) error {
 	//1.解析http请求
 	rBody, err := ioutil.ReadAll(r.Body)
@@ -123,45 +172,56 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	}
 
 	//3.读取ini文件指定分区信息，转换为json信息
-	var msgSrc interface{}
-	var msgDst interface{}
+	var src interface{}
+	var dst interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		msgSrc = &configStruct.Info{}
-		msgDst = &common.Info{}
+		src = &configStruct.Info{}
+		dst = &common.Info{}
 	case "base":
-		msg = &common.Base{}
+		src = &configStruct.Base{}
+		dst = &common.Base{}
 	case "distance":
-		msg = &common.Distance{}
+		src = &configStruct.Distance{}
+		dst = &common.Distance{}
 	case "vibrate_setting":
-		msg = &common.Vibrate_setting{}
+		src = &configStruct.Vibrate_setting{}
+		dst = &common.Vibrate_setting{}
 	case "crossing_setting":
-		msg = &common.Crossing_setting{}
+		src = &configStruct.Crossing_setting{}
+		dst = &common.Crossing_setting{}
 	case "real_loc":
-		msg = &common.Real_loc{}
+		src = &configStruct.Real_loc{}
+		dst = &common.Real_loc{}
 	case "pixel_loc":
-		msg = &common.Pixel_loc{}
+		src = &configStruct.Pixel_loc{}
+		dst = &common.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
 	}
-
+	//3.1读取
 	section, errGetsection := Config.GetSection(sectionName)
 	if errGetsection != nil {
 		fmt.Printf("获取分区失败:%v\n", errGetsection.Error())
 		w.Write([]byte("获取分区失败"))
 		return errGetsection
 	}
-	errSection := section.MapTo(msg)
+	errSection := section.MapTo(src)
 	if errSection != nil {
 		fmt.Printf("分区信息转换失败：%v\n", errSection.Error())
 		w.Write([]byte("分区信息转换失败"))
 		return errSection
 	}
-	//4.json信息组织回复
+	//3.2转换
+	errChange := configStruct2common(dst, src, sectionName)
+	if errChange != nil {
+		return errChange
+	}
 
-	wBody, errBody := json.Marshal(msg)
+	//4.json信息组织回复
+	wBody, errBody := json.Marshal(dst)
 	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.Write([]byte("失败：json解析失败"))
@@ -190,38 +250,53 @@ func setConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	}
 
 	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	var msg interface{}
+	//3.读取ini文件指定分区信息，转换为json信息
+	var src interface{}
+	var dst interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		msg = &common.Info{}
+		src = &common.Info{}
+		dst = &configStruct.Info{}
 	case "base":
-		msg = &common.Base{}
+		src = &common.Base{}
+		dst = &configStruct.Base{}
 	case "distance":
-		msg = &common.Distance{}
+		src = &common.Distance{}
+		dst = &configStruct.Distance{}
 	case "vibrate_setting":
-		msg = &common.Vibrate_setting{}
+		src = &common.Vibrate_setting{}
+		dst = &configStruct.Vibrate_setting{}
 	case "crossing_setting":
-		msg = &common.Crossing_setting{}
+		src = &common.Crossing_setting{}
+		dst = &configStruct.Crossing_setting{}
 	case "real_loc":
-		msg = &common.Real_loc{}
+		src = &common.Real_loc{}
+		dst = &configStruct.Real_loc{}
 	case "pixel_loc":
-		msg = &common.Pixel_loc{}
+		src = &common.Pixel_loc{}
+		dst = &configStruct.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
 	}
-	err = json.Unmarshal(rBody, msg)
+	//3.1 读取
+	err = json.Unmarshal(rBody, src)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：json解析失败"))
 		return err
 	}
+	//3.2转换
+	errChange := common2configStruct(dst, src, sectionName)
+	if errChange != nil {
+		return errChange
+	}
 
 	//4.结构体写入ini分区
 	section, _ := Config.NewSection(sectionName)
-	errSection := section.ReflectFrom(msg)
+	errSection := section.ReflectFrom(dst)
 	if errSection != nil {
 		fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
 		w.WriteHeader(http.StatusGone)
@@ -258,30 +333,38 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	}
 
 	//3.读取数据库指定信息，转换为json信息
-	var msg interface{}
+	var src interface{}
+	var dst interface{}
 	var errDb error
 	switch tableName {
 	case "":
-		msg = &common.Info{}
-		errDb = db.GetConfig_all(msg.(*common.Info))
+		dst = &common.Info{}
+		src = &configStruct.Info{}
+		errDb = db.GetConfig_all(src.(*configStruct.Info))
 	case "base":
-		msg = &common.Base{}
-		errDb = db.GetConfig_base(msg.(*common.Base))
+		dst = &common.Base{}
+		src = &configStruct.Base{}
+		errDb = db.GetConfig_base(src.(*configStruct.Base))
 	case "distance":
-		msg = &common.Distance{}
-		errDb = db.GetConfig_distance(msg.(*common.Distance))
+		dst = &common.Distance{}
+		src = &configStruct.Distance{}
+		errDb = db.GetConfig_distance(src.(*configStruct.Distance))
 	case "vibrate_setting":
-		msg = &common.Vibrate_setting{}
-		errDb = db.GetConfig_vibrate_setting(msg.(*common.Vibrate_setting))
+		dst = &common.Vibrate_setting{}
+		src = &configStruct.Vibrate_setting{}
+		errDb = db.GetConfig_vibrate_setting(src.(*configStruct.Vibrate_setting))
 	case "crossing_setting":
-		msg = &common.Crossing_setting{}
-		errDb = db.GetConfig_crossing_setting(msg.(*common.Crossing_setting))
+		dst = &common.Crossing_setting{}
+		src = &configStruct.Crossing_setting{}
+		errDb = db.GetConfig_crossing_setting(src.(*configStruct.Crossing_setting))
 	case "real_loc":
-		msg = &common.Real_loc{}
-		errDb = db.GetConfig_real_loc(msg.(*common.Real_loc))
+		dst = &common.Real_loc{}
+		src = &configStruct.Real_loc{}
+		errDb = db.GetConfig_real_loc(src.(*configStruct.Real_loc))
 	case "pixel_loc":
-		msg = &common.Pixel_loc{}
-		errDb = db.GetConfig_pixel_loc(msg.(*common.Pixel_loc))
+		dst = &common.Pixel_loc{}
+		src = &configStruct.Pixel_loc{}
+		errDb = db.GetConfig_pixel_loc(src.(*configStruct.Pixel_loc))
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
@@ -291,9 +374,16 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		w.Write([]byte("失败：数据库读取失败"))
 		return errDb
 	}
+	//3.1转换
+	errChange := configStruct2common(dst, src, tableName)
+	if errChange != nil {
+		fmt.Printf("change fail:%v\n", err.Error())
+		w.Write([]byte("失败：转换失败"))
+		return errChange
+	}
 
 	//4.json信息组织回复
-	wBody, errBody := json.Marshal(msg)
+	wBody, errBody := json.Marshal(dst)
 	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.Write([]byte("失败：json解析失败"))
@@ -322,52 +412,69 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	}
 
 	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	var msg interface{}
+	var src interface{}
+	var dst interface{}
 
 	switch tableName {
 	case "":
-		msg = &common.Info{}
+		src = &common.Info{}
+		dst = &configStruct.Info{}
 	case "base":
-		msg = &common.Base{}
+		src = &common.Base{}
+		dst = &configStruct.Base{}
 	case "distance":
-		msg = &common.Distance{}
+		src = &common.Distance{}
+		dst = &configStruct.Distance{}
 	case "vibrate_setting":
-		msg = &common.Vibrate_setting{}
+		src = &common.Vibrate_setting{}
+		dst = &configStruct.Vibrate_setting{}
 	case "crossing_setting":
-		msg = &common.Crossing_setting{}
+		src = &common.Crossing_setting{}
+		dst = &configStruct.Crossing_setting{}
 	case "real_loc":
-		msg = &common.Real_loc{}
+		src = &common.Real_loc{}
+		dst = &configStruct.Real_loc{}
 	case "pixel_loc":
-		msg = &common.Pixel_loc{}
+		src = &common.Pixel_loc{}
+		dst = &configStruct.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
 	}
-	err = json.Unmarshal(rBody, msg)
+	//3.1读取json设置
+	err = json.Unmarshal(rBody, src)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：json解析失败"))
 		return err
 	}
+	//3.2转换
+	errChange := common2configStruct(dst, src, tableName)
+	if errChange != nil {
+		fmt.Printf("change err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：转换失败"))
+		return errChange
+	}
 
 	//4.结构体写入指定的数据库表
 	var errDb error
 	switch tableName {
 	case "":
-		errDb = db.SetConfig_all(msg.(*common.Info))
+		errDb = db.SetConfig_all(dst.(*configStruct.Info))
 	case "base":
-		errDb = db.SetConfig_base(msg.(*common.Base))
+		errDb = db.SetConfig_base(dst.(*configStruct.Base))
 	case "distance":
-		errDb = db.SetConfig_distance(msg.(*common.Distance))
+		errDb = db.SetConfig_distance(dst.(*configStruct.Distance))
 	case "vibrate_setting":
-		errDb = db.SetConfig_vibrate_setting(msg.(*common.Vibrate_setting))
+		errDb = db.SetConfig_vibrate_setting(dst.(*configStruct.Vibrate_setting))
 	case "crossing_setting":
-		errDb = db.SetConfig_crossing_setting(msg.(*common.Crossing_setting))
+		errDb = db.SetConfig_crossing_setting(dst.(*configStruct.Crossing_setting))
 	case "real_loc":
-		errDb = db.SetConfig_real_loc(msg.(*common.Real_loc))
+		errDb = db.SetConfig_real_loc(dst.(*configStruct.Real_loc))
 	case "pixel_loc":
-		errDb = db.SetConfig_pixel_loc(msg.(*common.Pixel_loc))
+		errDb = db.SetConfig_pixel_loc(dst.(*configStruct.Pixel_loc))
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
@@ -380,12 +487,22 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	}
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("成功：写入分区信息成功"))
+	w.Write([]byte("成功：数据库写入成功"))
 	return nil
 }
 
 //web api
 func getConfig_all(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, ini.DefaultSection)
@@ -395,6 +512,16 @@ func getConfig_all(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "pixel_loc")
@@ -404,6 +531,16 @@ func getConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_real_loc(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "real_loc")
@@ -413,6 +550,16 @@ func getConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "crossing_setting")
@@ -422,6 +569,16 @@ func getConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "vibrate_setting")
@@ -431,6 +588,16 @@ func getConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_distance(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "distance")
@@ -440,6 +607,16 @@ func getConfig_distance(w http.ResponseWriter, r *http.Request) {
 }
 
 func getConfig_base(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		getConfigIni(w, r, "base")
@@ -449,6 +626,16 @@ func getConfig_base(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_all(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, ini.DefaultSection)
@@ -458,6 +645,16 @@ func setConfig_all(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "pixel_loc")
@@ -467,6 +664,16 @@ func setConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_real_loc(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "real_loc")
@@ -476,6 +683,16 @@ func setConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "crossing_setting")
@@ -485,6 +702,16 @@ func setConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "vibrate_setting")
@@ -494,6 +721,16 @@ func setConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_distance(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "distance")
@@ -503,6 +740,16 @@ func setConfig_distance(w http.ResponseWriter, r *http.Request) {
 }
 
 func setConfig_base(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		default: //其他错误
+			fmt.Println("err:", err)
+		}
+	}()
+
 	switch ConfigType {
 	case ConfigIni:
 		setConfigIni(w, r, "base")

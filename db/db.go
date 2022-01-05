@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/mattn/go-sqlite3"
-	"gohttpconfig/common"
+	"gohttpconfig/configStruct"
 )
 
 var ConfigDb *sqlx.DB
@@ -21,7 +21,8 @@ func Open(path string) error {
 }
 
 //get
-func GetConfig_base(result *common.Base) error {
+
+func GetConfig_base(result *configStruct.Base) error {
 	sqlCmd := "select * from  base"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -34,7 +35,7 @@ func GetConfig_base(result *common.Base) error {
 	}
 	return nil
 }
-func GetConfig_distance(result *common.Distance) error {
+func GetConfig_distance(result *configStruct.Distance) error {
 	sqlCmd := "select * from  distance"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -47,7 +48,7 @@ func GetConfig_distance(result *common.Distance) error {
 	}
 	return nil
 }
-func GetConfig_vibrate_setting(result *common.Vibrate_setting) error {
+func GetConfig_vibrate_setting(result *configStruct.Vibrate_setting) error {
 	sqlCmd := "select * from  vibrate_setting"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -60,7 +61,7 @@ func GetConfig_vibrate_setting(result *common.Vibrate_setting) error {
 	}
 	return nil
 }
-func GetConfig_crossing_setting(result *common.Crossing_setting) error {
+func GetConfig_crossing_setting(result *configStruct.Crossing_setting) error {
 	sqlCmd := "select * from  crossing_setting"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -73,7 +74,7 @@ func GetConfig_crossing_setting(result *common.Crossing_setting) error {
 	}
 	return nil
 }
-func GetConfig_real_loc(result *common.Real_loc) error {
+func GetConfig_real_loc(result *configStruct.Real_loc) error {
 	sqlCmd := "select * from  real_loc"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -86,7 +87,7 @@ func GetConfig_real_loc(result *common.Real_loc) error {
 	}
 	return nil
 }
-func GetConfig_pixel_loc(result *common.Pixel_loc) error {
+func GetConfig_pixel_loc(result *configStruct.Pixel_loc) error {
 	sqlCmd := "select * from  pixel_loc"
 	row := ConfigDb.QueryRowx(sqlCmd)
 	if row.Err() != nil {
@@ -100,7 +101,7 @@ func GetConfig_pixel_loc(result *common.Pixel_loc) error {
 	return nil
 }
 
-func GetConfig_all(result *common.Info) error {
+func GetConfig_all(result *configStruct.Info) error {
 	err := GetConfig_base(&(result.Base))
 	if err != nil {
 		return err
@@ -130,7 +131,8 @@ func GetConfig_all(result *common.Info) error {
 }
 
 //set
-func SetConfig_base(result *common.Base) error {
+
+func SetConfig_base(result *configStruct.Base) error {
 	ConfigDb.Exec("DELETE FROM base")
 
 	_, err := ConfigDb.Exec("replace into base("+
@@ -142,7 +144,7 @@ func SetConfig_base(result *common.Base) error {
 	return err
 }
 
-func SetConfig_distance(result *common.Distance) error {
+func SetConfig_distance(result *configStruct.Distance) error {
 	ConfigDb.Exec("DELETE FROM distance")
 
 	_, err := ConfigDb.Exec("replace into distance("+
@@ -188,7 +190,7 @@ func SetConfig_distance(result *common.Distance) error {
 	return err
 }
 
-func SetConfig_vibrate_setting(result *common.Vibrate_setting) error {
+func SetConfig_vibrate_setting(result *configStruct.Vibrate_setting) error {
 	ConfigDb.Exec("DELETE FROM vibrate_setting")
 	_, err := ConfigDb.Exec("replace into vibrate_setting("+
 		"x_vibrate_max,"+
@@ -207,7 +209,7 @@ func SetConfig_vibrate_setting(result *common.Vibrate_setting) error {
 	return err
 }
 
-func SetConfig_crossing_setting(result *common.Crossing_setting) error {
+func SetConfig_crossing_setting(result *configStruct.Crossing_setting) error {
 	ConfigDb.Exec("DELETE FROM crossing_setting")
 	_, err := ConfigDb.Exec("replace into crossing_setting("+
 		"orientations,"+
@@ -245,7 +247,7 @@ func SetConfig_crossing_setting(result *common.Crossing_setting) error {
 	return err
 }
 
-func SetConfig_real_loc(result *common.Real_loc) error {
+func SetConfig_real_loc(result *configStruct.Real_loc) error {
 	ConfigDb.Exec("DELETE FROM real_loc")
 	_, err := ConfigDb.Exec("replace into real_loc("+
 		"real_left_point_x,"+
@@ -268,7 +270,7 @@ func SetConfig_real_loc(result *common.Real_loc) error {
 	return err
 }
 
-func SetConfig_pixel_loc(result *common.Pixel_loc) error {
+func SetConfig_pixel_loc(result *configStruct.Pixel_loc) error {
 	ConfigDb.Exec("DELETE FROM pixel_loc")
 	_, err := ConfigDb.Exec("replace into pixel_loc("+
 		"pixel_left_point_x,"+
@@ -291,7 +293,7 @@ func SetConfig_pixel_loc(result *common.Pixel_loc) error {
 	return err
 }
 
-func SetConfig_all(result *common.Info) error {
+func SetConfig_all(result *configStruct.Info) error {
 	err := SetConfig_base(&(result.Base))
 	if err != nil {
 		return err
@@ -322,7 +324,7 @@ func SetConfig_all(result *common.Info) error {
 
 func DbTest() {
 	Open("./config/config.db")
-	var result common.Base
+	var result configStruct.Base
 	GetConfig_base(&result)
 	result.Width = 4
 	SetConfig_base(&result)

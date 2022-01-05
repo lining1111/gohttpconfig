@@ -175,6 +175,15 @@ func Common2ConfigStruct_pixel_loc(dst *configStruct.Pixel_loc, src *Pixel_loc) 
 	dst.Pixel_bottom_point_y, _ = strconv.ParseFloat(src.Pixel_bottom_point_y, 64)
 }
 
+func Common2ConfigStruct_all(dst *configStruct.Info, src *Info) {
+	Common2ConfigStruct_base(&(dst.Base), &(src.Base))
+	Common2ConfigStruct_distance(&(dst.Distance), &(src.Distance))
+	Common2ConfigStruct_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
+	Common2ConfigStruct_crossing_setting(&(dst.Crossing_setting), &(src.Crossing_setting))
+	Common2ConfigStruct_real_loc(&(dst.Real_loc), &(src.Real_loc))
+	Common2ConfigStruct_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
+}
+
 func ConfigStruct2Common_base(dst *Base, src *configStruct.Base) {
 	dst.Width = strconv.Itoa(src.Width)
 	dst.Height = strconv.Itoa(src.Height)
@@ -245,4 +254,13 @@ func ConfigStruct2Common_pixel_loc(dst *Pixel_loc, src *configStruct.Pixel_loc) 
 	dst.Pixel_top_point_y = strconv.FormatFloat(src.Pixel_top_point_y, 'f', -1, 64)
 	dst.Pixel_bottom_point_x = strconv.FormatFloat(src.Pixel_bottom_point_x, 'f', -1, 64)
 	dst.Pixel_bottom_point_y = strconv.FormatFloat(src.Pixel_bottom_point_y, 'f', -1, 64)
+}
+
+func ConfigStruct2Common_all(dst *Info, src *configStruct.Info) {
+	ConfigStruct2Common_base(&(dst.Base), &(src.Base))
+	ConfigStruct2Common_distance(&(dst.Distance), &(src.Distance))
+	ConfigStruct2Common_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
+	ConfigStruct2Common_crossing_setting(&(dst.Crossing_setting), &(src.Crossing_setting))
+	ConfigStruct2Common_real_loc(&(dst.Real_loc), &(src.Real_loc))
+	ConfigStruct2Common_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
 }
