@@ -498,8 +498,6 @@ func getConfig_all(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -517,8 +515,6 @@ func getConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -536,8 +532,6 @@ func getConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -555,8 +549,6 @@ func getConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -574,8 +566,6 @@ func getConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -593,8 +583,6 @@ func getConfig_distance(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -612,8 +600,6 @@ func getConfig_base(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -631,8 +617,6 @@ func setConfig_all(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -650,8 +634,6 @@ func setConfig_pixel_loc(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -669,8 +651,6 @@ func setConfig_real_loc(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -688,8 +668,6 @@ func setConfig_crossing_setting(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -707,8 +685,6 @@ func setConfig_vibrate_setting(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -726,8 +702,6 @@ func setConfig_distance(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 
@@ -745,8 +719,6 @@ func setConfig_base(w http.ResponseWriter, r *http.Request) {
 		switch err.(type) {
 		case runtime.Error: //运行时错误
 			fmt.Println("run time err:", err)
-		default: //其他错误
-			fmt.Println("err:", err)
 		}
 	}()
 

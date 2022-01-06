@@ -6,6 +6,7 @@ import (
 	"gohttpconfig/db"
 	"gohttpconfig/serverHttp"
 	"os"
+	"strconv"
 )
 
 /**
@@ -18,9 +19,9 @@ func main() {
 	//serverHttp.StructAssignTest()
 	//db.DbTest()
 
-	//s := "-41.4259822293520869607164058834"
-	//value, err := strconv.ParseFloat(s, 64)
-	//fmt.Printf("value:%v,err:%v\n", value, err)
+	s := "-41.5"
+	value, err := strconv.ParseFloat(s, 64)
+	fmt.Printf("value:%v,err:%v\n", value, err)
 
 	//默认的端口和配置文件地址
 	var port int
