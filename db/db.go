@@ -133,7 +133,7 @@ func GetConfig_all(result *configStruct.Info) error {
 //set
 
 func SetConfig_base(result *configStruct.Base) error {
-	ConfigDb.Exec("DELETE FROM base")
+	ConfigDb.Exec("delete from base")
 
 	_, err := ConfigDb.Exec("replace into base("+
 		"width,"+
@@ -145,7 +145,7 @@ func SetConfig_base(result *configStruct.Base) error {
 }
 
 func SetConfig_distance(result *configStruct.Distance) error {
-	ConfigDb.Exec("DELETE FROM distance")
+	ConfigDb.Exec("delete from distance")
 
 	_, err := ConfigDb.Exec("replace into distance("+
 		"x_distance,"+
@@ -191,7 +191,7 @@ func SetConfig_distance(result *configStruct.Distance) error {
 }
 
 func SetConfig_vibrate_setting(result *configStruct.Vibrate_setting) error {
-	ConfigDb.Exec("DELETE FROM vibrate_setting")
+	ConfigDb.Exec("delete from vibrate_setting")
 	_, err := ConfigDb.Exec("replace into vibrate_setting("+
 		"x_vibrate_max,"+
 		"y_vibrate_max,"+
@@ -210,7 +210,7 @@ func SetConfig_vibrate_setting(result *configStruct.Vibrate_setting) error {
 }
 
 func SetConfig_crossing_setting(result *configStruct.Crossing_setting) error {
-	ConfigDb.Exec("DELETE FROM crossing_setting")
+	ConfigDb.Exec("delete from crossing_setting")
 	_, err := ConfigDb.Exec("replace into crossing_setting("+
 		"orientations,"+
 		"deltax_south,"+
@@ -248,7 +248,7 @@ func SetConfig_crossing_setting(result *configStruct.Crossing_setting) error {
 }
 
 func SetConfig_real_loc(result *configStruct.Real_loc) error {
-	ConfigDb.Exec("DELETE FROM real_loc")
+	ConfigDb.Exec("delete from real_loc")
 	_, err := ConfigDb.Exec("replace into real_loc("+
 		"real_left_point_x,"+
 		"real_left_point_y,"+
@@ -267,11 +267,12 @@ func SetConfig_real_loc(result *configStruct.Real_loc) error {
 		result.Real_top_point_y,
 		result.Real_bottom_point_x,
 		result.Real_bottom_point_y)
+
 	return err
 }
 
 func SetConfig_pixel_loc(result *configStruct.Pixel_loc) error {
-	ConfigDb.Exec("DELETE FROM pixel_loc")
+	ConfigDb.Exec("delete from pixel_loc")
 	_, err := ConfigDb.Exec("replace into pixel_loc("+
 		"pixel_left_point_x,"+
 		"pixel_left_point_y,"+
@@ -290,6 +291,7 @@ func SetConfig_pixel_loc(result *configStruct.Pixel_loc) error {
 		result.Pixel_top_point_y,
 		result.Pixel_bottom_point_x,
 		result.Pixel_bottom_point_y)
+
 	return err
 }
 

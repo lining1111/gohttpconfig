@@ -223,7 +223,7 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	//4.json信息组织回复
 	wBody, errBody := json.Marshal(dst)
 	if errBody != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
 		w.Write([]byte("失败：json解析失败"))
 		return errBody
 	}
@@ -370,14 +370,14 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		return errors.New("unknown name")
 	}
 	if errDb != nil {
-		fmt.Printf("db get fail:%v\n", err.Error())
+		fmt.Printf("db get fail:%v\n", errDb.Error())
 		w.Write([]byte("失败：数据库读取失败"))
 		return errDb
 	}
 	//3.1转换
 	errChange := configStruct2common(dst, src, tableName)
 	if errChange != nil {
-		fmt.Printf("change fail:%v\n", err.Error())
+		fmt.Printf("change fail:%v\n", errChange.Error())
 		w.Write([]byte("失败：转换失败"))
 		return errChange
 	}
@@ -385,7 +385,7 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	//4.json信息组织回复
 	wBody, errBody := json.Marshal(dst)
 	if errBody != nil {
-		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
 		w.Write([]byte("失败：json解析失败"))
 		return errBody
 	}
@@ -452,7 +452,7 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	//3.2转换
 	errChange := common2configStruct(dst, src, tableName)
 	if errChange != nil {
-		fmt.Printf("change err:%v\n", err.Error())
+		fmt.Printf("change err:%v\n", errChange.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：转换失败"))
 		return errChange
@@ -480,7 +480,7 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		return errors.New("unknown name")
 	}
 	if errDb != nil {
-		fmt.Printf("db write err:%v\n", err.Error())
+		fmt.Printf("db write err:%v\n", errDb.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：数据库写入失败"))
 		return err
