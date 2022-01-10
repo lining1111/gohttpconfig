@@ -36,8 +36,9 @@ func main() {
 	if len(os.Args) == 2 {
 		if os.Args[1] == "-v" {
 			fmt.Println("version:", version)
+			os.Exit(1)
 		}
-		os.Exit(1)
+
 	}
 
 	switch configWay {
