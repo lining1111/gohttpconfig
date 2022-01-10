@@ -107,6 +107,7 @@ func Run(port int, configPath string) {
 }
 
 // 基础函数
+
 func configStruct2common(dst interface{}, src interface{}, name string) error {
 	switch name {
 	case ini.DefaultSection:
@@ -340,41 +341,37 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	case "":
 		dst = &common.Info{}
 		src = &configStruct.Info{}
-		errDb = db.GetConfig_all(src.(*configStruct.Info))
 	case "base":
 		dst = &common.Base{}
 		src = &configStruct.Base{}
-		errDb = db.GetConfig_base(src.(*configStruct.Base))
 	case "distance":
 		dst = &common.Distance{}
 		src = &configStruct.Distance{}
-		errDb = db.GetConfig_distance(src.(*configStruct.Distance))
 	case "vibrate_setting":
 		dst = &common.Vibrate_setting{}
 		src = &configStruct.Vibrate_setting{}
-		errDb = db.GetConfig_vibrate_setting(src.(*configStruct.Vibrate_setting))
 	case "crossing_setting":
 		dst = &common.Crossing_setting{}
 		src = &configStruct.Crossing_setting{}
-		errDb = db.GetConfig_crossing_setting(src.(*configStruct.Crossing_setting))
 	case "real_loc":
 		dst = &common.Real_loc{}
 		src = &configStruct.Real_loc{}
-		errDb = db.GetConfig_real_loc(src.(*configStruct.Real_loc))
 	case "pixel_loc":
 		dst = &common.Pixel_loc{}
 		src = &configStruct.Pixel_loc{}
-		errDb = db.GetConfig_pixel_loc(src.(*configStruct.Pixel_loc))
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
 	}
+	//3.1获取
+	errDb = db.GetConfig(tableName, src)
 	if errDb != nil {
 		fmt.Printf("db get fail:%v\n", errDb.Error())
 		w.Write([]byte("失败：数据库读取失败"))
 		return errDb
 	}
-	//3.1转换
+
+	//3.2转换
 	errChange := configStruct2common(dst, src, tableName)
 	if errChange != nil {
 		fmt.Printf("change fail:%v\n", errChange.Error())
@@ -459,26 +456,7 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	}
 
 	//4.结构体写入指定的数据库表
-	var errDb error
-	switch tableName {
-	case "":
-		errDb = db.SetConfig_all(dst.(*configStruct.Info))
-	case "base":
-		errDb = db.SetConfig_base(dst.(*configStruct.Base))
-	case "distance":
-		errDb = db.SetConfig_distance(dst.(*configStruct.Distance))
-	case "vibrate_setting":
-		errDb = db.SetConfig_vibrate_setting(dst.(*configStruct.Vibrate_setting))
-	case "crossing_setting":
-		errDb = db.SetConfig_crossing_setting(dst.(*configStruct.Crossing_setting))
-	case "real_loc":
-		errDb = db.SetConfig_real_loc(dst.(*configStruct.Real_loc))
-	case "pixel_loc":
-		errDb = db.SetConfig_pixel_loc(dst.(*configStruct.Pixel_loc))
-	default:
-		fmt.Printf("unknown name:%s\n", tableName)
-		return errors.New("unknown name")
-	}
+	errDb := db.SetConfig(tableName, dst)
 	if errDb != nil {
 		fmt.Printf("db write err:%v\n", errDb.Error())
 		w.WriteHeader(http.StatusGone)
