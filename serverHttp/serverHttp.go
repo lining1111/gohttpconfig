@@ -102,8 +102,11 @@ func Run(port int, configPath string) {
 	http.HandleFunc("/getConfig_pixel_loc", getConfig_pixel_loc)
 	http.HandleFunc("/getConfig_all", getConfig_all)
 
-	addr := "localhost:" + strconv.Itoa(port)
-	defer http.ListenAndServe(addr, nil)
+	addr := ":" + strconv.Itoa(port)
+	err_web := http.ListenAndServe(addr, nil)
+	if err_web != nil {
+		fmt.Println(err_web)
+	}
 }
 
 // 基础函数
