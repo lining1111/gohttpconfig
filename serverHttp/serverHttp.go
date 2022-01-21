@@ -113,8 +113,7 @@ func Run(port int, configPath string) {
 
 func configStruct2common(dst interface{}, src interface{}, name string) error {
 	switch name {
-	case ini.DefaultSection:
-	case "":
+	case ini.DefaultSection, "":
 		common.ConfigStruct2Common_all(dst.(*common.Info), src.(*configStruct.Info))
 	case "base":
 		common.ConfigStruct2Common_base(dst.(*common.Base), src.(*configStruct.Base))
@@ -137,8 +136,7 @@ func configStruct2common(dst interface{}, src interface{}, name string) error {
 
 func common2configStruct(dst interface{}, src interface{}, name string) error {
 	switch name {
-	case ini.DefaultSection:
-	case "":
+	case ini.DefaultSection, "":
 		common.Common2ConfigStruct_all(dst.(*configStruct.Info), src.(*common.Info))
 	case "base":
 		common.Common2ConfigStruct_base(dst.(*configStruct.Base), src.(*common.Base))

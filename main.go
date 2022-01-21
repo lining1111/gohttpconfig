@@ -41,6 +41,8 @@ func main() {
 
 	}
 
+	flag.Parse()
+
 	switch configWay {
 	case 0:
 		serverHttp.ConfigType = serverHttp.ConfigIni
@@ -48,8 +50,6 @@ func main() {
 		serverHttp.ConfigType = serverHttp.ConfigSqlite
 
 	}
-
-	flag.Parse()
 
 	//如果文件不存在则创建
 	file, err := os.Open(path)
