@@ -16,8 +16,11 @@ import (
 )
 
 var Config *ini.File
-var ConfigPath string
 var IsConfigExist = false
+var ConfigPath string
+var ConfigCommunicate *ini.File
+var isConfigExistCommunicate = false
+var ConfigPathCommuniate string
 
 const (
 	ConfigIni = iota
@@ -73,9 +76,10 @@ func StructAssignTest() {
 
 }
 
-func Run(port int, configPath string) {
-	ConfigPath = configPath
+func Run(port int, htmlPath string, configPath string, configPathCommuniate string) {
+	//distanceN1
 	var err error
+	ConfigPath = configPath
 	Config, err = ini.Load(configPath)
 	if err != nil {
 		fmt.Printf("cant not load ini file:%s\n", configPath)
@@ -83,8 +87,18 @@ func Run(port int, configPath string) {
 	} else {
 		IsConfigExist = true
 	}
+	//communicate
+	ConfigPathCommuniate = configPathCommuniate
+	ConfigCommunicate, err = ini.Load(configPathCommuniate)
+	if err != nil {
+		fmt.Printf("cant not load ini file:%s\n", configPath)
+		isConfigExistCommunicate = false
+	} else {
+		isConfigExistCommunicate = true
+	}
 
-	http.Handle("/", http.FileServer(http.Dir("html")))
+	http.Handle("/", http.FileServer(http.Dir(htmlPath)))
+	/**config distanceN1**/
 	//set
 	http.HandleFunc("/setConfig_base", setConfig_base)
 	http.HandleFunc("/setConfig_distance", setConfig_distance)
@@ -92,7 +106,7 @@ func Run(port int, configPath string) {
 	http.HandleFunc("/setConfig_crossing_setting", setConfig_crossing_setting)
 	http.HandleFunc("/setConfig_real_loc", setConfig_real_loc)
 	http.HandleFunc("/setConfig_pixel_loc", setConfig_pixel_loc)
-	http.HandleFunc("/setConfig_all", setConfig_all)
+	http.HandleFunc("/setConfig_info", setConfig_info)
 	//get
 	http.HandleFunc("/getConfig_base", getConfig_base)
 	http.HandleFunc("/getConfig_distance", getConfig_distance)
@@ -100,7 +114,23 @@ func Run(port int, configPath string) {
 	http.HandleFunc("/getConfig_crossing_setting", getConfig_crossing_setting)
 	http.HandleFunc("/getConfig_real_loc", getConfig_real_loc)
 	http.HandleFunc("/getConfig_pixel_loc", getConfig_pixel_loc)
-	http.HandleFunc("/getConfig_all", getConfig_all)
+	http.HandleFunc("/getConfig_info", getConfig_info)
+
+	/**config communicate**/
+	//set
+	http.HandleFunc("/setConfig_camera", setConfig_camera)
+	http.HandleFunc("/setConfig_cloud", setConfig_cloud)
+	http.HandleFunc("/setConfig_radar", setConfig_radar)
+	http.HandleFunc("/setConfig_annuciator", setConfig_annuciator)
+	http.HandleFunc("/setConfig_hardinfo", setConfig_hardinfo)
+	http.HandleFunc("/setConfig_communicate", setConfig_communicate)
+	//get
+	http.HandleFunc("/getConfig_camera", getConfig_camera)
+	http.HandleFunc("/getConfig_cloud", getConfig_cloud)
+	http.HandleFunc("/getConfig_radar", getConfig_radar)
+	http.HandleFunc("/getConfig_annuciator", getConfig_annuciator)
+	http.HandleFunc("/getConfig_hardinfo", getConfig_hardinfo)
+	http.HandleFunc("/getConfig_communicate", getConfig_communicate)
 
 	addr := ":" + strconv.Itoa(port)
 	err_web := http.ListenAndServe(addr, nil)
@@ -109,12 +139,13 @@ func Run(port int, configPath string) {
 	}
 }
 
+/*****************config distanceN1****************/
 // 基础函数
 
 func configStruct2common(dst interface{}, src interface{}, name string) error {
 	switch name {
 	case ini.DefaultSection, "":
-		common.ConfigStruct2Common_all(dst.(*common.Info), src.(*configStruct.Info))
+		common.ConfigStruct2Common_info(dst.(*common.Info), src.(*configStruct.Info))
 	case "base":
 		common.ConfigStruct2Common_base(dst.(*common.Base), src.(*configStruct.Base))
 	case "distance":
@@ -137,7 +168,7 @@ func configStruct2common(dst interface{}, src interface{}, name string) error {
 func common2configStruct(dst interface{}, src interface{}, name string) error {
 	switch name {
 	case ini.DefaultSection, "":
-		common.Common2ConfigStruct_all(dst.(*configStruct.Info), src.(*common.Info))
+		common.Common2ConfigStruct_info(dst.(*configStruct.Info), src.(*common.Info))
 	case "base":
 		common.Common2ConfigStruct_base(dst.(*configStruct.Base), src.(*common.Base))
 	case "distance":
@@ -471,7 +502,7 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 }
 
 //web api
-func getConfig_all(w http.ResponseWriter, r *http.Request) {
+func getConfig_info(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := recover()
 		switch err.(type) {
@@ -590,7 +621,7 @@ func getConfig_base(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func setConfig_all(w http.ResponseWriter, r *http.Request) {
+func setConfig_info(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := recover()
 		switch err.(type) {
@@ -707,4 +738,444 @@ func setConfig_base(w http.ResponseWriter, r *http.Request) {
 	case ConfigSqlite:
 		setConfigDb(w, r, "base")
 	}
+}
+
+/**********config communicate*************/
+func configStruct2commonCommunicate(dst interface{}, src interface{}, name string) error {
+	switch name {
+	case ini.DefaultSection, "":
+		common.ConfigStruct2Common_communicate(dst.(*common.Communicate), src.(*configStruct.Communicate))
+	case "camera":
+		common.ConfigStruct2Common_camera(dst.(*common.Camera), src.(*configStruct.Camera))
+	case "cloud":
+		common.ConfigStruct2Common_cloud(dst.(*common.Cloud), src.(*configStruct.Cloud))
+	case "radar":
+		common.ConfigStruct2Common_radar(dst.(*common.Radar), src.(*configStruct.Radar))
+	case "annuciator":
+		common.ConfigStruct2Common_annuciator(dst.(*common.Annuciator), src.(*configStruct.Annuciator))
+	case "hardinfo":
+		common.ConfigStruct2Common_hardinfo(dst.(*common.HardInfo), src.(*configStruct.HardInfo))
+	default:
+		fmt.Printf("unknown name:%s\n", name)
+		return errors.New("unknown name")
+	}
+	return nil
+}
+
+func common2configStructCommunicate(dst interface{}, src interface{}, name string) error {
+	switch name {
+	case ini.DefaultSection, "":
+		common.Common2ConfigStruct_communicate(dst.(*configStruct.Communicate), src.(*common.Communicate))
+	case "camera":
+		common.Common2ConfigStruct_camera(dst.(*configStruct.Camera), src.(*common.Camera))
+	case "cloud":
+		common.Common2ConfigStruct_cloud(dst.(*configStruct.Cloud), src.(*common.Cloud))
+	case "radar":
+		common.Common2ConfigStruct_radar(dst.(*configStruct.Radar), src.(*common.Radar))
+	case "annuciator":
+		common.Common2ConfigStruct_annuciator(dst.(*configStruct.Annuciator), src.(*common.Annuciator))
+	case "hardinfo":
+		common.Common2ConfigStruct_hardinfo(dst.(*configStruct.HardInfo), src.(*common.HardInfo))
+	default:
+		fmt.Printf("unknown name:%s\n", name)
+		return errors.New("unknown name")
+	}
+	return nil
+}
+
+func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName string) error {
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return err
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.配置文件不存在相应失败 退出
+	if !isConfigExistCommunicate {
+		fmt.Printf("config file not exist\n")
+		w.Write([]byte("失败：配置文件不存在"))
+		return errors.New("配置文件不存在")
+	}
+
+	//3.读取ini文件指定分区信息，转换为json信息
+	var src interface{}
+	var dst interface{}
+
+	switch sectionName {
+	case ini.DefaultSection:
+		src = &configStruct.Communicate{}
+		dst = &common.Communicate{}
+	case "camera":
+		src = &configStruct.Camera{}
+		dst = &common.Camera{}
+	case "cloud":
+		src = &configStruct.Cloud{}
+		dst = &common.Cloud{}
+	case "radar":
+		src = &configStruct.Radar{}
+		dst = &common.Radar{}
+	case "annuciator":
+		src = &configStruct.Annuciator{}
+		dst = &common.Annuciator{}
+	case "hardinfo":
+		src = &configStruct.HardInfo{}
+		dst = &common.HardInfo{}
+	default:
+		fmt.Printf("unknown name:%s\n", sectionName)
+		return errors.New("unknown name")
+	}
+	//3.1读取
+	section, errGetsection := ConfigCommunicate.GetSection(sectionName)
+	if errGetsection != nil {
+		fmt.Printf("获取分区失败:%v\n", errGetsection.Error())
+		w.Write([]byte("获取分区失败"))
+		return errGetsection
+	}
+	errSection := section.MapTo(src)
+	if errSection != nil {
+		fmt.Printf("分区信息转换失败：%v\n", errSection.Error())
+		w.Write([]byte("分区信息转换失败"))
+		return errSection
+	}
+	//3.2转换
+	errChange := configStruct2commonCommunicate(dst, src, sectionName)
+	if errChange != nil {
+		return errChange
+	}
+
+	//4.json信息组织回复
+	wBody, errBody := json.Marshal(dst)
+	if errBody != nil {
+		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
+		w.Write([]byte("失败：json解析失败"))
+		return errBody
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(wBody)
+	return nil
+}
+
+func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName string) error {
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return err
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.配置文件不存在相应失败 退出
+	if !isConfigExistCommunicate {
+		fmt.Printf("config file not exist\n")
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：配置文件不存在"))
+		return errors.New("配置文件不存在")
+	}
+
+	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
+	//3.读取ini文件指定分区信息，转换为json信息
+	var src interface{}
+	var dst interface{}
+
+	switch sectionName {
+	case ini.DefaultSection:
+		src = &common.Communicate{}
+		dst = &configStruct.Communicate{}
+	case "camera":
+		src = &common.Camera{}
+		dst = &configStruct.Camera{}
+	case "cloud":
+		src = &common.Cloud{}
+		dst = &configStruct.Cloud{}
+	case "radar":
+		src = &common.Radar{}
+		dst = &configStruct.Radar{}
+	case "annuciator":
+		src = &common.Annuciator{}
+		dst = &configStruct.Annuciator{}
+	case "hardinfo":
+		src = &common.HardInfo{}
+		dst = &configStruct.HardInfo{}
+	default:
+		fmt.Printf("unknown name:%s\n", sectionName)
+		return errors.New("unknown name")
+	}
+	//3.1 读取
+	err = json.Unmarshal(rBody, src)
+	if err != nil {
+		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return err
+	}
+	//3.2转换
+	errChange := common2configStructCommunicate(dst, src, sectionName)
+	if errChange != nil {
+		return errChange
+	}
+
+	//4.结构体写入ini分区
+	section, _ := ConfigCommunicate.NewSection(sectionName)
+	errSection := section.ReflectFrom(dst)
+	if errSection != nil {
+		fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败:ini写入分区失败"))
+		return errSection
+	}
+
+	errSave := ConfigCommunicate.SaveTo(ConfigPath)
+	if errSave != nil {
+		fmt.Printf("ini config save fail:%v\n", errSave.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：配置文件分区信息写入失败"))
+		return errSave
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：写入分区信息成功"))
+	return nil
+}
+
+//web api
+func getConfig_communicate(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, ini.DefaultSection)
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, ini.DefaultSection)
+}
+
+func getConfig_hardinfo(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "hardinfo")
+}
+
+func getConfig_annuciator(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "annuciator")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "annuciator")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "annuciator")
+}
+
+func getConfig_radar(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "radar")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "radar")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "radar")
+}
+
+func getConfig_cloud(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "cloud")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "cloud")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "cloud")
+}
+
+func getConfig_camera(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "camera")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "camera")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "camera")
+}
+
+func setConfig_communicate(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, ini.DefaultSection)
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, ini.DefaultSection)
+}
+
+func setConfig_hardinfo(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "hardinfo")
+
+}
+
+func setConfig_annuciator(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "annuciator")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "annuciator")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "annuciator")
+}
+
+func setConfig_radar(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "radar")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "radar")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "radar")
+}
+
+func setConfig_cloud(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "cloud")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "cloud")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "cloud")
+}
+
+func setConfig_camera(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "camera")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "camera")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "camera")
 }

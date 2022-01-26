@@ -1,5 +1,6 @@
 package configStruct
 
+/********distanceN1*********/
 //base
 type Base struct {
 	Width  int `ini:"width" db:"width"`
@@ -91,4 +92,51 @@ type Info struct {
 	Crossing_setting Crossing_setting `ini:"crossing_setting"`
 	Real_loc         Real_loc         `ini:"real_loc"`
 	Pixel_loc        Pixel_loc        `ini:"pixel_loc"`
+}
+
+/************communicate****************/
+
+//camera
+type Camera struct {
+	Flag       int    `ini:"flag" db:"flag"`
+	Ip         string `ini:"ip" db:"ip"`
+	Url        string `ini:"url" db:"url"`
+	Path       string `ini:"path" db:"path"`
+	Delay_time int    `ini:"delay_time" db:"delay_time"`
+}
+
+//cloud
+type Cloud struct {
+	Ip        string `ini:"ip" db:"ip"`
+	Port      int    `ini:"port" db:"port"`
+	Http_ip   string `ini:"http_ip" db:"http_ip"`
+	Http_port int    `ini:"http_port" db:"http_port"`
+}
+
+//radar
+type Radar struct {
+	Ip   string `ini:"ip" db:"ip"`
+	Port int    `ini:"port" db:"port"`
+}
+
+//annuciator
+type Annuciator struct {
+	Flag int    `ini:"flag" db:"flag"`
+	Ip   string `ini:"ip" db:"ip"`
+	Port int    `ini:"port" db:"port"`
+}
+
+//hardinfo
+type HardInfo struct {
+	MatrixNo  string `ini:"matrix_no" db:"matrix_no"`
+	Hard_code string `ini:"hard_code" db:"hard_code"`
+}
+
+//communicate
+type Communicate struct {
+	Camera     Camera     `ini:"camera"`
+	Cloud      Cloud      `ini:"cloud"`
+	Radar      Radar      `ini:"radar"`
+	Annuciator Annuciator `ini:"annuciator"`
+	HardInfo   HardInfo   `ini:"hard_info"`
 }

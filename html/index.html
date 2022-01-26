@@ -26,10 +26,10 @@
 <script src="./jQuery.js"></script>
 
 <div style="width: 810px;">
-    <!--    all-->
+    <!--    info-->
     <div class="label_right">
-        <button type="button" id="setConfig_all">设置全部</button>
-        <button type="button" id="getConfig_all">获取全部</button>
+        <button type="button" id="setConfig_info">设置全部</button>
+        <button type="button" id="getConfig_info">获取全部</button>
     </div>
     <br>
     <!--    base-->
@@ -248,7 +248,7 @@
 <script>
     $(function () {
         //all
-        $("#setConfig_all").click(function () {
+        $("#setConfig_info").click(function () {
             var queryBody = {
                 base: {
                     width: form_base.width.value,
@@ -324,7 +324,7 @@
 
             console.log(queryBody)
             $.ajax({
-                url: 'setConfig_all',
+                url: 'setConfig_info',
                 contentType: 'application/json',
                 type: 'post',
                 data: JSON.stringify(queryBody),
@@ -336,9 +336,9 @@
                 }
             })
         });
-        $("#getConfig_all").click(function () {
+        $("#getConfig_info").click(function () {
             $.ajax({
-                url: 'getConfig_all',
+                url: 'getConfig_info',
                 contentType: 'application/json',
                 dataType: 'json',
                 type: 'get',

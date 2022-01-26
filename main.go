@@ -27,12 +27,17 @@ func main() {
 	var path string
 	var dbPath string
 	var configWay int
-	var version string = "1.0.0"
+	var htmlPath string
+	var pathCommunicate string
+	var version string = "1.0.1"
 	//读取传入的参数
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
 	flag.StringVar(&path, "path", "./config/distanceN1.ini", "配置文件路径，默认 ./config/distanceN1.ini")
 	flag.StringVar(&dbPath, "dbPath", "./config/config.db", "配置文件路径，默认 ./config/config.db")
 	flag.IntVar(&configWay, "configWay", 1, "配置存放方式(默认为1)： 0：ini文件，1：sqlite")
+	flag.StringVar(&htmlPath, "htmlPath", "./html", "html文件夹路径，默认 ./html")
+	flag.StringVar(&pathCommunicate, "pathCommunicate", "./config/communicate.ini",
+		"摄像头配置文件文件夹路径，默认 ./config/communicate.ini")
 	if len(os.Args) == 2 {
 		if os.Args[1] == "-v" {
 			fmt.Println("version:", version)
@@ -57,8 +62,14 @@ func main() {
 		file, _ = os.Create(path)
 	}
 	file.Close()
+	//摄像头配置文件
+	fileCommunicate, errCommunicate := os.Open(pathCommunicate)
+	if errCommunicate != nil && os.IsNotExist(err) {
+		file, _ = os.Create(path)
+	}
+	fileCommunicate.Close()
 	//打开数据库
 	db.Open(dbPath)
-	serverHttp.Run(port, path)
+	serverHttp.Run(port, htmlPath, path, pathCommunicate)
 
 }

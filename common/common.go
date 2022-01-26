@@ -98,16 +98,10 @@ type Info struct {
 	Pixel_loc        Pixel_loc        `json:"pixel_loc"`
 }
 
-//result
-//type Result struct {
-//	Msg string `json:"msg"`
-//}
-
 func Common2ConfigStruct_base(dst *configStruct.Base, src *Base) {
 	dst.Width, _ = strconv.Atoi(src.Width)
 	dst.Height, _ = strconv.Atoi(src.Height)
 }
-
 func Common2ConfigStruct_distance(dst *configStruct.Distance, src *Distance) {
 	dst.X_distance, _ = strconv.ParseFloat(src.X_distance, 64)
 	dst.Y_distance, _ = strconv.ParseFloat(src.Y_distance, 64)
@@ -175,7 +169,7 @@ func Common2ConfigStruct_pixel_loc(dst *configStruct.Pixel_loc, src *Pixel_loc) 
 	dst.Pixel_bottom_point_y, _ = strconv.ParseFloat(src.Pixel_bottom_point_y, 64)
 }
 
-func Common2ConfigStruct_all(dst *configStruct.Info, src *Info) {
+func Common2ConfigStruct_info(dst *configStruct.Info, src *Info) {
 	Common2ConfigStruct_base(&(dst.Base), &(src.Base))
 	Common2ConfigStruct_distance(&(dst.Distance), &(src.Distance))
 	Common2ConfigStruct_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
@@ -256,11 +250,134 @@ func ConfigStruct2Common_pixel_loc(dst *Pixel_loc, src *configStruct.Pixel_loc) 
 	dst.Pixel_bottom_point_y = strconv.FormatFloat(src.Pixel_bottom_point_y, 'f', -1, 64)
 }
 
-func ConfigStruct2Common_all(dst *Info, src *configStruct.Info) {
+func ConfigStruct2Common_info(dst *Info, src *configStruct.Info) {
 	ConfigStruct2Common_base(&(dst.Base), &(src.Base))
 	ConfigStruct2Common_distance(&(dst.Distance), &(src.Distance))
 	ConfigStruct2Common_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
 	ConfigStruct2Common_crossing_setting(&(dst.Crossing_setting), &(src.Crossing_setting))
 	ConfigStruct2Common_real_loc(&(dst.Real_loc), &(src.Real_loc))
 	ConfigStruct2Common_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
+}
+
+//camera
+type Camera struct {
+	Flag       string `json:"flag"`
+	Ip         string `json:"ip"`
+	Url        string `json:"url"`
+	Path       string `json:"path"`
+	Delay_time string `json:"delay_time"`
+}
+
+//cloud
+type Cloud struct {
+	Ip        string `json:"ip"`
+	Port      string `json:"port"`
+	Http_ip   string `json:"http_ip"`
+	Http_port string `json:"http_port"`
+}
+
+//radar
+type Radar struct {
+	Ip   string `json:"ip"`
+	Port string `json:"port"`
+}
+
+//annuciator
+type Annuciator struct {
+	Flag string `json:"flag"`
+	Ip   string `json:"ip"`
+	Port string `json:"port"`
+}
+
+//hardinfo
+type HardInfo struct {
+	MatrixNo  string `json:"MatrixNo"`
+	Hard_code string `json:"hard_code"`
+}
+
+//communicate
+type Communicate struct {
+	Camera     Camera     `json:"camera"`
+	Cloud      Cloud      `json:"cloud"`
+	Radar      Radar      `json:"radar"`
+	Annuciator Annuciator `json:"annuciator"`
+	HardInfo   HardInfo   `json:"hardinfo"`
+}
+
+func Common2ConfigStruct_camera(dst *configStruct.Camera, src *Camera) {
+	dst.Flag, _ = strconv.Atoi(src.Flag)
+	dst.Ip = src.Ip
+	dst.Url = src.Url
+	dst.Path = src.Path
+	dst.Delay_time, _ = strconv.Atoi(src.Delay_time)
+}
+
+func Common2ConfigStruct_cloud(dst *configStruct.Cloud, src *Cloud) {
+	dst.Ip = src.Ip
+	dst.Port, _ = strconv.Atoi(src.Port)
+	dst.Http_ip = src.Http_ip
+	dst.Http_port, _ = strconv.Atoi(src.Http_port)
+}
+
+func Common2ConfigStruct_radar(dst *configStruct.Radar, src *Radar) {
+	dst.Ip = src.Ip
+	dst.Port, _ = strconv.Atoi(src.Port)
+}
+
+func Common2ConfigStruct_annuciator(dst *configStruct.Annuciator, src *Annuciator) {
+	dst.Flag, _ = strconv.Atoi(src.Flag)
+	dst.Ip = src.Ip
+	dst.Port, _ = strconv.Atoi(src.Port)
+}
+
+func Common2ConfigStruct_hardinfo(dst *configStruct.HardInfo, src *HardInfo) {
+	dst.MatrixNo = src.MatrixNo
+	dst.Hard_code = src.Hard_code
+}
+
+func Common2ConfigStruct_communicate(dst *configStruct.Communicate, src *Communicate) {
+	Common2ConfigStruct_camera(&(dst.Camera), &(src.Camera))
+	Common2ConfigStruct_cloud(&(dst.Cloud), &(src.Cloud))
+	Common2ConfigStruct_radar(&(dst.Radar), &(src.Radar))
+	Common2ConfigStruct_annuciator(&(dst.Annuciator), &(src.Annuciator))
+	Common2ConfigStruct_hardinfo(&(dst.HardInfo), &(src.HardInfo))
+}
+
+func ConfigStruct2Common_camera(dst *Camera, src *configStruct.Camera) {
+	dst.Flag = strconv.Itoa(src.Flag)
+	dst.Ip = src.Ip
+	dst.Url = src.Url
+	dst.Path = src.Path
+	dst.Delay_time = strconv.Itoa(src.Delay_time)
+}
+
+func ConfigStruct2Common_cloud(dst *Cloud, src *configStruct.Cloud) {
+	dst.Ip = src.Ip
+	dst.Port = strconv.Itoa(src.Port)
+	dst.Http_ip = src.Http_ip
+	dst.Http_port = strconv.Itoa(src.Http_port)
+}
+
+func ConfigStruct2Common_radar(dst *Radar, src *configStruct.Radar) {
+	dst.Ip = src.Ip
+	dst.Port = strconv.Itoa(src.Port)
+}
+
+func ConfigStruct2Common_annuciator(dst *Annuciator, src *configStruct.Annuciator) {
+	dst.Flag = strconv.Itoa(src.Flag)
+	dst.Ip = src.Ip
+	dst.Port = strconv.Itoa(src.Port)
+}
+
+func ConfigStruct2Common_hardinfo(dst *HardInfo, src *configStruct.HardInfo) {
+	dst.MatrixNo = src.MatrixNo
+	dst.Hard_code = src.Hard_code
+}
+
+func ConfigStruct2Common_communicate(dst *Communicate, src *configStruct.Communicate) {
+	ConfigStruct2Common_camera(&(dst.Camera), &(src.Camera))
+	ConfigStruct2Common_cloud(&(dst.Cloud), &(src.Cloud))
+	ConfigStruct2Common_radar(&(dst.Radar), &(src.Radar))
+	ConfigStruct2Common_annuciator(&(dst.Annuciator), &(src.Annuciator))
+	ConfigStruct2Common_hardinfo(&(dst.HardInfo), &(src.HardInfo))
 }
