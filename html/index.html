@@ -179,75 +179,114 @@
         </div>
     </form>
     <br>
-<!--    &lt;!&ndash;    real_loc&ndash;&gt;-->
-<!--    <form name="form_real_loc">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_left_point_x</label>-->
-<!--        <input type="number" name="real_left_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_left_point_y</label>-->
-<!--        <input type="number" name="real_left_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_right_point_x</label>-->
-<!--        <input type="number" name="real_right_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_right_point_y</label>-->
-<!--        <input type="number" name="real_right_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_top_point_x</label>-->
-<!--        <input type="number" name="real_top_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_top_point_y</label>-->
-<!--        <input type="number" name="real_top_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_bottom_point_x</label>-->
-<!--        <input type="number" name="real_bottom_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">real_bottom_point_y</label>-->
-<!--        <input type="number" name="real_bottom_point_y" step="any" value="0">-->
-<!--        <div class="label_right">-->
-<!--            <button type="button" id="setConfig_real_loc">设置</button>-->
-<!--            <button type="button" id="getConfig_real_loc">获取</button>-->
-<!--        </div>-->
-<!--    </form>-->
-<!--    <br>-->
-<!--    &lt;!&ndash;    pixel_loc&ndash;&gt;-->
-<!--    <form name="form_pixel_loc">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_left_point_x</label>-->
-<!--        <input type="number" name="pixel_left_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_left_point_y</label>-->
-<!--        <input type="number" name="pixel_left_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_right_point_x</label>-->
-<!--        <input type="number" name="pixel_right_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_right_point_y</label>-->
-<!--        <input type="number" name="pixel_right_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_top_point_x</label>-->
-<!--        <input type="number" name="pixel_top_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_top_point_y</label>-->
-<!--        <input type="number" name="pixel_top_point_y" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_bottom_point_x</label>-->
-<!--        <input type="number" name="pixel_bottom_point_x" step="any" value="0">-->
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">pixel_bottom_point_y</label>-->
-<!--        <input type="number" name="pixel_bottom_point_y" step="any" value="0">-->
-<!--        <div class="label_right">-->
-<!--            <button type="button" id="setConfig_pixel_loc">设置</button>-->
-<!--            <button type="button" id="getConfig_pixel_loc">获取</button>-->
-<!--        </div>-->
-<!--    </form>-->
+    <!--    &lt;!&ndash;    real_loc&ndash;&gt;-->
+    <!--    <form name="form_real_loc">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_left_point_x</label>-->
+    <!--        <input type="number" name="real_left_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_left_point_y</label>-->
+    <!--        <input type="number" name="real_left_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_right_point_x</label>-->
+    <!--        <input type="number" name="real_right_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_right_point_y</label>-->
+    <!--        <input type="number" name="real_right_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_top_point_x</label>-->
+    <!--        <input type="number" name="real_top_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_top_point_y</label>-->
+    <!--        <input type="number" name="real_top_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_bottom_point_x</label>-->
+    <!--        <input type="number" name="real_bottom_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">real_bottom_point_y</label>-->
+    <!--        <input type="number" name="real_bottom_point_y" step="any" value="0">-->
+    <!--        <div class="label_right">-->
+    <!--            <button type="button" id="setConfig_real_loc">设置</button>-->
+    <!--            <button type="button" id="getConfig_real_loc">获取</button>-->
+    <!--        </div>-->
+    <!--    </form>-->
+    <!--    <br>-->
+    <!--    &lt;!&ndash;    pixel_loc&ndash;&gt;-->
+    <!--    <form name="form_pixel_loc">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_left_point_x</label>-->
+    <!--        <input type="number" name="pixel_left_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_left_point_y</label>-->
+    <!--        <input type="number" name="pixel_left_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_right_point_x</label>-->
+    <!--        <input type="number" name="pixel_right_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_right_point_y</label>-->
+    <!--        <input type="number" name="pixel_right_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_top_point_x</label>-->
+    <!--        <input type="number" name="pixel_top_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_top_point_y</label>-->
+    <!--        <input type="number" name="pixel_top_point_y" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_bottom_point_x</label>-->
+    <!--        <input type="number" name="pixel_bottom_point_x" step="any" value="0">-->
+    <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+    <!--        <label class="label">pixel_bottom_point_y</label>-->
+    <!--        <input type="number" name="pixel_bottom_point_y" step="any" value="0">-->
+    <!--        <div class="label_right">-->
+    <!--            <button type="button" id="setConfig_pixel_loc">设置</button>-->
+    <!--            <button type="button" id="getConfig_pixel_loc">获取</button>-->
+    <!--        </div>-->
+    <!--    </form>-->
+</div>
+
+
+<div style="width: 810px;">
+    <!--    communicate-->
+    <div class="label_right">
+        <button type="button" id="setConfig_communicate">设置全部</button>
+        <button type="button" id="getConfig_communicate">获取全部</button>
+    </div>
+    <br>
+    <!--    camera-->
+    <form name="form_camera">
+        <!--        int-->
+        <label class="label">摄像机接入方式</label>
+        <input type="number" name="flag" max="1" min="0" step="1" value="0"/>
+        <!--        string-->
+        <label class="label">网络摄像机ip</label>
+        <input type="text" name="ip"/>
+        <!--        string-->
+        <label class="label">网络摄像机取流url</label>
+        <input type="url" name="url"/>
+        <!--        string-->
+        <label class="label">usb摄像机路径</label>
+        <input type="text" name="path"/>
+        <!--        string-->
+        <label class="label">相机延迟时间</label>
+        <input type="number" name="delay_time"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_camera">设置</button>
+            <button type="button" id="getConfig_camera">获取</button>
+        </div>
+    </form>
+    <br>
 </div>
 
 
 <script>
+    function checkIp(str) {
+        const re = /^(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|[0-9])\.((1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)\.){2}(1\d{2}|2[0-4]\d|25[0-5]|[1-9]\d|\d)$/
+
+        return re.test(str)
+    }
+
     $(function () {
-        //all
+        //info
         $("#setConfig_info").click(function () {
             var queryBody = {
                 base: {
@@ -721,6 +760,54 @@
         //         }
         //     })
         // });
+        // camera
+        $("#setConfig_camera").click(function () {
+
+            if (!checkIp(form_camera.ip.value)) {
+                alert("not ip")
+                return
+            }
+
+            var queryBody = {
+                flag: form_camera.flag.value,
+                ip: form_camera.ip.value,
+                url: form_camera.url.value,
+                path: form_camera.path.value,
+                delay_time: form_camera.delay_time.value,
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_camera',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_camera").click(function () {
+            $.ajax({
+                url: 'getConfig_camera',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    form_camera.flag.value = res.flag
+                    form_camera.ip.value = res.ip
+                    form_camera.url.value = res.url
+                    form_camera.path = res.path
+                    form_camera.delay_time = res.delay_time
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
     })
 </script>
 
