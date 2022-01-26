@@ -94,8 +94,8 @@ type Info struct {
 	Distance         Distance         `json:"distance"`
 	Vibrate_setting  Vibrate_setting  `json:"vibrate_setting"`
 	Crossing_setting Crossing_setting `json:"crossing_setting"`
-	Real_loc         Real_loc         `json:"real_loc"`
-	Pixel_loc        Pixel_loc        `json:"pixel_loc"`
+	//Real_loc         Real_loc         `json:"real_loc"`
+	//Pixel_loc        Pixel_loc        `json:"pixel_loc"`
 }
 
 func Common2ConfigStruct_base(dst *configStruct.Base, src *Base) {
@@ -174,8 +174,8 @@ func Common2ConfigStruct_info(dst *configStruct.Info, src *Info) {
 	Common2ConfigStruct_distance(&(dst.Distance), &(src.Distance))
 	Common2ConfigStruct_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
 	Common2ConfigStruct_crossing_setting(&(dst.Crossing_setting), &(src.Crossing_setting))
-	Common2ConfigStruct_real_loc(&(dst.Real_loc), &(src.Real_loc))
-	Common2ConfigStruct_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
+	//Common2ConfigStruct_real_loc(&(dst.Real_loc), &(src.Real_loc))
+	//Common2ConfigStruct_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
 }
 
 func ConfigStruct2Common_base(dst *Base, src *configStruct.Base) {
@@ -255,8 +255,8 @@ func ConfigStruct2Common_info(dst *Info, src *configStruct.Info) {
 	ConfigStruct2Common_distance(&(dst.Distance), &(src.Distance))
 	ConfigStruct2Common_vibrate_setting(&(dst.Vibrate_setting), &(src.Vibrate_setting))
 	ConfigStruct2Common_crossing_setting(&(dst.Crossing_setting), &(src.Crossing_setting))
-	ConfigStruct2Common_real_loc(&(dst.Real_loc), &(src.Real_loc))
-	ConfigStruct2Common_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
+	//ConfigStruct2Common_real_loc(&(dst.Real_loc), &(src.Real_loc))
+	//ConfigStruct2Common_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
 }
 
 //camera

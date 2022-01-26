@@ -90,8 +90,8 @@ type Info struct {
 	Distance         Distance         `ini:"distance"`
 	Vibrate_setting  Vibrate_setting  `ini:"vibrate_setting"`
 	Crossing_setting Crossing_setting `ini:"crossing_setting"`
-	Real_loc         Real_loc         `ini:"real_loc"`
-	Pixel_loc        Pixel_loc        `ini:"pixel_loc"`
+	//Real_loc         Real_loc         `ini:"real_loc"`
+	//Pixel_loc        Pixel_loc        `ini:"pixel_loc"`
 }
 
 /************communicate****************/

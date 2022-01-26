@@ -102,7 +102,7 @@ func getConfig_pixel_loc(result *configStruct.Pixel_loc) error {
 	return nil
 }
 
-func getConfig_all(result *configStruct.Info) error {
+func getConfig_info(result *configStruct.Info) error {
 	err := getConfig_base(&(result.Base))
 	if err != nil {
 		return err
@@ -119,14 +119,14 @@ func getConfig_all(result *configStruct.Info) error {
 	if err != nil {
 		return err
 	}
-	err = getConfig_real_loc(&(result.Real_loc))
-	if err != nil {
-		return err
-	}
-	err = getConfig_pixel_loc(&(result.Pixel_loc))
-	if err != nil {
-		return err
-	}
+	//err = getConfig_real_loc(&(result.Real_loc))
+	//if err != nil {
+	//	return err
+	//}
+	//err = getConfig_pixel_loc(&(result.Pixel_loc))
+	//if err != nil {
+	//	return err
+	//}
 
 	return nil
 }
@@ -135,7 +135,7 @@ func GetConfig(tableName string, result interface{}) error {
 	var err error = nil
 	switch tableName {
 	case "": //all
-		err = getConfig_all(result.(*configStruct.Info))
+		err = getConfig_info(result.(*configStruct.Info))
 	case "base": //base
 		err = getConfig_base(result.(*configStruct.Base))
 	case "distance": //distance
@@ -319,7 +319,7 @@ func setConfig_pixel_loc(result *configStruct.Pixel_loc) error {
 	return err
 }
 
-func setConfig_all(result *configStruct.Info) error {
+func setConfig_info(result *configStruct.Info) error {
 	err := setConfig_base(&(result.Base))
 	if err != nil {
 		return err
@@ -336,14 +336,14 @@ func setConfig_all(result *configStruct.Info) error {
 	if err != nil {
 		return err
 	}
-	err = setConfig_real_loc(&(result.Real_loc))
-	if err != nil {
-		return err
-	}
-	err = setConfig_pixel_loc(&(result.Pixel_loc))
-	if err != nil {
-		return err
-	}
+	//err = setConfig_real_loc(&(result.Real_loc))
+	//if err != nil {
+	//	return err
+	//}
+	//err = setConfig_pixel_loc(&(result.Pixel_loc))
+	//if err != nil {
+	//	return err
+	//}
 
 	return nil
 }
@@ -352,7 +352,7 @@ func SetConfig(tableName string, result interface{}) error {
 	var err error = nil
 	switch tableName {
 	case "": //all
-		err = setConfig_all(result.(*configStruct.Info))
+		err = setConfig_info(result.(*configStruct.Info))
 	case "base": //base
 		err = setConfig_base(result.(*configStruct.Base))
 	case "distance": //distance
