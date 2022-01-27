@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/DataDog/gopsutil/process"
 	"github.com/go-ini/ini"
+	"github.com/wxnacy/wgo/arrays"
 	"gohttpconfig/common"
 	"gohttpconfig/configStruct"
 	"gohttpconfig/db"
 	"io/ioutil"
 	"net/http"
+	"os/exec"
 	"reflect"
 	"runtime"
 	"strconv"
@@ -80,18 +83,18 @@ func Run(port int, htmlPath string, configPath string, configPathCommuniate stri
 	//distanceN1
 	var err error
 	ConfigPath = configPath
-	Config, err = ini.Load(configPath)
+	Config, err = ini.Load(ConfigPath)
 	if err != nil {
-		fmt.Printf("cant not load ini file:%s\n", configPath)
+		fmt.Printf("cant not load ini file:%s\n", ConfigPath)
 		IsConfigExist = false
 	} else {
 		IsConfigExist = true
 	}
 	//communicate
 	ConfigPathCommuniate = configPathCommuniate
-	ConfigCommunicate, err = ini.Load(configPathCommuniate)
+	ConfigCommunicate, err = ini.Load(ConfigPathCommuniate)
 	if err != nil {
-		fmt.Printf("cant not load ini file:%s\n", configPath)
+		fmt.Printf("cant not load ini file:%s\n", ConfigPathCommuniate)
 		isConfigExistCommunicate = false
 	} else {
 		isConfigExistCommunicate = true
@@ -131,7 +134,8 @@ func Run(port int, htmlPath string, configPath string, configPathCommuniate stri
 	http.HandleFunc("/getConfig_annuciator", getConfig_annuciator)
 	http.HandleFunc("/getConfig_hardinfo", getConfig_hardinfo)
 	http.HandleFunc("/getConfig_communicate", getConfig_communicate)
-
+	/**reset proc**/
+	http.HandleFunc("/resetProc", resetProc)
 	addr := ":" + strconv.Itoa(port)
 	err_web := http.ListenAndServe(addr, nil)
 	if err_web != nil {
@@ -198,6 +202,13 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	fmt.Printf("body:%s\n", rBody)
 
 	//2.配置文件不存在相应失败 退出
+	Config, err = ini.Load(ConfigPath)
+	if err != nil {
+		fmt.Printf("cant not load ini file:%s\n", ConfigPath)
+		IsConfigExist = false
+	} else {
+		IsConfigExist = true
+	}
 	if !IsConfigExist {
 		fmt.Printf("config file not exist\n")
 		w.Write([]byte("失败：配置文件不存在"))
@@ -275,6 +286,13 @@ func setConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	fmt.Printf("body:%s\n", rBody)
 
 	//2.配置文件不存在相应失败 退出
+	Config, err = ini.Load(ConfigPath)
+	if err != nil {
+		fmt.Printf("cant not load ini file:%s\n", ConfigPath)
+		IsConfigExist = false
+	} else {
+		IsConfigExist = true
+	}
 	if !IsConfigExist {
 		fmt.Printf("config file not exist\n")
 		w.WriteHeader(http.StatusGone)
@@ -793,6 +811,14 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 	fmt.Printf("body:%s\n", rBody)
 
 	//2.配置文件不存在相应失败 退出
+	ConfigCommunicate, err = ini.Load(ConfigPathCommuniate)
+	if err != nil {
+		fmt.Printf("cant not load ini file:%s\n", ConfigPathCommuniate)
+		isConfigExistCommunicate = false
+	} else {
+		isConfigExistCommunicate = true
+	}
+
 	if !isConfigExistCommunicate {
 		fmt.Printf("config file not exist\n")
 		w.Write([]byte("失败：配置文件不存在"))
@@ -867,6 +893,14 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 	fmt.Printf("body:%s\n", rBody)
 
 	//2.配置文件不存在相应失败 退出
+	ConfigCommunicate, err = ini.Load(ConfigPathCommuniate)
+	if err != nil {
+		fmt.Printf("cant not load ini file:%s\n", ConfigPathCommuniate)
+		isConfigExistCommunicate = false
+	} else {
+		isConfigExistCommunicate = true
+	}
+
 	if !isConfigExistCommunicate {
 		fmt.Printf("config file not exist\n")
 		w.WriteHeader(http.StatusGone)
@@ -926,7 +960,7 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		return errSection
 	}
 
-	errSave := ConfigCommunicate.SaveTo(ConfigPath)
+	errSave := ConfigCommunicate.SaveTo(ConfigPathCommuniate)
 	if errSave != nil {
 		fmt.Printf("ini config save fail:%v\n", errSave.Error())
 		w.WriteHeader(http.StatusGone)
@@ -1178,4 +1212,78 @@ func setConfig_camera(w http.ResponseWriter, r *http.Request) {
 
 	//暂时强制配置方式为ini
 	setConfigIniCommunicate(w, r, "camera")
+}
+
+/****************reset proc*********************/
+
+func processId() (pid []int32) {
+	pids, _ := process.Pids()
+	for _, p := range pids {
+		pid = append(pid, p)
+	}
+	return pid
+}
+
+func processName() (pname []string) {
+	pids, _ := process.Pids()
+	for _, p := range pids {
+		pn, _ := process.NewProcess(p)
+		pName, _ := pn.Name()
+		pname = append(pname, pName)
+	}
+	return pname
+}
+
+func resetProc(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.将请求主体转换为json结构体
+	var req common.ResetProc
+	//2.1 读取
+	err = json.Unmarshal(rBody, &req)
+	if err != nil {
+		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return
+	}
+	//2.2获取程序的名称
+	procName := req.Proc
+	//2.3查找系统进程的名称，看是否存在此进程
+	procNames := processName()
+	index := arrays.ContainsString(procNames, procName)
+	if index == -1 {
+		fmt.Printf("proc:%s not run\n", procName)
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：程序未运行"))
+		return
+	}
+
+	//2.3杀死程序进程
+	shell := "killall -9 " + procName
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：重启失败"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：重启程序"))
+
 }

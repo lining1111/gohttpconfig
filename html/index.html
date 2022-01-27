@@ -244,6 +244,7 @@
     <!--    </form>-->
 </div>
 
+<hr align="left" width="810">
 
 <div style="width: 810px;">
     <!--    communicate-->
@@ -259,22 +260,89 @@
         <input type="number" name="flag" max="1" min="0" step="1" value="0"/>
         <!--        string-->
         <label class="label">网络摄像机ip</label>
-        <input type="text" name="ip"/>
+        <input type="text" name="ip" value="192.168.0.1"/>
         <!--        string-->
         <label class="label">网络摄像机取流url</label>
-        <input type="url" name="url"/>
+        <input type="url" name="url" value="rtsp://admin:aipark@%s/0"/>
         <!--        string-->
         <label class="label">usb摄像机路径</label>
-        <input type="text" name="path"/>
+        <input type="text" name="path" value="/dev/video_main_cam"/>
         <!--        string-->
         <label class="label">相机延迟时间</label>
-        <input type="number" name="delay_time"/>
+        <input type="number" name="delay_time" value="130"/>
         <div class="label_right">
             <button type="button" id="setConfig_camera">设置</button>
             <button type="button" id="getConfig_camera">获取</button>
         </div>
     </form>
     <br>
+    <!--    cloud-->
+    <form name="form_cloud">
+        <!--        string-->
+        <label class="label">tcp通信ip</label>
+        <input type="text" name="ip" value="13.145.182.119"/>
+        <!--        int-->
+        <label class="label">tcp通信端口号</label>
+        <input type="number" name="port" max="65535" min="0" step="1" value="9001"/>
+        <!--        string-->
+        <label class="label">http通信ip</label>
+        <input type="text" name="http_ip" value="13.145.182.119"/>
+        <!--        string-->
+        <label class="label">http通信端口号</label>
+        <input type="number" name="http_port" max="65535" min="0" step="1" value="8090"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_cloud">设置</button>
+            <button type="button" id="getConfig_cloud">获取</button>
+        </div>
+    </form>
+    <br>    <!--    radar-->
+    <form name="form_radar">
+        <!--        int-->
+        <label class="label">雷达通信ip</label>
+        <input type="text" name="ip" value="192.168.61.21"/>
+        <!--        string-->
+        <label class="label">雷达通信端口号</label>
+        <input type="number" name="port" max="65535" min="0" step="1" value="5000"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_radar">设置</button>
+            <button type="button" id="getConfig_radar">获取</button>
+        </div>
+    </form>
+    <br>
+    <!--    annuciator-->
+    <form name="form_annuciator">
+        <!--        int-->
+        <label class="label">信号机接收</label>
+        <input type="number" name="flag" max="1" min="0" step="1" value="0"/>
+        <!--        string-->
+        <label class="label">信号机通信ip</label>
+        <input type="text" name="ip" value="192.168.0.1"/>
+        <!--        string-->
+        <label class="label">信号机通信端口号</label>
+        <input type="number" name="port" max="65535" min="0" step="1" value="1031"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_annuciator">设置</button>
+            <button type="button" id="getConfig_annuciator">获取</button>
+        </div>
+    </form>
+    <br>
+    <!--    hardinfo-->
+    <form name="form_hardinfo">
+        <!--        string-->
+        <label class="label">矩阵号</label>
+        <input type="text" name="MatrixNo" value="1"/>
+        <!--        string-->
+        <label class="label">硬件编码</label>
+        <input type="text" name="hard_code" value="1"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_hardinfo">设置</button>
+            <button type="button" id="getConfig_hardinfo">获取</button>
+        </div>
+    </form>
+    <br>
+    <div CLASS="label_right">
+        <button type="button" id="reset_radar_mw">重启应用</button>
+    </div>
 </div>
 
 
@@ -760,12 +828,118 @@
         //         }
         //     })
         // });
+        //communicate
+        $("#setConfig_communicate").click(function () {
+
+            if (!checkIp(form_camera.ip.value)) {
+                alert("camera ip 格式不对")
+                return;
+            }
+
+            if (!checkIp(form_cloud.ip.value)) {
+                alert("cloud ip 格式不对")
+                return;
+            }
+
+            if (!checkIp(form_cloud.http_ip.value)) {
+                alert("cloud http_ip 格式不对")
+                return;
+            }
+
+            if (!checkIp(form_radar.ip.value)) {
+                alert("radar ip 格式不对")
+                return;
+            }
+
+            if (!checkIp(form_annuciator.ip.value)) {
+                alert("annuciator ip 格式不对")
+                return;
+            }
+
+            var queryBody = {
+                camera: {
+                    flag: form_camera.flag.value,
+                    ip: form_camera.ip.value,
+                    url: form_camera.url.value,
+                    path: form_camera.path.value,
+                    delay_time: form_camera.delay_time.value,
+                },
+                cloud: {
+                    ip: form_cloud.ip.value,
+                    port: form_cloud.port.value,
+                    http_ip: form_cloud.http_ip.value,
+                    http_port: form_cloud.http_port.value,
+                },
+                radar: {
+                    ip: form_radar.ip.value,
+                    port: form_radar.port.value,
+                },
+                annuciator: {
+                    flag: form_annuciator.flag.value,
+                    ip: form_annuciator.ip.value,
+                    port: form_annuciator.port.value,
+                },
+                hardinfo: {
+                    MatrixNo: form_hardinfo.MatrixNo.value,
+                    hard_code: form_hardinfo.hard_code.value,
+                },
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_communicate',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_communicate").click(function () {
+            $.ajax({
+                url: 'getConfig_communicate',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    //camera
+                    form_camera.flag.value = res.camera.flag
+                    form_camera.ip.value = res.camera.ip
+                    form_camera.url.value = res.camera.url
+                    form_camera.path.value = res.camera.path
+                    form_camera.delay_time.value = res.camera.delay_time
+                    //cloud
+                    form_cloud.ip.value = res.cloud.ip
+                    form_cloud.port.value = res.cloud.port
+                    form_cloud.http_ip.value = res.cloud.http_ip
+                    form_cloud.http_port.value = res.cloud.http_port
+
+                    //radar
+                    form_radar.ip.value = res.radar.ip
+                    form_radar.port.value = res.radar.port
+                    //annuciator
+                    form_annuciator.flag.value = res.annuciator.flag
+                    form_annuciator.ip.value = res.annuciator.ip
+                    form_annuciator.port.value = res.annuciator.port
+                    //hardinfo
+                    form_hardinfo.MatrixNo.value = res.hardinfo.MatrixNo
+                    form_hardinfo.hard_code.value = res.hardinfo.hard_code
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
         // camera
         $("#setConfig_camera").click(function () {
 
             if (!checkIp(form_camera.ip.value)) {
-                alert("not ip")
-                return
+                alert("camera ip 格式不对")
+                return;
             }
 
             var queryBody = {
@@ -802,6 +976,199 @@
                     form_camera.url.value = res.url
                     form_camera.path = res.path
                     form_camera.delay_time = res.delay_time
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        // cloud
+        $("#setConfig_cloud").click(function () {
+
+            if (!checkIp(form_cloud.ip.value)) {
+                alert("cloud ip 格式不对")
+                return;
+            }
+            if (!checkIp(form_cloud.http_ip.value)) {
+                alert("cloud http_ip 格式不对")
+                return;
+            }
+
+            var queryBody = {
+                ip: form_cloud.ip.value,
+                port: form_cloud.port.value,
+                http_ip: form_cloud.http_ip.value,
+                http_port: form_cloud.http_port.value,
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_cloud',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_cloud").click(function () {
+            $.ajax({
+                url: 'getConfig_cloud',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    form_cloud.ip.value = res.ip
+                    form_cloud.port.value = res.port
+                    form_cloud.http_ip.value = res.http_ip
+                    form_cloud.http_port.value = res.http_port
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        // radar
+        $("#setConfig_radar").click(function () {
+
+            if (!checkIp(form_radar.ip.value)) {
+                alert("radar ip 格式不对")
+                return;
+            }
+
+            var queryBody = {
+                ip: form_radar.ip.value,
+                port: form_radar.port.value,
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_radar',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_radar").click(function () {
+            $.ajax({
+                url: 'getConfig_radar',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    form_radar.ip.value = res.ip
+                    form_radar.port.value = res.port
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        // annuciator
+        $("#setConfig_annuciator").click(function () {
+
+            if (!checkIp(form_annuciator.ip.value)) {
+                alert("annuciator ip 格式不对")
+                return;
+            }
+
+            var queryBody = {
+                flag: form_annuciator.flag.value,
+                ip: form_annuciator.ip.value,
+                port: form_annuciator.port.value,
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_annuciator',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_annuciator").click(function () {
+            $.ajax({
+                url: 'getConfig_annuciator',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    form_annuciator.flag.value = res.flag
+                    form_annuciator.ip.value = res.ip
+                    form_annuciator.port.value = res.port
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        // hardinfo
+        $("#setConfig_hardinfo").click(function () {
+
+            var queryBody = {
+                MatrixNo: form_hardinfo.MatrixNo.value,
+                hard_code: form_hardinfo.hard_code.value,
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'setConfig_hardinfo',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#getConfig_hardinfo").click(function () {
+            $.ajax({
+                url: 'getConfig_hardinfo',
+                contentType: 'application/json',
+                dataType: 'json',
+                type: 'get',
+                success(res) {
+                    form_hardinfo.MatrixNo.value = res.MatrixNo
+                    form_hardinfo.hard_code.value = res.hard_code
+                },
+                error(res) {
+                    alert(res.responseText)
+                }
+            })
+        });
+        $("#reset_radar_mw").click(function () {
+            var queryBody = {
+                reset: '1',
+                proc: 'radar_mw',
+            }
+
+            console.log(queryBody)
+            $.ajax({
+                url: 'resetProc',
+                contentType: 'application/json',
+                type: 'post',
+                data: JSON.stringify(queryBody),
+                success(res) {
+                    alert(res)
                 },
                 error(res) {
                     alert(res.responseText)

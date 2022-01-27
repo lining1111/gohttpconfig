@@ -5,6 +5,7 @@ import (
 	"strconv"
 )
 
+/********************distanceN1****************************/
 //base
 type Base struct {
 	Width  string `json:"width"`
@@ -259,6 +260,7 @@ func ConfigStruct2Common_info(dst *Info, src *configStruct.Info) {
 	//ConfigStruct2Common_pixel_loc(&(dst.Pixel_loc), &(src.Pixel_loc))
 }
 
+/*******************communicate**************************/
 //camera
 type Camera struct {
 	Flag       string `json:"flag"`
@@ -380,4 +382,10 @@ func ConfigStruct2Common_communicate(dst *Communicate, src *configStruct.Communi
 	ConfigStruct2Common_radar(&(dst.Radar), &(src.Radar))
 	ConfigStruct2Common_annuciator(&(dst.Annuciator), &(src.Annuciator))
 	ConfigStruct2Common_hardinfo(&(dst.HardInfo), &(src.HardInfo))
+}
+
+/***************reset proc*********************/
+type ResetProc struct {
+	Reset string `json:"reset"`
+	Proc  string `json:"proc"`
 }

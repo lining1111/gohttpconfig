@@ -128,7 +128,7 @@ type Annuciator struct {
 
 //hardinfo
 type HardInfo struct {
-	MatrixNo  string `ini:"matrix_no" db:"matrix_no"`
+	MatrixNo  string `ini:"MatrixNo" db:"MatrixNo"`
 	Hard_code string `ini:"hard_code" db:"hard_code"`
 }
 
