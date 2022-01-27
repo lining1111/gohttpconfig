@@ -138,5 +138,5 @@ type Communicate struct {
 	Cloud      Cloud      `ini:"cloud"`
 	Radar      Radar      `ini:"radar"`
 	Annuciator Annuciator `ini:"annuciator"`
-	HardInfo   HardInfo   `ini:"hard_info"`
+	HardInfo   HardInfo   `ini:"hardinfo"`
 }
