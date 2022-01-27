@@ -57,9 +57,9 @@
         <!--        double float64-->
         <label class="label">altitude</label>
         <input type="number" name="altitude" step="any" value="0">
-<!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-<!--        <label class="label">y_value</label>-->
-<!--        <input type="number" name="y_value" step="any" value="0">-->
+        <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+        <!--        <label class="label">y_value</label>-->
+        <!--        <input type="number" name="y_value" step="any" value="0">-->
         <!--        double float64-->
         <label class="label">coefficient</label>
         <input type="number" name="coefficient" step="any" value="0">
@@ -353,173 +353,181 @@
         return re.test(str)
     }
 
-    $(function () {
-        //info
-        $("#setConfig_info").click(function () {
-            var queryBody = {
-                base: {
-                    width: form_base.width.value,
-                    height: form_base.height.value,
-                },
-                distance: {
-                    x_distance: form_distance.x_distance.value,
-                    y_distance: form_distance.y_distance.value,
-                    altitude: form_distance.altitude.value,
-                    // y_value: form_distance.y_value.value,
-                    coefficient: form_distance.coefficient.value,
-                    matrix00: form_distance.matrix00.value,
-                    matrix01: form_distance.matrix01.value,
-                    matrix02: form_distance.matrix02.value,
-                    matrix10: form_distance.matrix10.value,
-                    matrix11: form_distance.matrix11.value,
-                    matrix12: form_distance.matrix12.value,
-                    matrix20: form_distance.matrix20.value,
-                    matrix21: form_distance.matrix21.value,
-                    matrix22: form_distance.matrix22.value,
-                    radar_x: form_distance.radar_x.value,
-                    radar_y: form_distance.radar_y.value,
-                    radar_theta: form_distance.radar_theta.value,
-                    MPPW: form_distance.MPPW.value,
-                    MPPH: form_distance.MPPH.value,
-                },
-                vibrate_setting: {
-                    x_vibrate_max: form_vibrate_setting.x_vibrate_max.value,
-                    y_vibrate_max: form_vibrate_setting.y_vibrate_max.value,
-                    matchBoxX: form_vibrate_setting.matchBoxX.value,
-                    matchBoxY: form_vibrate_setting.matchBoxY.value,
-                    matchBoxWidth: form_vibrate_setting.matchBoxWidth.value,
-                    matchBoxHeight: form_vibrate_setting.matchBoxHeight.value,
-                },
-                crossing_setting: {
-                    orientations: form_crossing_setting.orientations.value,
-                    deltax_south: form_crossing_setting.deltax_south.value,
-                    deltay_south: form_crossing_setting.deltay_south.value,
-                    deltax_north: form_crossing_setting.deltax_north.value,
-                    deltay_north: form_crossing_setting.deltay_north.value,
-                    deltax_west: form_crossing_setting.deltax_west.value,
-                    deltay_west: form_crossing_setting.deltay_west.value,
-                    deltax_east: form_crossing_setting.deltax_east.value,
-                    deltay_east: form_crossing_setting.deltay_east.value,
-                    flag_south: form_crossing_setting.flag_south.value,
-                    flag_north: form_crossing_setting.flag_north.value,
-                    flag_west: form_crossing_setting.flag_west.value,
-                    flag_east: form_crossing_setting.flag_east.value,
-                    widthX: form_crossing_setting.widthX.value,
-                    widthY: form_crossing_setting.widthY.value,
-                },
-                // real_loc: {
-                //     real_left_point_x: form_real_loc.real_left_point_x.value,
-                //     real_left_point_y: form_real_loc.real_left_point_y.value,
-                //     real_right_point_x: form_real_loc.real_right_point_x.value,
-                //     real_right_point_y: form_real_loc.real_right_point_y.value,
-                //     real_top_point_x: form_real_loc.real_top_point_x.value,
-                //     real_top_point_y: form_real_loc.real_top_point_y.value,
-                //     real_bottom_point_x: form_real_loc.real_bottom_point_x.value,
-                //     real_bottom_point_y: form_real_loc.real_bottom_point_y.value,
-                // },
-                // pixel_loc: {
-                //     pixel_left_point_x: form_pixel_loc.pixel_left_point_x.value,
-                //     pixel_left_point_y: form_pixel_loc.pixel_left_point_y.value,
-                //     pixel_right_point_x: form_pixel_loc.pixel_right_point_x.value,
-                //     pixel_right_point_y: form_pixel_loc.pixel_right_point_y.value,
-                //     pixel_top_point_x: form_pixel_loc.pixel_top_point_x.value,
-                //     pixel_top_point_y: form_pixel_loc.pixel_top_point_y.value,
-                //     pixel_bottom_point_x: form_pixel_loc.pixel_bottom_point_x.value,
-                //     pixel_bottom_point_y: form_pixel_loc.pixel_bottom_point_y.value,
-                // }
-            }
+    function setInfo() {
+        var queryBody = {
+            base: {
+                width: form_base.width.value,
+                height: form_base.height.value,
+            },
+            distance: {
+                x_distance: form_distance.x_distance.value,
+                y_distance: form_distance.y_distance.value,
+                altitude: form_distance.altitude.value,
+                // y_value: form_distance.y_value.value,
+                coefficient: form_distance.coefficient.value,
+                matrix00: form_distance.matrix00.value,
+                matrix01: form_distance.matrix01.value,
+                matrix02: form_distance.matrix02.value,
+                matrix10: form_distance.matrix10.value,
+                matrix11: form_distance.matrix11.value,
+                matrix12: form_distance.matrix12.value,
+                matrix20: form_distance.matrix20.value,
+                matrix21: form_distance.matrix21.value,
+                matrix22: form_distance.matrix22.value,
+                radar_x: form_distance.radar_x.value,
+                radar_y: form_distance.radar_y.value,
+                radar_theta: form_distance.radar_theta.value,
+                MPPW: form_distance.MPPW.value,
+                MPPH: form_distance.MPPH.value,
+            },
+            vibrate_setting: {
+                x_vibrate_max: form_vibrate_setting.x_vibrate_max.value,
+                y_vibrate_max: form_vibrate_setting.y_vibrate_max.value,
+                matchBoxX: form_vibrate_setting.matchBoxX.value,
+                matchBoxY: form_vibrate_setting.matchBoxY.value,
+                matchBoxWidth: form_vibrate_setting.matchBoxWidth.value,
+                matchBoxHeight: form_vibrate_setting.matchBoxHeight.value,
+            },
+            crossing_setting: {
+                orientations: form_crossing_setting.orientations.value,
+                deltax_south: form_crossing_setting.deltax_south.value,
+                deltay_south: form_crossing_setting.deltay_south.value,
+                deltax_north: form_crossing_setting.deltax_north.value,
+                deltay_north: form_crossing_setting.deltay_north.value,
+                deltax_west: form_crossing_setting.deltax_west.value,
+                deltay_west: form_crossing_setting.deltay_west.value,
+                deltax_east: form_crossing_setting.deltax_east.value,
+                deltay_east: form_crossing_setting.deltay_east.value,
+                flag_south: form_crossing_setting.flag_south.value,
+                flag_north: form_crossing_setting.flag_north.value,
+                flag_west: form_crossing_setting.flag_west.value,
+                flag_east: form_crossing_setting.flag_east.value,
+                widthX: form_crossing_setting.widthX.value,
+                widthY: form_crossing_setting.widthY.value,
+            },
+            // real_loc: {
+            //     real_left_point_x: form_real_loc.real_left_point_x.value,
+            //     real_left_point_y: form_real_loc.real_left_point_y.value,
+            //     real_right_point_x: form_real_loc.real_right_point_x.value,
+            //     real_right_point_y: form_real_loc.real_right_point_y.value,
+            //     real_top_point_x: form_real_loc.real_top_point_x.value,
+            //     real_top_point_y: form_real_loc.real_top_point_y.value,
+            //     real_bottom_point_x: form_real_loc.real_bottom_point_x.value,
+            //     real_bottom_point_y: form_real_loc.real_bottom_point_y.value,
+            // },
+            // pixel_loc: {
+            //     pixel_left_point_x: form_pixel_loc.pixel_left_point_x.value,
+            //     pixel_left_point_y: form_pixel_loc.pixel_left_point_y.value,
+            //     pixel_right_point_x: form_pixel_loc.pixel_right_point_x.value,
+            //     pixel_right_point_y: form_pixel_loc.pixel_right_point_y.value,
+            //     pixel_top_point_x: form_pixel_loc.pixel_top_point_x.value,
+            //     pixel_top_point_y: form_pixel_loc.pixel_top_point_y.value,
+            //     pixel_bottom_point_x: form_pixel_loc.pixel_bottom_point_x.value,
+            //     pixel_bottom_point_y: form_pixel_loc.pixel_bottom_point_y.value,
+            // }
+        }
 
-            console.log(queryBody)
-            $.ajax({
-                url: 'setConfig_info',
-                contentType: 'application/json',
-                type: 'post',
-                data: JSON.stringify(queryBody),
-                success(res) {
-                    alert(res)
-                },
-                error(res) {
-                    alert(res.responseText)
-                }
-            })
-        });
-        $("#getConfig_info").click(function () {
-            $.ajax({
-                url: 'getConfig_info',
-                contentType: 'application/json',
-                dataType: 'json',
-                type: 'get',
-                success(res) {
-                    //base
-                    form_base.width.value = res.base.width
-                    form_base.height.value = res.base.height
-                    //distance
-                    form_distance.x_distance.value = res.distance.x_distance
-                    form_distance.y_distance.value = res.distance.y_distance
-                    form_distance.altitude.value = res.distance.altitude
-                    // form_distance.y_value.value = res.distance.y_value
-                    form_distance.coefficient.value = res.distance.coefficient
-                    form_distance.matrix00.value = res.distance.matrix00
-                    form_distance.matrix01.value = res.distance.matrix01
-                    form_distance.matrix02.value = res.distance.matrix02
-                    form_distance.matrix10.value = res.distance.matrix10
-                    form_distance.matrix11.value = res.distance.matrix11
-                    form_distance.matrix12.value = res.distance.matrix12
-                    form_distance.matrix20.value = res.distance.matrix20
-                    form_distance.matrix21.value = res.distance.matrix21
-                    form_distance.matrix22.value = res.distance.matrix22
-                    form_distance.radar_x.value = res.distance.radar_x
-                    form_distance.radar_y.value = res.distance.radar_y
-                    form_distance.radar_theta.value = res.distance.radar_theta
-                    form_distance.MPPW.value = res.distance.MPPW
-                    form_distance.MPPH.value = res.distance.MPPH
-                    //vibrate_setting
-                    form_vibrate_setting.x_vibrate_max.value = res.vibrate_setting.x_vibrate_max
-                    form_vibrate_setting.y_vibrate_max.value = res.vibrate_setting.y_vibrate_max
-                    form_vibrate_setting.matchBoxX.value = res.vibrate_setting.matchBoxX
-                    form_vibrate_setting.matchBoxY.value = res.vibrate_setting.matchBoxY
-                    form_vibrate_setting.matchBoxWidth.value = res.vibrate_setting.matchBoxWidth
-                    form_vibrate_setting.matchBoxHeight.value = res.vibrate_setting.matchBoxHeight
-                    //crossing_setting
-                    form_crossing_setting.orientations.value = res.crossing_setting.orientations
-                    form_crossing_setting.deltax_south.value = res.crossing_setting.deltax_south
-                    form_crossing_setting.deltay_south.value = res.crossing_setting.deltay_south
-                    form_crossing_setting.deltax_north.value = res.crossing_setting.deltax_north
-                    form_crossing_setting.deltay_north.value = res.crossing_setting.deltay_north
-                    form_crossing_setting.deltax_west.value = res.crossing_setting.deltax_west
-                    form_crossing_setting.deltay_west.value = res.crossing_setting.deltay_west
-                    form_crossing_setting.deltax_east.value = res.crossing_setting.deltax_east
-                    form_crossing_setting.deltay_east.value = res.crossing_setting.deltay_east
-                    form_crossing_setting.flag_south.value = res.crossing_setting.flag_south
-                    form_crossing_setting.flag_north.value = res.crossing_setting.flag_north
-                    form_crossing_setting.flag_west.value = res.crossing_setting.flag_west
-                    form_crossing_setting.flag_east.value = res.crossing_setting.flag_east
-                    form_crossing_setting.widthX.value = res.crossing_setting.widthX
-                    form_crossing_setting.widthY.value = res.crossing_setting.widthY
-                    // //real_loc
-                    // form_real_loc.real_left_point_x.value = res.real_loc.real_left_point_x
-                    // form_real_loc.real_left_point_y.value = res.real_loc.real_left_point_y
-                    // form_real_loc.real_right_point_x.value = res.real_loc.real_right_point_x
-                    // form_real_loc.real_right_point_y.value = res.real_loc.real_right_point_y
-                    // form_real_loc.real_top_point_x.value = res.real_loc.real_top_point_x
-                    // form_real_loc.real_top_point_y.value = res.real_loc.real_top_point_y
-                    // form_real_loc.real_bottom_point_x.value = res.real_loc.real_bottom_point_x
-                    // form_real_loc.real_bottom_point_y.value = res.real_loc.real_bottom_point_y
-                    // //pixel_loc
-                    // form_pixel_loc.pixel_left_point_x.value = res.pixel_loc.pixel_left_point_x
-                    // form_pixel_loc.pixel_left_point_y.value = res.pixel_loc.pixel_left_point_y
-                    // form_pixel_loc.pixel_right_point_x.value = res.pixel_loc.pixel_right_point_x
-                    // form_pixel_loc.pixel_right_point_y.value = res.pixel_loc.pixel_right_point_y
-                    // form_pixel_loc.pixel_top_point_x.value = res.pixel_loc.pixel_top_point_x
-                    // form_pixel_loc.pixel_top_point_y.value = res.pixel_loc.pixel_top_point_y
-                    // form_pixel_loc.pixel_bottom_point_x.value = res.pixel_loc.pixel_bottom_point_x
-                    // form_pixel_loc.pixel_bottom_point_y.value = res.pixel_loc.pixel_bottom_point_y
-                },
-                error(res) {
-                    alert(res.responseText)
-                }
-            })
-        });
+        console.log(queryBody)
+        $.ajax({
+            url: 'setConfig_info',
+            contentType: 'application/json',
+            type: 'post',
+            data: JSON.stringify(queryBody),
+            success(res) {
+                alert(res)
+            },
+            error(res) {
+                alert(res.responseText)
+            }
+        })
+    }
+
+    function getInfo() {
+        $.ajax({
+            url: 'getConfig_info',
+            contentType: 'application/json',
+            dataType: 'json',
+            type: 'get',
+            success(res) {
+                //base
+                form_base.width.value = res.base.width
+                form_base.height.value = res.base.height
+                //distance
+                form_distance.x_distance.value = res.distance.x_distance
+                form_distance.y_distance.value = res.distance.y_distance
+                form_distance.altitude.value = res.distance.altitude
+                // form_distance.y_value.value = res.distance.y_value
+                form_distance.coefficient.value = res.distance.coefficient
+                form_distance.matrix00.value = res.distance.matrix00
+                form_distance.matrix01.value = res.distance.matrix01
+                form_distance.matrix02.value = res.distance.matrix02
+                form_distance.matrix10.value = res.distance.matrix10
+                form_distance.matrix11.value = res.distance.matrix11
+                form_distance.matrix12.value = res.distance.matrix12
+                form_distance.matrix20.value = res.distance.matrix20
+                form_distance.matrix21.value = res.distance.matrix21
+                form_distance.matrix22.value = res.distance.matrix22
+                form_distance.radar_x.value = res.distance.radar_x
+                form_distance.radar_y.value = res.distance.radar_y
+                form_distance.radar_theta.value = res.distance.radar_theta
+                form_distance.MPPW.value = res.distance.MPPW
+                form_distance.MPPH.value = res.distance.MPPH
+                //vibrate_setting
+                form_vibrate_setting.x_vibrate_max.value = res.vibrate_setting.x_vibrate_max
+                form_vibrate_setting.y_vibrate_max.value = res.vibrate_setting.y_vibrate_max
+                form_vibrate_setting.matchBoxX.value = res.vibrate_setting.matchBoxX
+                form_vibrate_setting.matchBoxY.value = res.vibrate_setting.matchBoxY
+                form_vibrate_setting.matchBoxWidth.value = res.vibrate_setting.matchBoxWidth
+                form_vibrate_setting.matchBoxHeight.value = res.vibrate_setting.matchBoxHeight
+                //crossing_setting
+                form_crossing_setting.orientations.value = res.crossing_setting.orientations
+                form_crossing_setting.deltax_south.value = res.crossing_setting.deltax_south
+                form_crossing_setting.deltay_south.value = res.crossing_setting.deltay_south
+                form_crossing_setting.deltax_north.value = res.crossing_setting.deltax_north
+                form_crossing_setting.deltay_north.value = res.crossing_setting.deltay_north
+                form_crossing_setting.deltax_west.value = res.crossing_setting.deltax_west
+                form_crossing_setting.deltay_west.value = res.crossing_setting.deltay_west
+                form_crossing_setting.deltax_east.value = res.crossing_setting.deltax_east
+                form_crossing_setting.deltay_east.value = res.crossing_setting.deltay_east
+                form_crossing_setting.flag_south.value = res.crossing_setting.flag_south
+                form_crossing_setting.flag_north.value = res.crossing_setting.flag_north
+                form_crossing_setting.flag_west.value = res.crossing_setting.flag_west
+                form_crossing_setting.flag_east.value = res.crossing_setting.flag_east
+                form_crossing_setting.widthX.value = res.crossing_setting.widthX
+                form_crossing_setting.widthY.value = res.crossing_setting.widthY
+                // //real_loc
+                // form_real_loc.real_left_point_x.value = res.real_loc.real_left_point_x
+                // form_real_loc.real_left_point_y.value = res.real_loc.real_left_point_y
+                // form_real_loc.real_right_point_x.value = res.real_loc.real_right_point_x
+                // form_real_loc.real_right_point_y.value = res.real_loc.real_right_point_y
+                // form_real_loc.real_top_point_x.value = res.real_loc.real_top_point_x
+                // form_real_loc.real_top_point_y.value = res.real_loc.real_top_point_y
+                // form_real_loc.real_bottom_point_x.value = res.real_loc.real_bottom_point_x
+                // form_real_loc.real_bottom_point_y.value = res.real_loc.real_bottom_point_y
+                // //pixel_loc
+                // form_pixel_loc.pixel_left_point_x.value = res.pixel_loc.pixel_left_point_x
+                // form_pixel_loc.pixel_left_point_y.value = res.pixel_loc.pixel_left_point_y
+                // form_pixel_loc.pixel_right_point_x.value = res.pixel_loc.pixel_right_point_x
+                // form_pixel_loc.pixel_right_point_y.value = res.pixel_loc.pixel_right_point_y
+                // form_pixel_loc.pixel_top_point_x.value = res.pixel_loc.pixel_top_point_x
+                // form_pixel_loc.pixel_top_point_y.value = res.pixel_loc.pixel_top_point_y
+                // form_pixel_loc.pixel_bottom_point_x.value = res.pixel_loc.pixel_bottom_point_x
+                // form_pixel_loc.pixel_bottom_point_y.value = res.pixel_loc.pixel_bottom_point_y
+            },
+            error(res) {
+                alert(res.responseText)
+            }
+        })
+    }
+
+
+    $(function () {
+        //网页加载后执行获取
+        getInfo()
+        getCommunicate()
+        //info
+        $("#setConfig_info").click(setInfo);
+        $("#getConfig_info").click(getInfo);
         // base
         $("#setConfig_base").click(function () {
             var queryBody = {
@@ -829,7 +837,7 @@
         //     })
         // });
         //communicate
-        $("#setConfig_communicate").click(function () {
+        function setCommunicate() {
 
             if (!checkIp(form_camera.ip.value)) {
                 alert("camera ip 格式不对")
@@ -898,8 +906,9 @@
                     alert(res.responseText)
                 }
             })
-        });
-        $("#getConfig_communicate").click(function () {
+        }
+
+        function getCommunicate() {
             $.ajax({
                 url: 'getConfig_communicate',
                 contentType: 'application/json',
@@ -933,7 +942,10 @@
                     alert(res.responseText)
                 }
             })
-        });
+        }
+
+        $("#setConfig_communicate").click(setCommunicate);
+        $("#getConfig_communicate").click(getCommunicate);
         // camera
         $("#setConfig_camera").click(function () {
 
