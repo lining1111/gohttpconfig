@@ -171,6 +171,47 @@ func setConfig_base(result *configStruct.Base) error {
 func setConfig_distance(result *configStruct.Distance) error {
 	ConfigDb.Exec("delete from distance")
 
+	//_, err := ConfigDb.Exec("replace into distance("+
+	//	"x_distance,"+
+	//	"y_distance,"+
+	//	"altitude,"+
+	//	"y_value,"+
+	//	"coefficient,"+
+	//	"matrix00,"+
+	//	"matrix01,"+
+	//	"matrix02,"+
+	//	"matrix10,"+
+	//	"matrix11,"+
+	//	"matrix12,"+
+	//	"matrix20,"+
+	//	"matrix21,"+
+	//	"matrix22,"+
+	//	"radar_x,"+
+	//	"radar_y,"+
+	//	"radar_theta,"+
+	//	"MPPW,"+
+	//	"MPPH) "+
+	//	"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+	//	result.X_distance,
+	//	result.Y_distance,
+	//	result.Altitude,
+	//	result.Y_value,
+	//	result.Coefficient,
+	//	result.Matrix00,
+	//	result.Matrix01,
+	//	result.Matrix02,
+	//	result.Matrix10,
+	//	result.Matrix11,
+	//	result.Matrix12,
+	//	result.Matrix20,
+	//	result.Matrix21,
+	//	result.Matrix22,
+	//	result.Radar_x,
+	//	result.Radar_y,
+	//	result.Radar_theta,
+	//	result.MPPW,
+	//	result.MPPH)
+
 	_, err := ConfigDb.Exec("replace into distance("+
 		"x_distance,"+
 		"y_distance,"+
@@ -211,6 +252,7 @@ func setConfig_distance(result *configStruct.Distance) error {
 		result.Radar_theta,
 		result.MPPW,
 		result.MPPH)
+
 	return err
 }
 

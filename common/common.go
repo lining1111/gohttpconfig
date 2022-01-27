@@ -14,10 +14,10 @@ type Base struct {
 
 //distance
 type Distance struct {
-	X_distance  string `json:"x_distance"`
-	Y_distance  string `json:"y_distance"`
-	Altitude    string `json:"altitude"`
-	Y_value     string `json:"y_value"`
+	X_distance string `json:"x_distance"`
+	Y_distance string `json:"y_distance"`
+	Altitude   string `json:"altitude"`
+	//Y_value     string `json:"y_value"`
 	Coefficient string `json:"coefficient"`
 
 	Matrix00    string `json:"matrix00"`
@@ -107,7 +107,7 @@ func Common2ConfigStruct_distance(dst *configStruct.Distance, src *Distance) {
 	dst.X_distance, _ = strconv.ParseFloat(src.X_distance, 64)
 	dst.Y_distance, _ = strconv.ParseFloat(src.Y_distance, 64)
 	dst.Altitude, _ = strconv.ParseFloat(src.Altitude, 64)
-	dst.Y_value, _ = strconv.ParseFloat(src.Y_value, 64)
+	//dst.Y_value, _ = strconv.ParseFloat(src.Y_value, 64)
 	dst.Coefficient, _ = strconv.ParseFloat(src.Coefficient, 64)
 	dst.Matrix00, _ = strconv.ParseFloat(src.Matrix00, 64)
 	dst.Matrix01, _ = strconv.ParseFloat(src.Matrix01, 64)
@@ -188,7 +188,7 @@ func ConfigStruct2Common_distance(dst *Distance, src *configStruct.Distance) {
 	dst.X_distance = strconv.FormatFloat(src.X_distance, 'f', -1, 64)
 	dst.Y_distance = strconv.FormatFloat(src.Y_distance, 'f', -1, 64)
 	dst.Altitude = strconv.FormatFloat(src.Altitude, 'f', -1, 64)
-	dst.Y_value = strconv.FormatFloat(src.Y_value, 'f', -1, 64)
+	//dst.Y_value = strconv.FormatFloat(src.Y_value, 'f', -1, 64)
 	dst.Coefficient = strconv.FormatFloat(src.Coefficient, 'f', -1, 64)
 	dst.Matrix00 = strconv.FormatFloat(src.Matrix00, 'f', -1, 64)
 	dst.Matrix01 = strconv.FormatFloat(src.Matrix01, 'f', -1, 64)
