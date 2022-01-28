@@ -18,6 +18,7 @@ import (
 	"strconv"
 )
 
+var IndexPath string = "./html"
 var Config *ini.File
 var IsConfigExist = false
 var ConfigPath string
@@ -80,6 +81,7 @@ func StructAssignTest() {
 }
 
 func Run(port int, htmlPath string, configPath string, configPathCommuniate string) {
+	IndexPath = htmlPath
 	//distanceN1
 	var err error
 	ConfigPath = configPath
@@ -100,7 +102,9 @@ func Run(port int, htmlPath string, configPath string, configPathCommuniate stri
 		isConfigExistCommunicate = true
 	}
 
-	http.Handle("/", http.FileServer(http.Dir(htmlPath)))
+	//修改根目录的路由方式，包括服务端的目录不暴露
+	//http.Handle("/", http.FileServer(http.Dir(htmlPath)))
+	http.HandleFunc("/", index)
 	/**config distanceN1**/
 	//set
 	http.HandleFunc("/setConfig_base", setConfig_base)
@@ -141,6 +145,14 @@ func Run(port int, htmlPath string, configPath string, configPathCommuniate stri
 	if err_web != nil {
 		fmt.Println(err_web)
 	}
+}
+
+func index(w http.ResponseWriter, r *http.Request) {
+	b, err := ioutil.ReadFile(IndexPath + "/index.html") // 读取到html文件（byte类型切片）
+	if err != nil {
+		w.Write([]byte(fmt.Sprintf("%v", err)))
+	}
+	w.Write(b) // 返回响应数据（必须传入byte类型切片）
 }
 
 /*****************config distanceN1****************/
