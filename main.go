@@ -29,6 +29,7 @@ func main() {
 	var configWay int
 	var htmlPath string
 	var pathCommunicate string
+	var staticFilesPath string
 	var version string = "1.0.1"
 	//读取传入的参数
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
@@ -38,6 +39,7 @@ func main() {
 	flag.StringVar(&htmlPath, "htmlPath", "./html", "html文件夹路径，默认 ./html")
 	flag.StringVar(&pathCommunicate, "pathCommunicate", "./config/communicate.ini",
 		"摄像头配置文件文件夹路径，默认 ./config/communicate.ini")
+	flag.StringVar(&staticFilesPath, "staticFilesPath", "./image", "可下载文件路径，默认 ./image")
 	if len(os.Args) == 2 {
 		if os.Args[1] == "-v" {
 			fmt.Println("version:", version)
@@ -60,6 +62,8 @@ func main() {
 	serverHttp.ConfigPath = path
 	//communicate
 	serverHttp.ConfigPathCommuniate = pathCommunicate
+	//可下载文件路径
+	serverHttp.StaticFilePath = staticFilesPath
 
 	//如果文件不存在则创建
 	file, err := os.Open(path)
