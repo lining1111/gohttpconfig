@@ -10,6 +10,7 @@ import (
 	"gohttpconfig/common"
 	"gohttpconfig/configStruct"
 	"gohttpconfig/db"
+	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os/exec"
@@ -25,6 +26,8 @@ var ConfigPath string
 var ConfigCommunicate *ini.File
 var isConfigExistCommunicate = false
 var ConfigPathCommuniate string
+
+var StaticFilePath string = "./image"
 
 const (
 	ConfigIni = iota
@@ -80,31 +83,11 @@ func StructAssignTest() {
 
 }
 
-func Run(port int, htmlPath string, configPath string, configPathCommuniate string) {
+func Run(port int, htmlPath string) {
 	IndexPath = htmlPath
-	//distanceN1
-	var err error
-	ConfigPath = configPath
-	Config, err = ini.Load(ConfigPath)
-	if err != nil {
-		fmt.Printf("cant not load ini file:%s\n", ConfigPath)
-		IsConfigExist = false
-	} else {
-		IsConfigExist = true
-	}
-	//communicate
-	ConfigPathCommuniate = configPathCommuniate
-	ConfigCommunicate, err = ini.Load(ConfigPathCommuniate)
-	if err != nil {
-		fmt.Printf("cant not load ini file:%s\n", ConfigPathCommuniate)
-		isConfigExistCommunicate = false
-	} else {
-		isConfigExistCommunicate = true
-	}
 
-	//修改根目录的路由方式，包括服务端的目录不暴露
-	//http.Handle("/", http.FileServer(http.Dir(htmlPath)))
-	http.HandleFunc("/", index)
+	//开启静态web根目录
+	http.Handle("/", http.FileServer(http.Dir(htmlPath)))
 	/**config distanceN1**/
 	//set
 	http.HandleFunc("/setConfig_base", setConfig_base)
@@ -140,19 +123,56 @@ func Run(port int, htmlPath string, configPath string, configPathCommuniate stri
 	http.HandleFunc("/getConfig_communicate", getConfig_communicate)
 	/**reset proc**/
 	http.HandleFunc("/resetProc", resetProc)
+	/***file download**/
+	http.HandleFunc("/getFiles", getFiles)
+
 	addr := ":" + strconv.Itoa(port)
-	err_web := http.ListenAndServe(addr, nil)
-	if err_web != nil {
-		fmt.Println(err_web)
+	err := http.ListenAndServe(addr, nil)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	b, err := ioutil.ReadFile(IndexPath + "/index.html") // 读取到html文件（byte类型切片）
+type FileInfo struct {
+	FileName string
+	DateTime string
+	FileSize int64
+}
+
+func getDirList(path string) ([]FileInfo, error) {
+	files, err := ioutil.ReadDir(path)
 	if err != nil {
-		w.Write([]byte(fmt.Sprintf("%v", err)))
+		return nil, err
 	}
-	w.Write(b) // 返回响应数据（必须传入byte类型切片）
+	fileList := make([]FileInfo, 0)
+	for _, file := range files {
+		//只取文件，不取文件夹
+		if !file.IsDir() {
+			fileList = append(fileList, FileInfo{path + "/" + file.Name(), file.ModTime().String(), file.Size()})
+		}
+	}
+	return fileList, err
+}
+
+func getFiles(w http.ResponseWriter, r *http.Request) {
+	//1.获取指定目录下的所有文件名称
+	fileList, err := getDirList(StaticFilePath)
+	if err != nil {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	if fileList != nil {
+		//HTML模板路径
+		htmlTmplPath := IndexPath + "/getFiles.html"
+		tmpl, err_tmpl := template.ParseFiles(htmlTmplPath)
+		if err_tmpl != nil {
+			fmt.Println("读取模板文件失败：", err_tmpl)
+			return
+		}
+		w.WriteHeader(http.StatusOK)
+		tmpl.Execute(w, fileList)
+	}
 }
 
 /*****************config distanceN1****************/

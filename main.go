@@ -56,6 +56,11 @@ func main() {
 
 	}
 
+	//distanceN1
+	serverHttp.ConfigPath = path
+	//communicate
+	serverHttp.ConfigPathCommuniate = pathCommunicate
+
 	//如果文件不存在则创建
 	file, err := os.Open(path)
 	if err != nil && os.IsNotExist(err) {
@@ -70,6 +75,6 @@ func main() {
 	fileCommunicate.Close()
 	//打开数据库
 	db.Open(dbPath)
-	serverHttp.Run(port, htmlPath, path, pathCommunicate)
+	serverHttp.Run(port, htmlPath)
 
 }
