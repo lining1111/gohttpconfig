@@ -1,0 +1,13 @@
+.label {
+    width: 160px;
+    text-align: right;
+    display: inline-block;
+}
+
+.label_right {
+    text-align: right;
+}
+
+input {
+    width: 200px;
+}

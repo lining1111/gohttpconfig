@@ -11,8 +11,10 @@ import (
 	"gohttpconfig/configStruct"
 	"gohttpconfig/db"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"os/exec"
 	"reflect"
 	"runtime"
@@ -125,12 +127,52 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/resetProc", resetProc)
 	/***file download**/
 	http.HandleFunc("/getFiles", getFiles)
+	http.HandleFunc("/getFile", getFile)
+	//http.Handle("/image/", http.StripPrefix("/image/", http.FileServer(http.Dir("./image"))))
 
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getFile(w http.ResponseWriter, r *http.Request) {
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+	//2.获取 json中 file 属性，也就是文件的名称
+	//type GetFile struct {
+	//	File string `json:"file"`
+	//}
+	//fileInfo := GetFile{}
+	//
+	//err_json := json.Unmarshal(rBody, &fileInfo)
+	//if err_json != nil {
+	//	fmt.Println("json 解析错误:", err_json)
+	//	return
+	//}
+	fileName := r.FormValue("filename")
+	//3.下载文件
+	file, _ := os.Open(StaticFilePath + "/" + fileName)
+	defer file.Close()
+
+	fileHeader := make([]byte, 512)
+	file.Read(fileHeader)
+
+	fileStat, _ := file.Stat()
+
+	w.Header().Set("Content-Disposition", "attachment; filename="+fileName)
+	w.Header().Set("Content-Type", http.DetectContentType(fileHeader))
+	w.Header().Set("Content-Length", strconv.FormatInt(fileStat.Size(), 10))
+
+	file.Seek(0, 0)
+	io.Copy(w, file)
+
 }
 
 type FileInfo struct {
@@ -148,7 +190,7 @@ func getDirList(path string) ([]FileInfo, error) {
 	for _, file := range files {
 		//只取文件，不取文件夹
 		if !file.IsDir() {
-			fileList = append(fileList, FileInfo{path + "/" + file.Name(), file.ModTime().String(), file.Size()})
+			fileList = append(fileList, FileInfo{file.Name(), file.ModTime().String(), file.Size()})
 		}
 	}
 	return fileList, err
@@ -164,7 +206,7 @@ func getFiles(w http.ResponseWriter, r *http.Request) {
 	}
 	if fileList != nil {
 		//HTML模板路径
-		htmlTmplPath := IndexPath + "/getFiles.html"
+		htmlTmplPath := IndexPath + "/tmplate/getFiles.html"
 		tmpl, err_tmpl := template.ParseFiles(htmlTmplPath)
 		if err_tmpl != nil {
 			fmt.Println("读取模板文件失败：", err_tmpl)
