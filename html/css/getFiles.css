@@ -1,12 +1,15 @@
 table {
     margin-left: 20px;
     margin-right: 20px;
-    border: thin;
+    border-collapse: collapse;
     caption-side: bottom;
+}
+th{
+    background: gray;
 }
 
 td, th {
-    border: thin gray;
+    border:1px solid black;
     padding: 5px;
 }
 
