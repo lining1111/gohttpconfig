@@ -1,0 +1,16 @@
+<table>
+    <tr>
+        <th>名称</th>
+        <th>日期</th>
+        <th>大小</th>
+    </tr>
+    {{range .}}
+    <tr>
+        <td id="{{.FileName}}" onclick="getFile(this.id)">
+            <span class="filename">{{.FileName}}</span>
+        </td>
+        <td>{{.DateTime}}</td>
+        <td>{{.FileSize}} B</td>
+    </tr>
+    {{end}}
+</table>

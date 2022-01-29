@@ -206,7 +206,7 @@ func getFiles(w http.ResponseWriter, r *http.Request) {
 	}
 	if fileList != nil {
 		//HTML模板路径
-		htmlTmplPath := IndexPath + "/tmplate/getFiles.html"
+		htmlTmplPath := IndexPath + "/template/files.html"
 		tmpl, err_tmpl := template.ParseFiles(htmlTmplPath)
 		if err_tmpl != nil {
 			fmt.Println("读取模板文件失败：", err_tmpl)
