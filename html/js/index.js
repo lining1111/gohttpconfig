@@ -11,8 +11,8 @@ function getConfigBase() {
         dataType: 'json',
         type: 'get',
         success(res) {
-            form_base.width = res.width
-            form_base.height = res.height
+            form_base.width.value = res.width
+            form_base.height.value = res.height
         },
         error(res) {
             alert(res.responseText)
@@ -406,11 +406,11 @@ function getConfigCommunicateCamera() {
         dataType: 'json',
         type: 'get',
         success(res) {
-            form_camera.flag.value = res.flag
-            form_camera.ip.value = res.ip
-            form_camera.url.value = res.url
-            form_camera.path = res.path
-            form_camera.delay_time = res.delay_time
+            Document.form_camera.flag.value = res.flag
+            Document.form_camera.ip.value = res.ip
+            Document.form_camera.url.value = res.url
+            Document.form_camera.path = res.path
+            Document.form_camera.delay_time = res.delay_time
         },
         error(res) {
             alert(res.responseText)
