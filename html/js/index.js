@@ -186,8 +186,8 @@ function setConfig(btnID, formID) {
     var queryBody = {}
     var obj = $(formID).serializeArray()
 
-    $.each(obj, function (i, feild) {
-        queryBody[feild.name] = feild.value
+    $.each(obj, function (i, field) {
+        queryBody[field.name] = field.value
     })
 
     $.ajax({
@@ -212,26 +212,26 @@ function setConfigInfo() {
     //base
     var base = {}
     var obj_base = $('#form_base').serializeArray()
-    $.each(obj_base, function (i, feild) {
-        base[feild.name] = feild.value
+    $.each(obj_base, function (i, field) {
+        base[field.name] = field.value
     })
     //distance
     var distance = {}
     var obj_distance = $('#form_distance').serializeArray()
-    $.each(obj_distance, function (i, feild) {
-        distance[feild.name] = feild.value
+    $.each(obj_distance, function (i, field) {
+        distance[field.name] = field.value
     })
     //vibrate_setting
     var vibrate_setting = {}
     var obj_vibrate_setting = $('#form_vibrate_setting').serializeArray()
-    $.each(obj_vibrate_setting, function (i, feild) {
-        vibrate_setting[feild.name] = feild.value
+    $.each(obj_vibrate_setting, function (i, field) {
+        vibrate_setting[field.name] = field.value
     })
     //crossing_setting
     var crossing_setting = {}
     var obj_crossing_setting = $('#form_crossing_setting').serializeArray()
-    $.each(obj_crossing_setting, function (i, feild) {
-        crossing_setting[feild.name] = feild.value
+    $.each(obj_crossing_setting, function (i, field) {
+        crossing_setting[field.name] = field.value
     })
 
     queryBody["base"] = base
@@ -286,32 +286,32 @@ function setConfigCommunicate() {
     //camera
     var camera = {}
     var obj_camera = $('#form_camera').serializeArray()
-    $.each(obj_camera, function (i, feild) {
-        camera[feild.name] = feild.value
+    $.each(obj_camera, function (i, field) {
+        camera[field.name] = field.value
     })
     //cloud
     var cloud = {}
     var obj_cloud = $('#form_cloud').serializeArray()
-    $.each(obj_cloud, function (i, feild) {
-        cloud[feild.name] = feild.value
+    $.each(obj_cloud, function (i, field) {
+        cloud[field.name] = field.value
     })
     //radar
     var radar = {}
     var obj_radar = $('#form_radar').serializeArray()
-    $.each(obj_radar, function (i, feild) {
-        radar[feild.name] = feild.value
+    $.each(obj_radar, function (i, field) {
+        radar[field.name] = field.value
     })
     //annuciator
     var annuciator = {}
     var obj_annuciator = $('#form_annuciator').serializeArray()
-    $.each(obj_annuciator, function (i, feild) {
-        annuciator[feild.name] = feild.value
+    $.each(obj_annuciator, function (i, field) {
+        annuciator[field.name] = field.value
     })
     //hardinfo
     var hardinfo = {}
     var obj_hardinfo = $('#form_hardinfo').serializeArray()
-    $.each(obj_hardinfo, function (i, feild) {
-        hardinfo[feild.name] = feild.value
+    $.each(obj_hardinfo, function (i, field) {
+        hardinfo[field.name] = field.value
     })
 
     queryBody["camera"] = camera
@@ -381,8 +381,8 @@ function setConfigCommunicateCamera() {
 
     var camera = {}
     var obj_camera = $('#form_camera').serializeArray()
-    $.each(obj_camera, function () {
-        camera[this.name] = this.value
+    $.each(obj_camera, function (i, field) {
+        camera[field.name] = field.value
     })
 
     $.ajax({
@@ -431,8 +431,8 @@ function setConfigCommunicateCloud() {
 
     var cloud = {}
     var obj_cloud = $('#form_cloud').serializeArray()
-    $.each(obj_cloud, function (i,feild) {
-        cloud[feild.name] = feild.value
+    $.each(obj_cloud, function (i, field) {
+        cloud[field.name] = field.value
     })
 
     $.ajax({
@@ -476,8 +476,8 @@ function setConfigCommunicateRadar() {
 
     var radar = {}
     var obj_radar = $('#form_radar').serializeArray()
-    $.each(obj_radar, function (i,feild) {
-        radar[feild.name] = feild.value
+    $.each(obj_radar, function (i, field) {
+        radar[field.name] = field.value
     })
 
     $.ajax({
@@ -519,8 +519,8 @@ function setConfigCommunicateAnnuciator() {
 
     var annuciator = {}
     var obj_annuciator = $('#form_annuciator').serializeArray()
-    $.each(obj_annuciator, function (i,feild) {
-        annuciator[feild.name] = feild.value
+    $.each(obj_annuciator, function (i, field) {
+        annuciator[field.name] = field.value
     })
 
     $.ajax({
@@ -558,8 +558,8 @@ function setConfigCommunicateHardinfo() {
 
     var hardinfo = {}
     var obj_hardinfo = $('#form_hardinfo').serializeArray()
-    $.each(obj_hardinfo, function (i,feild) {
-        hardinfo[feild.name] = feild.value
+    $.each(obj_hardinfo, function (i, field) {
+        hardinfo[field.name] = field.value
     })
 
     $.ajax({
@@ -621,5 +621,4 @@ $(function () {
     //网页加载后执行获取
     getConfigInfo()
     getConfigCommunicate()
-
 })
