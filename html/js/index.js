@@ -186,8 +186,8 @@ function setConfig(btnID, formID) {
     var queryBody = {}
     var obj = $(formID).serializeArray()
 
-    $.each(obj, function () {
-        queryBody[this.name] = this.value
+    $.each(obj, function (i, feild) {
+        queryBody[feild.name] = feild.value
     })
 
     $.ajax({
@@ -212,26 +212,26 @@ function setConfigInfo() {
     //base
     var base = {}
     var obj_base = $('#form_base').serializeArray()
-    $.each(obj_base, function () {
-        base[this.name] = this.value
+    $.each(obj_base, function (i, feild) {
+        base[feild.name] = feild.value
     })
     //distance
     var distance = {}
     var obj_distance = $('#form_distance').serializeArray()
-    $.each(obj_distance, function () {
-        distance[this.name] = this.value
+    $.each(obj_distance, function (i, feild) {
+        distance[feild.name] = feild.value
     })
     //vibrate_setting
     var vibrate_setting = {}
     var obj_vibrate_setting = $('#form_vibrate_setting').serializeArray()
-    $.each(obj_vibrate_setting, function () {
-        vibrate_setting[this.name] = this.value
+    $.each(obj_vibrate_setting, function (i, feild) {
+        vibrate_setting[feild.name] = feild.value
     })
     //crossing_setting
     var crossing_setting = {}
     var obj_crossing_setting = $('#form_crossing_setting').serializeArray()
-    $.each(obj_crossing_setting, function () {
-        crossing_setting[this.name] = this.value
+    $.each(obj_crossing_setting, function (i, feild) {
+        crossing_setting[feild.name] = feild.value
     })
 
     queryBody["base"] = base
@@ -286,32 +286,32 @@ function setConfigCommunicate() {
     //camera
     var camera = {}
     var obj_camera = $('#form_camera').serializeArray()
-    $.each(obj_camera, function () {
-        camera[this.name] = this.value
+    $.each(obj_camera, function (i, feild) {
+        camera[feild.name] = feild.value
     })
     //cloud
     var cloud = {}
     var obj_cloud = $('#form_cloud').serializeArray()
-    $.each(obj_cloud, function () {
-        cloud[this.name] = this.value
+    $.each(obj_cloud, function (i, feild) {
+        cloud[feild.name] = feild.value
     })
     //radar
     var radar = {}
     var obj_radar = $('#form_radar').serializeArray()
-    $.each(obj_radar, function () {
-        radar[this.name] = this.value
+    $.each(obj_radar, function (i, feild) {
+        radar[feild.name] = feild.value
     })
     //annuciator
     var annuciator = {}
     var obj_annuciator = $('#form_annuciator').serializeArray()
-    $.each(obj_annuciator, function () {
-        annuciator[this.name] = this.value
+    $.each(obj_annuciator, function (i, feild) {
+        annuciator[feild.name] = feild.value
     })
     //hardinfo
     var hardinfo = {}
     var obj_hardinfo = $('#form_hardinfo').serializeArray()
-    $.each(obj_hardinfo, function () {
-        hardinfo[this.name] = this.value
+    $.each(obj_hardinfo, function (i, feild) {
+        hardinfo[feild.name] = feild.value
     })
 
     queryBody["camera"] = camera
@@ -431,8 +431,8 @@ function setConfigCommunicateCloud() {
 
     var cloud = {}
     var obj_cloud = $('#form_cloud').serializeArray()
-    $.each(obj_cloud, function () {
-        cloud[this.name] = this.value
+    $.each(obj_cloud, function (i,feild) {
+        cloud[feild.name] = feild.value
     })
 
     $.ajax({
@@ -476,8 +476,8 @@ function setConfigCommunicateRadar() {
 
     var radar = {}
     var obj_radar = $('#form_radar').serializeArray()
-    $.each(obj_radar, function () {
-        radar[this.name] = this.value
+    $.each(obj_radar, function (i,feild) {
+        radar[feild.name] = feild.value
     })
 
     $.ajax({
@@ -519,8 +519,8 @@ function setConfigCommunicateAnnuciator() {
 
     var annuciator = {}
     var obj_annuciator = $('#form_annuciator').serializeArray()
-    $.each(obj_annuciator, function () {
-        annuciator[this.name] = this.value
+    $.each(obj_annuciator, function (i,feild) {
+        annuciator[feild.name] = feild.value
     })
 
     $.ajax({
@@ -558,8 +558,8 @@ function setConfigCommunicateHardinfo() {
 
     var hardinfo = {}
     var obj_hardinfo = $('#form_hardinfo').serializeArray()
-    $.each(obj_hardinfo, function () {
-        hardinfo[this.name] = this.value
+    $.each(obj_hardinfo, function (i,feild) {
+        hardinfo[feild.name] = feild.value
     })
 
     $.ajax({
