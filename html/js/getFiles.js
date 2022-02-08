@@ -8,7 +8,7 @@ function getFiles() {
             $('#files').append(res)
         },
         error(res) {
-            // alert(res.responseText)
+          //  alert(res.responseText)
         }
     })
 }

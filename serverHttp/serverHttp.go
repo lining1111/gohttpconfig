@@ -200,6 +200,7 @@ func getFiles(w http.ResponseWriter, r *http.Request) {
 	//1.获取指定目录下的所有文件名称
 	fileList, err := getDirList(StaticFilePath)
 	if err != nil {
+		fmt.Println("get files fail")
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte(err.Error()))
 		return
@@ -212,8 +213,10 @@ func getFiles(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("读取模板文件失败：", err_tmpl)
 			return
 		}
+		fmt.Println("get files success")
 		w.WriteHeader(http.StatusOK)
 		tmpl.Execute(w, fileList)
+
 	}
 }
 
