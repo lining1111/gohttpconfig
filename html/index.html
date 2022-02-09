@@ -2,6 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
     <title>主机配置</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
@@ -348,11 +351,32 @@
     </form>
     <br>
     <div CLASS="label_right">
-        <button type="button" id="reset_radar_mw" name="radra_mw" onclick="resetProc(name)">重启应用</button>
+        <button type="button" id="reset_radar_mw" name="radra_mw" onclick="killProc(name)">重启应用</button>
     </div>
     <!--    下载-->
     <div>
         <button type="button" id="getFiles" onclick="getFiles()">下载</button>
+    </div>
+    <br>
+    <!--    上传更新-->
+    <div>
+        <form id="uploadForm" name="uploadForm">
+            <input type="file" id="userfile" name="userfile" onchange="fileSelect()" multiple/>
+            <br>
+            <div class="progress">
+                <div></div>
+            </div>
+            <div id="fileName"></div>
+            <div id="fileSize"></div>
+            <div id="fileType"></div>
+            <br>
+            <button type="button" onclick="uploadFile()">上传更新</button>
+        </form>
+    </div>
+    <br>
+<!--    重启服务器-->
+    <div>
+        <button type="button" id="resetServer" name="resetServer" onclick="resetServer()">重启服务器</button>
     </div>
 </div>
 

@@ -30,7 +30,8 @@ func main() {
 	var htmlPath string
 	var pathCommunicate string
 	var staticFilesPath string
-	var version string = "1.0.1"
+	var updateFilePath string
+	var version string = "1.0.2"
 	//读取传入的参数
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
 	flag.StringVar(&path, "path", "./config/distanceN1.ini", "配置文件路径，默认 ./config/distanceN1.ini")
@@ -40,6 +41,7 @@ func main() {
 	flag.StringVar(&pathCommunicate, "pathCommunicate", "./config/communicate.ini",
 		"摄像头配置文件文件夹路径，默认 ./config/communicate.ini")
 	flag.StringVar(&staticFilesPath, "staticFilesPath", "./image", "可下载文件路径，默认 ./image")
+	flag.StringVar(&updateFilePath, "updateFilePath", "./update", "可下载文件路径，默认 ./update")
 	if len(os.Args) == 2 {
 		if os.Args[1] == "-v" {
 			fmt.Println("version:", version)
@@ -64,6 +66,8 @@ func main() {
 	serverHttp.ConfigPathCommuniate = pathCommunicate
 	//可下载文件路径
 	serverHttp.StaticFilePath = staticFilesPath
+	//上传更新文件的存储路径
+	serverHttp.UpdateFilePath = updateFilePath
 
 	//如果文件不存在则创建
 	file, err := os.Open(path)
@@ -80,5 +84,4 @@ func main() {
 	//打开数据库
 	db.Open(dbPath)
 	serverHttp.Run(port, htmlPath)
-
 }

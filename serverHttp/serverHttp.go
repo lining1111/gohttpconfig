@@ -1,6 +1,8 @@
 package serverHttp
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,9 +18,11 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"reflect"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 var IndexPath string = "./html"
@@ -29,7 +33,8 @@ var ConfigCommunicate *ini.File
 var isConfigExistCommunicate = false
 var ConfigPathCommuniate string
 
-var StaticFilePath string = "./image"
+var StaticFilePath = "./image"
+var UpdateFilePath = "./update"
 
 const (
 	ConfigIni = iota
@@ -123,18 +128,135 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/getConfig_annuciator", getConfig_annuciator)
 	http.HandleFunc("/getConfig_hardinfo", getConfig_hardinfo)
 	http.HandleFunc("/getConfig_communicate", getConfig_communicate)
-	/**reset proc**/
-	http.HandleFunc("/resetProc", resetProc)
-	/***file download**/
+	/**kill proc**/
+	http.HandleFunc("/killProc", killProc)
+	/**file download**/
 	http.HandleFunc("/getFiles", getFiles)
 	http.HandleFunc("/getFile", getFile)
 	//http.Handle("/image/", http.StripPrefix("/image/", http.FileServer(http.Dir("./image"))))
 
+	/**update**/
+	http.HandleFunc("/update", update)
+
+	/**resetServer**/
+	http.HandleFunc("/resetServer", resetServer)
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func resetServer(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("接收到重启指令")
+
+	shell := "reboot"
+	//shell := "echo hello"
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	err := cmd.Run()
+	if err != nil {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("重启失败"))
+	}
+}
+
+//解压gzip文件到指定目录，保持文件的原始属性
+func gzipGet(file string, path string) error {
+	srcFile, errOpen := os.Open(file)
+	if errOpen != nil {
+		return errOpen
+	}
+	//gzip reader
+	gr, err := gzip.NewReader(srcFile)
+	if err != nil {
+		return err
+	}
+	defer gr.Close()
+	//tar read
+	tr := tar.NewReader(gr)
+	//读取文件
+	for {
+		h, errTr := tr.Next()
+		if errTr == io.EOF {
+			break
+		}
+		if errTr != nil {
+			return errTr
+		}
+		//显示文件
+		fmt.Println(h.Name)
+		//打开文件
+		fw, errOpen1 := os.OpenFile(path+"/"+h.Name, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, os.FileMode(h.Mode))
+		if errOpen1 != nil {
+			return errOpen1
+		}
+		//写文件
+		_, errCopy := io.Copy(fw, tr)
+		if errCopy != nil {
+			return errCopy
+		}
+		fw.Close()
+	}
+
+	return nil
+}
+
+func update(w http.ResponseWriter, r *http.Request) {
+	//1.获取上传的文件 uploadFile
+	r.ParseForm()
+	file, handle, err := r.FormFile("updateFile")
+	defer file.Close()
+	if err != nil {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	//2.检查文件后缀
+	suffix := strings.ToLower(path.Ext(handle.Filename))
+	if suffix != ".gz" {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("只支持 .gz 压缩格式"))
+		return
+	}
+	//3.保存文件
+	//3.1查看保存路径是否存在，不存在就创建
+	_, errStat := os.Stat(UpdateFilePath)
+	if errStat != nil {
+		if os.IsNotExist(errStat) {
+			os.Mkdir(UpdateFilePath, 0777)
+		}
+	}
+	//3.2保存
+	saveFile, errSave := os.OpenFile(UpdateFilePath+"/"+handle.Filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+	if errSave != nil {
+		fmt.Println("打开文件失败")
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("保存文件失败"))
+	}
+	io.Copy(saveFile, file)
+	saveFile.Close()
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("上传成功"))
+	//4.解压文件
+	err = gzipGet(UpdateFilePath+"/"+handle.Filename, UpdateFilePath)
+	if err != nil {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("解压失败"))
+		//删除解压失败的文件
+		os.Remove(UpdateFilePath + "/" + handle.Filename)
+		fmt.Println("删除文件：" + UpdateFilePath + "/" + handle.Filename)
+		return
+	}
+	//5.执行文件 update.sh
+	shell := UpdateFilePath + "/" + "update.sh"
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	output, errCmd := cmd.Output()
+	if errCmd != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), errCmd.Error())
+		return
+	}
+	fmt.Printf("Execute Shell:%s finished with output:\n%s", cmd.String(), string(output))
+
 }
 
 func getFile(w http.ResponseWriter, r *http.Request) {
@@ -1311,7 +1433,7 @@ func processName() (pname []string) {
 	return pname
 }
 
-func resetProc(w http.ResponseWriter, r *http.Request) {
+func killProc(w http.ResponseWriter, r *http.Request) {
 	defer func() {
 		err := recover()
 		switch err.(type) {

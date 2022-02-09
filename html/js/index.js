@@ -592,7 +592,8 @@ function getConfigCommunicateHardinfo() {
     })
 }
 
-function resetProc(proc) {
+/*************杀死进程*******************/
+function killProc(proc) {
     var queryBody = {
         reset: '1',
         proc: proc,
@@ -600,7 +601,7 @@ function resetProc(proc) {
 
     console.log(queryBody)
     $.ajax({
-        url: 'resetProc',
+        url: 'killProc',
         contentType: 'application/json',
         type: 'post',
         data: JSON.stringify(queryBody),
@@ -613,8 +614,78 @@ function resetProc(proc) {
     })
 }
 
+/*************上传*****************/
 function getFiles() {
     location.href = '../getFiles.html'
+}
+
+/****************上传更新**************/
+
+//监听选择文件信息
+function fileSelect() {
+    var file = document.getElementById('userfile').files[0]
+    if (file) {
+        var fileSize = 0
+        if (file.size > (1024 * 1024)) {
+            fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB'
+        } else {
+            fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB'
+        }
+        //set html
+        document.getElementById('fileName').innerHTML = 'Name: ' + file.name
+        document.getElementById('fileSize').innerHTML = 'Size: ' + fileSize
+        document.getElementById('fileType').innerHTML = 'Type: ' + file.type
+    }
+}
+
+
+//上传文件
+function uploadFile() {
+    var formData = new FormData()
+    formData.append('updateFile', $("#userfile")[0].files[0])
+    // var  formData = new FormData(document.forms.namedItem("uploadForm"))
+    $.ajax({
+        url: 'update',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        xhr: function () {
+            var xhr = new XMLHttpRequest();
+            //使用XMLHttpRequest.upload监听上传过程，注册progress事件，打印回调函数中的event事件
+            // xhr.upload.addEventListener('progress', uploadProgress, false)
+            xhr.upload.addEventListener('progress', function (e) {
+                console.log(e);
+                //loaded代表上传了多少
+                //total代表总数为多少
+                var progressRate = (e.loaded / e.total) * 100 + '%';
+
+                //通过设置进度条的宽度达到效果
+                $('.progress > div').css('width', progressRate);
+            })
+            return xhr;
+        },
+        success: function (res) {
+            alert('上传成功')
+        },
+        error: function (res) {
+            alert('上传失败')
+        }
+    })
+}
+
+//重启服务器
+function resetServer() {
+    $.ajax({
+        url: 'resetServer',
+        type: 'POST',
+        success: function (res) {
+            // alert('重启成功')
+        },
+        error: function (res) {
+            // alert('重启失败')
+        }
+    })
 }
 
 $(function () {
