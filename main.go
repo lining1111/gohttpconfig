@@ -21,6 +21,8 @@ func main() {
 	//s := "-41.5"
 	//value, err := strconv.ParseFloat(s, 64)
 	//fmt.Printf("value:%v,err:%v\n", value, err)
+	//test delete file
+	//os.Remove("1.txt")
 
 	//默认的端口和配置文件地址
 	var port int

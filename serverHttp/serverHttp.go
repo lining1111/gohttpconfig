@@ -208,7 +208,6 @@ func update(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	defer file.Close()
 
 	//2.检查文件后缀
 	buffer := make([]byte, 512)
@@ -216,6 +215,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 	if errRead != nil {
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte(errRead.Error()))
+		file.Close()
 		return
 	}
 
@@ -224,6 +224,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 	if contentType != "application/x-gzip" {
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("只支持 gzip 压缩格式"))
+		file.Close()
 		return
 	}
 	//3.保存文件
@@ -239,17 +240,21 @@ func update(w http.ResponseWriter, r *http.Request) {
 	if errSave != nil {
 		fmt.Println("打开文件失败")
 		w.WriteHeader(http.StatusGone)
-		w.Write([]byte("保存文件失败"))
+		w.Write([]byte("打开文件失败"))
+		file.Close()
+		return
 	}
+	//因为第2步的时候有读取动作，所以要设置读指针0
+	file.Seek(0, io.SeekStart)
 	io.Copy(saveFile, file)
+	saveFile.Sync()
 	saveFile.Close()
+	file.Close()
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("上传成功"))
 	//4.解压文件
 	err = gzipGet(UpdateFilePath+"/"+handle.Filename, UpdateFilePath)
 	if err != nil {
-		w.WriteHeader(http.StatusGone)
-		w.Write([]byte("解压失败"))
 		//删除解压失败的文件
 		os.Remove(UpdateFilePath + "/" + handle.Filename)
 		fmt.Println("删除文件：" + UpdateFilePath + "/" + handle.Filename)
