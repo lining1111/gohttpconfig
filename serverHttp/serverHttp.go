@@ -18,11 +18,9 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
-	"path"
 	"reflect"
 	"runtime"
 	"strconv"
-	"strings"
 )
 
 var IndexPath string = "./html"
@@ -205,17 +203,27 @@ func update(w http.ResponseWriter, r *http.Request) {
 	//1.获取上传的文件 uploadFile
 	r.ParseForm()
 	file, handle, err := r.FormFile("updateFile")
-	defer file.Close()
 	if err != nil {
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte(err.Error()))
 		return
 	}
+	defer file.Close()
+
 	//2.检查文件后缀
-	suffix := strings.ToLower(path.Ext(handle.Filename))
-	if suffix != ".gz" {
+	buffer := make([]byte, 512)
+	_, errRead := file.Read(buffer)
+	if errRead != nil {
 		w.WriteHeader(http.StatusGone)
-		w.Write([]byte("只支持 .gz 压缩格式"))
+		w.Write([]byte(errRead.Error()))
+		return
+	}
+
+	contentType := http.DetectContentType(buffer)
+
+	if contentType != "application/x-gzip" {
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("只支持 gzip 压缩格式"))
 		return
 	}
 	//3.保存文件
