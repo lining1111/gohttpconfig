@@ -138,11 +138,126 @@ func Run(port int, htmlPath string) {
 
 	/**resetServer**/
 	http.HandleFunc("/resetServer", resetServer)
+
+	/**setInfoNTP**/
+	http.HandleFunc("/setInfoNTP", setInfoNTP)
+
+	/**setInfoNet**/
+	http.HandleFunc("/setInfoNet", setInfoNet)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func setInfoNet(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.将请求主体转换为json结构体
+	var req common.Net
+	//2.1 读取
+	err = json.Unmarshal(rBody, &req)
+	if err != nil {
+		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return
+	}
+	//2.2获取NTP服务器的ip port
+	eth0_type := req.Eth0.Type
+	eth0_ip := req.Eth0.Ip
+	eth0_mask := req.Eth0.Mask
+	eth0_gateWay := req.Eth0.GateWay
+
+	eth1_type := req.Eth1.Type
+	eth1_ip := req.Eth1.Ip
+	eth1_mask := req.Eth1.Mask
+	eth1_gateWay := req.Eth1.GateWay
+
+	mainDNS := req.MainDNS
+	slaveDNS := req.SlaveDNS
+
+	eocCloudIp := req.Eoc.Ip
+	eocCloudPort := req.Eoc.Port
+
+	city := req.City
+
+	//2.3设置NTP服务器
+	shell := "/home/nvidianx/bin/set_nx_net_info " +
+		eth0_type + " " + eth0_ip + " " + eth0_mask + " " + " " + eth0_gateWay + " " +
+		eth1_type + " " + eth1_ip + " " + eth1_mask + " " + " " + eth1_gateWay + " " +
+		mainDNS + " " + slaveDNS + " " + eocCloudIp + " " + eocCloudPort + " " + city
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：设置网络信息失败"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：设置网络信息成功"))
+}
+
+func setInfoNTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.将请求主体转换为json结构体
+	var req common.NTP
+	//2.1 读取
+	err = json.Unmarshal(rBody, &req)
+	if err != nil {
+		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return
+	}
+	//2.2获取NTP服务器的ip port
+	ip := req.Ip
+	port := req.Port
+
+	//2.3设置NTP服务器
+	shell := "/home/nvidianx/bin/set_ntp_info " + ip + " " + port
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：设置NTP服务器失败"))
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：设置NTP服务器成功"))
 }
 
 func resetServer(w http.ResponseWriter, r *http.Request) {
@@ -200,6 +315,13 @@ func gzipGet(file string, path string) error {
 }
 
 func update(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
 	//1.获取上传的文件 uploadFile
 	r.ParseForm()
 	file, handle, err := r.FormFile("updateFile")
@@ -273,6 +395,13 @@ func update(w http.ResponseWriter, r *http.Request) {
 }
 
 func getFile(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
 	//1.解析http请求
 	rBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -332,6 +461,13 @@ func getDirList(path string) ([]FileInfo, error) {
 }
 
 func getFiles(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
 	//1.获取指定目录下的所有文件名称
 	fileList, err := getDirList(StaticFilePath)
 	if err != nil {

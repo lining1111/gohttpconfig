@@ -140,3 +140,9 @@ type Communicate struct {
 	Annuciator Annuciator `ini:"annuciator"`
 	HardInfo   HardInfo   `ini:"hardinfo"`
 }
+
+//NTP
+type NTP struct {
+	Ip   string `ini:"ip"`
+	Port int    `ini:"port"`
+}

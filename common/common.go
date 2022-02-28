@@ -389,3 +389,31 @@ type ResetProc struct {
 	Reset string `json:"reset"`
 	Proc  string `json:"proc"`
 }
+
+/***************setInfoNTP*********************/
+type NTP struct {
+	Ip   string `json:"ip"`
+	Port string `json:"port"`
+}
+
+/***************setInfoNet*********************/
+type Eth struct {
+	Type    string `json:"type"`
+	Ip      string `json:"ip"`
+	Mask    string `json:"mask"`
+	GateWay string `json:"gateWay"`
+}
+
+type Eoc struct {
+	Ip   string `json:"ip"`
+	Port string `json:"port"`
+}
+
+type Net struct {
+	Eth0     Eth    `json:"eth0"`
+	Eth1     Eth    `json:"eth1"`
+	MainDNS  string `json:"mainDNS"`
+	SlaveDNS string `json:"slaveDNS"`
+	Eoc      Eoc    `json:"eoc"`
+	City     string `json:"city"`
+}
