@@ -791,6 +791,6 @@ function setInfoNet() {
 
 $(function () {
     //网页加载后执行获取
-    getConfigInfo()
-    getConfigCommunicate()
+    // getConfigInfo()
+    // getConfigCommunicate()
 })
