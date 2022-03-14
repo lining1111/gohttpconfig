@@ -178,7 +178,7 @@ func setInfoNet(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("失败：json解析失败"))
 		return
 	}
-	//2.2获取NTP服务器的ip port
+	//2.2获取本地的ip port
 	eth0_type := req.Eth0.Type
 	eth0_ip := req.Eth0.Ip
 	eth0_mask := req.Eth0.Mask
