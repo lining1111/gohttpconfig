@@ -33,7 +33,7 @@ func main() {
 	var pathCommunicate string
 	var staticFilesPath string
 	var updateFilePath string
-	var version string = "1.0.2"
+	var version = "1.0.3"
 	//读取传入的参数
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
 	flag.StringVar(&path, "path", "./config/distanceN1.ini", "配置文件路径，默认 ./config/distanceN1.ini")

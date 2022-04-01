@@ -10,7 +10,6 @@ import (
 	"github.com/go-ini/ini"
 	"github.com/wxnacy/wgo/arrays"
 	"gohttpconfig/common"
-	"gohttpconfig/configStruct"
 	"gohttpconfig/db"
 	"html/template"
 	"io"
@@ -494,52 +493,6 @@ func getFiles(w http.ResponseWriter, r *http.Request) {
 /*****************config distanceN1****************/
 // 基础函数
 
-func configStruct2common(dst interface{}, src interface{}, name string) error {
-	switch name {
-	case ini.DefaultSection, "":
-		common.ConfigStruct2Common_info(dst.(*common.Info), src.(*configStruct.Info))
-	case "base":
-		common.ConfigStruct2Common_base(dst.(*common.Base), src.(*configStruct.Base))
-	case "distance":
-		common.ConfigStruct2Common_distance(dst.(*common.Distance), src.(*configStruct.Distance))
-	case "vibrate_setting":
-		common.ConfigStruct2Common_vibrate_setting(dst.(*common.Vibrate_setting), src.(*configStruct.Vibrate_setting))
-	case "crossing_setting":
-		common.ConfigStruct2Common_crossing_setting(dst.(*common.Crossing_setting), src.(*configStruct.Crossing_setting))
-	case "real_loc":
-		common.ConfigStruct2Common_real_loc(dst.(*common.Real_loc), src.(*configStruct.Real_loc))
-	case "pixel_loc":
-		common.ConfigStruct2Common_pixel_loc(dst.(*common.Pixel_loc), src.(*configStruct.Pixel_loc))
-	default:
-		fmt.Printf("unknown name:%s\n", name)
-		return errors.New("unknown name")
-	}
-	return nil
-}
-
-func common2configStruct(dst interface{}, src interface{}, name string) error {
-	switch name {
-	case ini.DefaultSection, "":
-		common.Common2ConfigStruct_info(dst.(*configStruct.Info), src.(*common.Info))
-	case "base":
-		common.Common2ConfigStruct_base(dst.(*configStruct.Base), src.(*common.Base))
-	case "distance":
-		common.Common2ConfigStruct_distance(dst.(*configStruct.Distance), src.(*common.Distance))
-	case "vibrate_setting":
-		common.Common2ConfigStruct_vibrate_setting(dst.(*configStruct.Vibrate_setting), src.(*common.Vibrate_setting))
-	case "crossing_setting":
-		common.Common2ConfigStruct_crossing_setting(dst.(*configStruct.Crossing_setting), src.(*common.Crossing_setting))
-	case "real_loc":
-		common.Common2ConfigStruct_real_loc(dst.(*configStruct.Real_loc), src.(*common.Real_loc))
-	case "pixel_loc":
-		common.Common2ConfigStruct_pixel_loc(dst.(*configStruct.Pixel_loc), src.(*common.Pixel_loc))
-	default:
-		fmt.Printf("unknown name:%s\n", name)
-		return errors.New("unknown name")
-	}
-	return nil
-}
-
 func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) error {
 	//1.解析http请求
 	rBody, err := ioutil.ReadAll(r.Body)
@@ -564,31 +517,23 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 	}
 
 	//3.读取ini文件指定分区信息，转换为json信息
-	var src interface{}
-	var dst interface{}
+	var msg interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		src = &configStruct.Info{}
-		dst = &common.Info{}
+		msg = &common.Info{}
 	case "base":
-		src = &configStruct.Base{}
-		dst = &common.Base{}
+		msg = &common.Base{}
 	case "distance":
-		src = &configStruct.Distance{}
-		dst = &common.Distance{}
+		msg = &common.Distance{}
 	case "vibrate_setting":
-		src = &configStruct.Vibrate_setting{}
-		dst = &common.Vibrate_setting{}
+		msg = &common.Vibrate_setting{}
 	case "crossing_setting":
-		src = &configStruct.Crossing_setting{}
-		dst = &common.Crossing_setting{}
+		msg = &common.Crossing_setting{}
 	case "real_loc":
-		src = &configStruct.Real_loc{}
-		dst = &common.Real_loc{}
+		msg = &common.Real_loc{}
 	case "pixel_loc":
-		src = &configStruct.Pixel_loc{}
-		dst = &common.Pixel_loc{}
+		msg = &common.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
@@ -600,20 +545,14 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 		w.Write([]byte("获取分区失败"))
 		return errGetsection
 	}
-	errSection := section.MapTo(src)
+	errSection := section.MapTo(msg)
 	if errSection != nil {
 		fmt.Printf("分区信息转换失败：%v\n", errSection.Error())
 		w.Write([]byte("分区信息转换失败"))
 		return errSection
 	}
-	//3.2转换
-	errChange := configStruct2common(dst, src, sectionName)
-	if errChange != nil {
-		return errChange
-	}
-
 	//4.json信息组织回复
-	wBody, errBody := json.Marshal(dst)
+	wBody, errBody := json.Marshal(msg)
 	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
 		w.Write([]byte("失败：json解析失败"))
@@ -648,54 +587,40 @@ func setConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 		return errors.New("配置文件不存在")
 	}
 
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
 	//3.读取ini文件指定分区信息，转换为json信息
-	var src interface{}
-	var dst interface{}
+	var msg interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		src = &common.Info{}
-		dst = &configStruct.Info{}
+		msg = &common.Info{}
 	case "base":
-		src = &common.Base{}
-		dst = &configStruct.Base{}
+		msg = &common.Base{}
 	case "distance":
-		src = &common.Distance{}
-		dst = &configStruct.Distance{}
+		msg = &common.Distance{}
 	case "vibrate_setting":
-		src = &common.Vibrate_setting{}
-		dst = &configStruct.Vibrate_setting{}
+		msg = &common.Vibrate_setting{}
 	case "crossing_setting":
-		src = &common.Crossing_setting{}
-		dst = &configStruct.Crossing_setting{}
+		msg = &common.Crossing_setting{}
 	case "real_loc":
-		src = &common.Real_loc{}
-		dst = &configStruct.Real_loc{}
+		msg = &common.Real_loc{}
 	case "pixel_loc":
-		src = &common.Pixel_loc{}
-		dst = &configStruct.Pixel_loc{}
+		msg = &common.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
 	}
 	//3.1 读取
-	err = json.Unmarshal(rBody, src)
+	err = json.Unmarshal(rBody, msg)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：json解析失败"))
 		return err
 	}
-	//3.2转换
-	errChange := common2configStruct(dst, src, sectionName)
-	if errChange != nil {
-		return errChange
-	}
 
 	//4.结构体写入ini分区
 	section, _ := Config.NewSection(sectionName)
-	errSection := section.ReflectFrom(dst)
+	errSection := section.ReflectFrom(msg)
 	if errSection != nil {
 		fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
 		w.WriteHeader(http.StatusGone)
@@ -732,53 +657,37 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 	}
 
 	//3.读取数据库指定信息，转换为json信息
-	var src interface{}
-	var dst interface{}
+	var msg interface{}
 	var errDb error
 	switch tableName {
 	case "":
-		dst = &common.Info{}
-		src = &configStruct.Info{}
+		msg = &common.Info{}
 	case "base":
-		dst = &common.Base{}
-		src = &configStruct.Base{}
+		msg = &common.Base{}
 	case "distance":
-		dst = &common.Distance{}
-		src = &configStruct.Distance{}
+		msg = &common.Distance{}
 	case "vibrate_setting":
-		dst = &common.Vibrate_setting{}
-		src = &configStruct.Vibrate_setting{}
+		msg = &common.Vibrate_setting{}
 	case "crossing_setting":
-		dst = &common.Crossing_setting{}
-		src = &configStruct.Crossing_setting{}
+		msg = &common.Crossing_setting{}
 	case "real_loc":
-		dst = &common.Real_loc{}
-		src = &configStruct.Real_loc{}
+		msg = &common.Real_loc{}
 	case "pixel_loc":
-		dst = &common.Pixel_loc{}
-		src = &configStruct.Pixel_loc{}
+		msg = &common.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
 	}
 	//3.1获取
-	errDb = db.GetConfig(tableName, src)
+	errDb = db.GetConfig(tableName, msg)
 	if errDb != nil {
 		fmt.Printf("db get fail:%v\n", errDb.Error())
 		w.Write([]byte("失败：数据库读取失败"))
 		return errDb
 	}
 
-	//3.2转换
-	errChange := configStruct2common(dst, src, tableName)
-	if errChange != nil {
-		fmt.Printf("change fail:%v\n", errChange.Error())
-		w.Write([]byte("失败：转换失败"))
-		return errChange
-	}
-
 	//4.json信息组织回复
-	wBody, errBody := json.Marshal(dst)
+	wBody, errBody := json.Marshal(msg)
 	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
 		w.Write([]byte("失败：json解析失败"))
@@ -806,55 +715,39 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		return errors.New("数据库不存在")
 	}
 
-	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
-	var src interface{}
-	var dst interface{}
+	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体
+	var msg interface{}
 
 	switch tableName {
 	case "":
-		src = &common.Info{}
-		dst = &configStruct.Info{}
+		msg = &common.Info{}
 	case "base":
-		src = &common.Base{}
-		dst = &configStruct.Base{}
+		msg = &common.Base{}
 	case "distance":
-		src = &common.Distance{}
-		dst = &configStruct.Distance{}
+		msg = &common.Distance{}
 	case "vibrate_setting":
-		src = &common.Vibrate_setting{}
-		dst = &configStruct.Vibrate_setting{}
+		msg = &common.Vibrate_setting{}
 	case "crossing_setting":
-		src = &common.Crossing_setting{}
-		dst = &configStruct.Crossing_setting{}
+		msg = &common.Crossing_setting{}
 	case "real_loc":
-		src = &common.Real_loc{}
-		dst = &configStruct.Real_loc{}
+		msg = &common.Real_loc{}
 	case "pixel_loc":
-		src = &common.Pixel_loc{}
-		dst = &configStruct.Pixel_loc{}
+		msg = &common.Pixel_loc{}
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
 	}
 	//3.1读取json设置
-	err = json.Unmarshal(rBody, src)
+	err = json.Unmarshal(rBody, msg)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：json解析失败"))
 		return err
 	}
-	//3.2转换
-	errChange := common2configStruct(dst, src, tableName)
-	if errChange != nil {
-		fmt.Printf("change err:%v\n", errChange.Error())
-		w.WriteHeader(http.StatusGone)
-		w.Write([]byte("失败：转换失败"))
-		return errChange
-	}
 
 	//4.结构体写入指定的数据库表
-	errDb := db.SetConfig(tableName, dst)
+	errDb := db.SetConfig(tableName, msg)
 	if errDb != nil {
 		fmt.Printf("db write err:%v\n", errDb.Error())
 		w.WriteHeader(http.StatusGone)
@@ -1107,47 +1000,6 @@ func setConfig_base(w http.ResponseWriter, r *http.Request) {
 }
 
 /**********config communicate*************/
-func configStruct2commonCommunicate(dst interface{}, src interface{}, name string) error {
-	switch name {
-	case ini.DefaultSection, "":
-		common.ConfigStruct2Common_communicate(dst.(*common.Communicate), src.(*configStruct.Communicate))
-	case "camera":
-		common.ConfigStruct2Common_camera(dst.(*common.Camera), src.(*configStruct.Camera))
-	case "cloud":
-		common.ConfigStruct2Common_cloud(dst.(*common.Cloud), src.(*configStruct.Cloud))
-	case "radar":
-		common.ConfigStruct2Common_radar(dst.(*common.Radar), src.(*configStruct.Radar))
-	case "annuciator":
-		common.ConfigStruct2Common_annuciator(dst.(*common.Annuciator), src.(*configStruct.Annuciator))
-	case "hardinfo":
-		common.ConfigStruct2Common_hardinfo(dst.(*common.HardInfo), src.(*configStruct.HardInfo))
-	default:
-		fmt.Printf("unknown name:%s\n", name)
-		return errors.New("unknown name")
-	}
-	return nil
-}
-
-func common2configStructCommunicate(dst interface{}, src interface{}, name string) error {
-	switch name {
-	case ini.DefaultSection, "":
-		common.Common2ConfigStruct_communicate(dst.(*configStruct.Communicate), src.(*common.Communicate))
-	case "camera":
-		common.Common2ConfigStruct_camera(dst.(*configStruct.Camera), src.(*common.Camera))
-	case "cloud":
-		common.Common2ConfigStruct_cloud(dst.(*configStruct.Cloud), src.(*common.Cloud))
-	case "radar":
-		common.Common2ConfigStruct_radar(dst.(*configStruct.Radar), src.(*common.Radar))
-	case "annuciator":
-		common.Common2ConfigStruct_annuciator(dst.(*configStruct.Annuciator), src.(*common.Annuciator))
-	case "hardinfo":
-		common.Common2ConfigStruct_hardinfo(dst.(*configStruct.HardInfo), src.(*common.HardInfo))
-	default:
-		fmt.Printf("unknown name:%s\n", name)
-		return errors.New("unknown name")
-	}
-	return nil
-}
 
 func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName string) error {
 	//1.解析http请求
@@ -1174,28 +1026,21 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 	}
 
 	//3.读取ini文件指定分区信息，转换为json信息
-	var src interface{}
-	var dst interface{}
+	var msg interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		src = &configStruct.Communicate{}
-		dst = &common.Communicate{}
+		msg = &common.Communicate{}
 	case "camera":
-		src = &configStruct.Camera{}
-		dst = &common.Camera{}
+		msg = &common.Camera{}
 	case "cloud":
-		src = &configStruct.Cloud{}
-		dst = &common.Cloud{}
+		msg = &common.Cloud{}
 	case "radar":
-		src = &configStruct.Radar{}
-		dst = &common.Radar{}
+		msg = &common.Radar{}
 	case "annuciator":
-		src = &configStruct.Annuciator{}
-		dst = &common.Annuciator{}
+		msg = &common.Annuciator{}
 	case "hardinfo":
-		src = &configStruct.HardInfo{}
-		dst = &common.HardInfo{}
+		msg = &common.HardInfo{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
@@ -1207,20 +1052,14 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		w.Write([]byte("获取分区失败"))
 		return errGetsection
 	}
-	errSection := section.MapTo(src)
+	errSection := section.MapTo(msg)
 	if errSection != nil {
 		fmt.Printf("分区信息转换失败：%v\n", errSection.Error())
 		w.Write([]byte("分区信息转换失败"))
 		return errSection
 	}
-	//3.2转换
-	errChange := configStruct2commonCommunicate(dst, src, sectionName)
-	if errChange != nil {
-		return errChange
-	}
-
 	//4.json信息组织回复
-	wBody, errBody := json.Marshal(dst)
+	wBody, errBody := json.Marshal(msg)
 	if errBody != nil {
 		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
 		w.Write([]byte("失败：json解析失败"))
@@ -1258,49 +1097,37 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 
 	//3.将请求主体转化为json结构体，然后将json结构体转化为ini结构体，注意，两个结构体变量名称保持一致
 	//3.读取ini文件指定分区信息，转换为json信息
-	var src interface{}
-	var dst interface{}
+	var msg interface{}
 
 	switch sectionName {
 	case ini.DefaultSection:
-		src = &common.Communicate{}
-		dst = &configStruct.Communicate{}
+		msg = &common.Communicate{}
 	case "camera":
-		src = &common.Camera{}
-		dst = &configStruct.Camera{}
+		msg = &common.Camera{}
 	case "cloud":
-		src = &common.Cloud{}
-		dst = &configStruct.Cloud{}
+		msg = &common.Cloud{}
 	case "radar":
-		src = &common.Radar{}
-		dst = &configStruct.Radar{}
+		msg = &common.Radar{}
 	case "annuciator":
-		src = &common.Annuciator{}
-		dst = &configStruct.Annuciator{}
+		msg = &common.Annuciator{}
 	case "hardinfo":
-		src = &common.HardInfo{}
-		dst = &configStruct.HardInfo{}
+		msg = &common.HardInfo{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
 	}
 	//3.1 读取
-	err = json.Unmarshal(rBody, src)
+	err = json.Unmarshal(rBody, msg)
 	if err != nil {
 		fmt.Printf("json unmarshal err:%v\n", err.Error())
 		w.WriteHeader(http.StatusGone)
 		w.Write([]byte("失败：json解析失败"))
 		return err
 	}
-	//3.2转换
-	errChange := common2configStructCommunicate(dst, src, sectionName)
-	if errChange != nil {
-		return errChange
-	}
 
 	//4.结构体写入ini分区
 	section, _ := ConfigCommunicate.NewSection(sectionName)
-	errSection := section.ReflectFrom(dst)
+	errSection := section.ReflectFrom(msg)
 	if errSection != nil {
 		fmt.Printf("ini map jsonBase fail:%v\n", errSection.Error())
 		w.WriteHeader(http.StatusGone)
