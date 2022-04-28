@@ -33,8 +33,10 @@ func main() {
 	var pathCommunicate string
 	var staticFilesPath string
 	var updateFilePath string
-	var version = "1.0.3"
+	var showVersion bool
+	var version = "1.0.4"
 	//读取传入的参数
+	flag.BoolVar(&showVersion, "v", false, "显示版本号")
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
 	flag.StringVar(&path, "path", "./config/distanceN1.ini", "配置文件路径，默认 ./config/distanceN1.ini")
 	flag.StringVar(&dbPath, "dbPath", "./config/config.db", "配置文件路径，默认 ./config/config.db")
@@ -44,15 +46,11 @@ func main() {
 		"摄像头配置文件文件夹路径，默认 ./config/communicate.ini")
 	flag.StringVar(&staticFilesPath, "staticFilesPath", "./image", "可下载文件路径，默认 ./image")
 	flag.StringVar(&updateFilePath, "updateFilePath", "./update", "可下载文件路径，默认 ./update")
-	if len(os.Args) == 2 {
-		if os.Args[1] == "-v" {
-			fmt.Println("version:", version)
-			os.Exit(1)
-		}
-
-	}
-
 	flag.Parse()
+	if showVersion {
+		fmt.Println("version:", version)
+		os.Exit(0)
+	}
 
 	switch configWay {
 	case 0:

@@ -44,6 +44,9 @@ function getConfigDistance() {
             form_distance.radar_x.value = res.radar_x
             form_distance.radar_y.value = res.radar_y
             form_distance.radar_theta.value = res.radar_theta
+            form_distance.camera_x.value = res.camera_x
+            form_distance.camera_y.value = res.camera_y
+            form_distance.camera_theta.value = res.camera_theta
             form_distance.MPPW.value = res.MPPW
             form_distance.MPPH.value = res.MPPH
         },

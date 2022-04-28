@@ -15,20 +15,23 @@ type Distance struct {
 	Y_value     float64 `json:"y_value,string,omitempty" ini:"y_value" db:"y_value"`
 	Coefficient float64 `json:"coefficient,string" ini:"coefficient" db:"coefficient"`
 
-	Matrix00    float64 `json:"matrix00,string" ini:"matrix00" db:"matrix00"`
-	Matrix01    float64 `json:"matrix01,string" ini:"matrix01" db:"matrix01"`
-	Matrix02    float64 `json:"matrix02,string" ini:"matrix02" db:"matrix02"`
-	Matrix10    float64 `json:"matrix10,string" ini:"matrix10" db:"matrix10"`
-	Matrix11    float64 `json:"matrix11,string" ini:"matrix11" db:"matrix11"`
-	Matrix12    float64 `json:"matrix12,string" ini:"matrix12" db:"matrix12"`
-	Matrix20    float64 `json:"matrix20,string" ini:"matrix20" db:"matrix20"`
-	Matrix21    float64 `json:"matrix21,string" ini:"matrix21" db:"matrix21"`
-	Matrix22    float64 `json:"matrix22,string" ini:"matrix22" db:"matrix22"`
-	Radar_x     float64 `json:"radar_x,string" ini:"radar_x" db:"radar_x"`
-	Radar_y     float64 `json:"radar_y,string" ini:"radar_y" db:"radar_y"`
-	Radar_theta float64 `json:"radar_theta,string" ini:"radar_theta" db:"radar_theta"`
-	MPPW        float64 `json:"MPPW,string" ini:"MPPW" db:"MPPW"`
-	MPPH        float64 `json:"MPPH,string" ini:"MPPH" db:"MPPH"`
+	Matrix00     float64 `json:"matrix00,string" ini:"matrix00" db:"matrix00"`
+	Matrix01     float64 `json:"matrix01,string" ini:"matrix01" db:"matrix01"`
+	Matrix02     float64 `json:"matrix02,string" ini:"matrix02" db:"matrix02"`
+	Matrix10     float64 `json:"matrix10,string" ini:"matrix10" db:"matrix10"`
+	Matrix11     float64 `json:"matrix11,string" ini:"matrix11" db:"matrix11"`
+	Matrix12     float64 `json:"matrix12,string" ini:"matrix12" db:"matrix12"`
+	Matrix20     float64 `json:"matrix20,string" ini:"matrix20" db:"matrix20"`
+	Matrix21     float64 `json:"matrix21,string" ini:"matrix21" db:"matrix21"`
+	Matrix22     float64 `json:"matrix22,string" ini:"matrix22" db:"matrix22"`
+	Radar_x      float64 `json:"radar_x,string" ini:"radar_x" db:"radar_x"`
+	Radar_y      float64 `json:"radar_y,string" ini:"radar_y" db:"radar_y"`
+	Radar_theta  float64 `json:"radar_theta,string" ini:"radar_theta" db:"radar_theta"`
+	Camera_x     float64 `json:"camera_x,string" ini:"camera_x" db:"camera_x"`
+	Camera_y     float64 `json:"camera_y,string" ini:"camera_y" db:"camera_y"`
+	Camera_theta float64 `json:"camera_theta,string" ini:"camera_theta" db:"camera_theta"`
+	MPPW         float64 `json:"MPPW,string" ini:"MPPW" db:"MPPW"`
+	MPPH         float64 `json:"MPPH,string" ini:"MPPH" db:"MPPH"`
 }
 
 //vibrate_setting

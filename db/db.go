@@ -230,9 +230,12 @@ func setConfig_distance(result *common.Distance) error {
 		"radar_x,"+
 		"radar_y,"+
 		"radar_theta,"+
+		"camera_x,"+
+		"camera_y,"+
+		"camera_theta,"+
 		"MPPW,"+
 		"MPPH) "+
-		"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+		"values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
 		result.X_distance,
 		result.Y_distance,
 		result.Altitude,
@@ -250,6 +253,9 @@ func setConfig_distance(result *common.Distance) error {
 		result.Radar_x,
 		result.Radar_y,
 		result.Radar_theta,
+		result.Camera_x,
+		result.Camera_y,
+		result.Camera_theta,
 		result.MPPW,
 		result.MPPH)
 
