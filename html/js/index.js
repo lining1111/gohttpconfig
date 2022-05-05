@@ -133,6 +133,9 @@ function getConfigInfo() {
             form_distance.radar_x.value = res.distance.radar_x
             form_distance.radar_y.value = res.distance.radar_y
             form_distance.radar_theta.value = res.distance.radar_theta
+            form_distance.camera_x.value = res.distance.camera_x
+            form_distance.camera_y.value = res.distance.camera_y
+            form_distance.camera_theta.value = res.distance.camera_theta
             form_distance.MPPW.value = res.distance.MPPW
             form_distance.MPPH.value = res.distance.MPPH
             //vibrate_setting
