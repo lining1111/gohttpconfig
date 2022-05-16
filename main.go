@@ -77,8 +77,8 @@ func main() {
 	file.Close()
 	//摄像头配置文件
 	fileCommunicate, errCommunicate := os.Open(pathCommunicate)
-	if errCommunicate != nil && os.IsNotExist(err) {
-		file, _ = os.Create(path)
+	if errCommunicate != nil && os.IsNotExist(errCommunicate) {
+		file, _ = os.Create(pathCommunicate)
 	}
 	fileCommunicate.Close()
 	//打开数据库
