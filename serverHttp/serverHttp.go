@@ -2,6 +2,8 @@ package serverHttp
 
 import (
 	"archive/tar"
+	"bufio"
+	"bytes"
 	"compress/gzip"
 	"encoding/json"
 	"errors"
@@ -20,6 +22,7 @@ import (
 	"reflect"
 	"runtime"
 	"strconv"
+	"strings"
 )
 
 var IndexPath string = "./html"
@@ -141,14 +144,99 @@ func Run(port int, htmlPath string) {
 	/**setInfoNTP**/
 	http.HandleFunc("/setInfoNTP", setInfoNTP)
 
+	/**getInfoNTP**/
+	http.HandleFunc("/getInfoNTP", getInfoNTP)
+
 	/**setInfoNet**/
 	http.HandleFunc("/setInfoNet", setInfoNet)
+
+	/**getInfoNet**/
+	http.HandleFunc("/getInfoNet", getInfoNet)
 
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getInfoNet(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	var net common.Net
+
+	//1.执行shell指令
+	shell := "/home/nvidianx/bin/get_nx_net_info"
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	result, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：执行命令失败"))
+		return
+	}
+	/*
+		"* get_double_net_info $ip_type $curip $curmask $curgateway $eth1_ip_type $eth1_curip $eth1_curmask $eth1_curgateway $curmaindns $curslavedns $curcloudip $curcloudport $curdevicenum $cur_city $cur_mac $protocol_version *"
+	*/
+	//2.从结果中获取配置
+	//从结果中获取含有get_double_net_info的那一行 按空格分开为 ip_type curip curmask curgateway eth1_ip_type eth1_curip eth1_curmask eth1_curgateway curmaindns curslavedns curcloudip curcloudport curdevicenum cur_city cur_mac protocol_version
+	rd := bufio.NewReader(bytes.NewReader(result))
+	contents := make([]string, 20)
+	isFind := false
+	for !isFind {
+		line, _, err1 := rd.ReadLine()
+		if err1 == io.EOF {
+			isFind = false
+			break
+		}
+		str := string(line)
+		if strings.Index(str, "get_double_net_info") >= 0 {
+			copy(contents, strings.Split(str, " "))
+			isFind = true
+			break
+		}
+	}
+	if isFind {
+		if len(contents) >= 18 {
+			net.Eth0.Type = contents[2]
+			net.Eth0.Ip = contents[3]
+			net.Eth0.Mask = contents[4]
+			net.Eth0.GateWay = contents[5]
+
+			net.Eth1.Type = contents[6]
+			net.Eth1.Ip = contents[7]
+			net.Eth1.Mask = contents[8]
+			net.Eth1.GateWay = contents[9]
+
+			net.MainDNS = contents[10]
+			net.SlaveDNS = contents[11]
+
+			net.Eoc.Ip = contents[12]
+			net.Eoc.Port = contents[13]
+
+			//deviceNum contents[14]
+			net.City = contents[15]
+			//curMac contents[16]
+			//net.Mac = contents[16]
+			//protocol_version contents[17]
+		}
+	}
+	//4.json信息组织回复
+	wBody, errBody := json.Marshal(net)
+	if errBody != nil {
+		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(wBody)
+
 }
 
 func setInfoNet(w http.ResponseWriter, r *http.Request) {
@@ -257,6 +345,72 @@ func setInfoNTP(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("成功：设置NTP服务器成功"))
+}
+
+func getInfoNTP(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	var ntp common.NTP
+
+	//1.执行shell指令
+	shell := "/home/nvidianx/bin/get_ntp_info"
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	result, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：执行命令失败"))
+		return
+	}
+	/*
+	* get_ntp_info ntp.ubuntu.com 123 *
+	 */
+	//2.从结果中获取配置
+	rd := bufio.NewReader(bytes.NewReader(result))
+	contents := make([]string, 20)
+	isFind := false
+	for !isFind {
+		line, _, err1 := rd.ReadLine()
+		if err1 == io.EOF {
+			isFind = false
+			break
+		}
+		str := string(line)
+		if strings.Index(str, "get_ntp_info") >= 0 {
+			copy(contents, strings.Split(str, " "))
+			isFind = true
+			break
+		}
+	}
+	if isFind {
+		if len(contents) >= 4 {
+			ntp.Ip = contents[2]
+			ntp.Port = contents[3]
+		}
+	}
+	//4.json信息组织回复
+	wBody, errBody := json.Marshal(ntp)
+	if errBody != nil {
+		fmt.Printf("json unmarshal err:%v\n", errBody.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(wBody)
+
 }
 
 func resetServer(w http.ResponseWriter, r *http.Request) {

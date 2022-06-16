@@ -1,190 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-  <meta http-equiv="Pragma" content="no-cache"/>
-  <meta http-equiv="Expires" content="0"/>
-  <title>主机配置</title>
-  <link rel="stylesheet" type="text/css" href="css/index.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+    <meta http-equiv="Pragma" content="no-cache"/>
+    <meta http-equiv="Expires" content="0"/>
+    <title>主机配置</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
 </head>
 <body onload="getConfigInfo()">
 
 <script src="js/jQuery.js"></script>
 
 <div style="width: 810px;">
-<!--    info-->
-<div class="label_right">
-  <button type="button" id="setConfig_info" onclick="setConfigInfo()">设置全部</button>
-  <button type="button" id="getConfig_info" onclick="getConfigInfo()">获取全部</button>
-</div>
-<br>
-<!--    base-->
-<form name="form_base" id="form_base">
-  <!--        int-->
-  <label for="width">width</label>
-  <input type="number" id="width" name="width" step="1" value="0"/>
-  <!--        int-->
-  <label for="height">height</label>
-  <input type="number" id="height" name="height" step="1" value="0"/>
-  <div class="label_right">
-    <button type="button" id="setConfig_base" form="form_base" onclick="setConfig(id,form)">设置</button>
-    <button type="button" id="getConfig_base" form="form_base" onclick="getConfigBase()">获取</button>
-  </div>
-</form>
-<br>
-<!--    distance-->
-<form name="form_distance" id="form_distance">
-  <!--        透视变换最左边的直线与Y轴之间的实际测量距离 double float64-->
-  <label for="x_distance">x_distance</label>
-  <input type="number" id="x_distance" name="x_distance" step="any" value="0">
-  <!--        透视变换最左边的直线与X轴之间的实际测量距离 double float64-->
-  <label for="y_distance">y_distance</label>
-  <input type="number" id="y_distance" name="y_distance" step="any" value="0">
-  <!--        double float64-->
-  <label for="altitude">altitude</label>
-  <input type="number" id="altitude" name="altitude" step="any" value="0">
-  <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
-  <!--        <label for="y_value">y_value</label>-->
-  <!--        <input type="number" id="y_value" name="y_value" step="any" value="0">-->
-  <!--        double float64-->
-  <label for="coefficient">coefficient</label>
-  <input type="number" id="coefficient" name="coefficient" step="any" value="0">
-  <!--        透视变换用系数矩阵 double[3][3] float64-->
-  <label for="matrix00">matrix00</label>
-  <input type="number" id="matrix00" name="matrix00" step="any" value="0">
-  <label for="matrix01">matrix01</label>
-  <input type="number" id="matrix01" name="matrix01" step="any" value="0">
-  <label for="matrix02">matrix02</label>
-  <input type="number" id="matrix02" name="matrix02" step="any" value="0">
-  <label for="matrix10">matrix10</label>
-  <input type="number" id="matrix10" name="matrix10" step="any" value="0">
-  <label for="matrix11">matrix11</label>
-  <input type="number" id="matrix11" name="matrix11" step="any" value="0">
-  <label for="matrix12">matrix12</label>
-  <input type="number" id="matrix12" name="matrix12" step="any" value="0">
-  <label for="matrix20">matrix20</label>
-  <input type="number" id="matrix20" name="matrix20" step="any" value="0">
-  <label for="matrix21">matrix21</label>
-  <input type="number" id="matrix21" name="matrix21" step="any" value="0">
-  <label for="matrix22">matrix22</label>
-  <input type="number" id="matrix22" name="matrix22" step="any" value="0">
-  <!--        雷达偏移量x float64-->
-  <label for="radar_x">radar_x</label>
-  <input type="number" id="radar_x" name="radar_x" step="any" value="0">
-  <!--        雷达偏移量y float64-->
-  <label for="radar_y">radar_y</label>
-  <input type="number" id="radar_y" name="radar_y" step="any" value="0">
-  <!--        雷达校正参数 double float64-->
-  <label for="radar_theta">radar_theta</label>
-  <input type="number" id="radar_theta" name="radar_theta" step="any" value="0">
-  <!--        摄像头偏移量x float64-->
-  <label for="camera_x">camera_x</label>
-  <input type="number" id="camera_x" name="camera_x" step="any" value="0">
-  <!--        摄像头偏移量y float64-->
-  <label for="camera_y">camera_y</label>
-  <input type="number" id="camera_y" name="camera_y" step="any" value="0">
-  <!--        摄像头校正参数 double float64-->
-  <label for="camera_theta">camera_theta</label>
-  <input type="number" id="camera_theta" name="camera_theta" step="any" value="0">
-  <!--        宽度米像素 double float64-->
-  <label for="MPPW">MPPW</label>
-  <input type="number" id="MPPW" name="MPPW" step="any" value="0">
-  <!--        宽度米像素 double float64-->
-  <label for="MPPH">MPPH</label>
-  <input type="number" id="MPPH" name="MPPH" step="any" value="0">
-  <div class="label_right">
-    <button type="button" id="setConfig_distance" form="form_distance" onclick="setConfig(id,form)">设置</button>
-    <button type="button" id="getConfig_distance" form="form_distance" onclick="getConfigDistance()">获取</button>
-  </div>
-</form>
-<br>
-<!--    vibrate_setting-->
-<form name="form_vibrate_setting" id="form_vibrate_setting">
-  <!--        抖动位移x方向阈值 float float64-->
-  <label for="x_vibrate_max">x_vibrate_max</label>
-  <input type="number" id="x_vibrate_max" name="x_vibrate_max" step="any" value="0">
-  <!--        抖动位移y方向阈值 float float64-->
-  <label for="y_vibrate_max">y_vibrate_max</label>
-  <input type="number" id="y_vibrate_max" name="y_vibrate_max" step="any" value="0">
-  <!--        float64-->
-  <label for="matchBoxX">matchBoxX</label>
-  <input type="number" id="matchBoxX" name="matchBoxX" step="any" value="0">
-  <label for="matchBoxY">matchBoxY</label>
-  <input type="number" id="matchBoxY" name="matchBoxY" step="any" value="0">
-  <label for="matchBoxWidth">matchBoxWidth</label>
-  <input type="number" id="matchBoxWidth" name="matchBoxWidth" step="any" value="0">
-  <label for="matchBoxHeight">matchBoxHeight</label>
-  <input type="number" id="matchBoxHeight" name="matchBoxHeight" step="any" value="0">
-  <div class="label_right">
-    <button type="button" id="setConfig_vibrate_setting" form="form_vibrate_setting"
-            onclick="setConfig(id,form)">设置
-    </button>
-    <button type="button" id="getConfig_vibrate_setting" form="form_vibrate_setting"
-            onclick="getConfigVibrate_setting()">获取
-    </button>
-  </div>
-</form>
-<br>
-<!--    crossing_setting-->
-<form name="form_crossing_setting" id="form_crossing_setting">
-  <!--        相机朝向 int 1：东 2：南 3：西 4：北-->
-  <label for="orientations">orientations</label>
-  <input type="number" id="orientations" name="orientations" max="4" min="1" step="1" value="1"
-         placeholder="相机朝向 1：东 2：南 3：西 4：北">
-  <!--        转换为路口坐标系的偏移量x double float64-->
-  <label for="deltax_south">deltax_south</label>
-  <input type="number" id="deltax_south" name="deltax_south" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量y double float64-->
-  <label for="deltay_south">deltay_south</label>
-  <input type="number" id="deltay_south" name="deltay_south" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量x double float64-->
-  <label for="deltax_north">deltax_north</label>
-  <input type="number" id="deltax_north" name="deltax_north" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量y double float64-->
-  <label for="deltay_north">deltay_north</label>
-  <input type="number" id="deltay_north" name="deltay_north" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量x double float64-->
-  <label for="deltax_west">deltax_west</label>
-  <input type="number" id="deltax_west" name="deltax_west" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量y double float64-->
-  <label for="deltay_west">deltay_west</label>
-  <input type="number" id="deltay_west" name="deltay_west" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量x double float64-->
-  <label for="deltax_east">deltax_east</label>
-  <input type="number" id="deltax_east" name="deltax_east" step="any" value="0">
-  <!--        转换为路口坐标系的偏移量y double float64-->
-  <label for="deltay_east">deltay_east</label>
-  <input type="number" id="deltay_east" name="deltay_east" step="any" value="0">
-  <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
-  <label for="flag_south">flag_south</label>
-  <input type="number" id="flag_south" name="flag_south" max="1" min="0" step="1" value="0">
-  <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
-  <label for="flag_north">flag_north</label>
-  <input type="number" id="flag_north" name="flag_north" max="1" min="0" step="1" value="0">
-  <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
-  <label for="flag_west">flag_west</label>
-  <input type="number" id="flag_west" name="flag_west" max="1" min="0" step="1" value="0">
-  <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
-  <label for="flag_east">flag_east</label>
-  <input type="number" id="flag_east" name="flag_east" max="1" min="0" step="1" value="0">
-  <!--        融合前去除重合车辆用偏移量x double float64-->
-  <label for="widthX">widthX</label>
-  <input type="number" id="widthX" name="widthX" step="any" value="0">
-  <!--        融合前去除重合车辆用偏移量y double float64-->
-  <label for="widthY">widthY</label>
-  <input type="number" id="widthY" name="widthY" step="any" value="0">
-  <div class="label_right">
-    <button type="button" id="setConfig_crossing_setting" form="form_crossing_setting"
-            onclick="setConfig(id,form)">设置
-    </button>
-    <button type="button" id="getConfig_crossing_setting" form="form_crossing_setting"
-            onclick="getConfigCrossing_setting()">获取
-    </button>
-  </div>
-</form>
+    <!--    info-->
+    <div class="label_right">
+        <button type="button" id="setConfig_info" onclick="setConfigInfo()">设置全部</button>
+        <button type="button" id="getConfig_info" onclick="getConfigInfo()">获取全部</button>
+    </div>
+    <br>
+    <!--    base-->
+    <form name="form_base" id="form_base">
+        <!--        int-->
+        <label for="width">width</label>
+        <input type="number" id="width" name="width" step="1" value="0"/>
+        <!--        int-->
+        <label for="height">height</label>
+        <input type="number" id="height" name="height" step="1" value="0"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_base" form="form_base" onclick="setConfig(id,form)">设置</button>
+            <button type="button" id="getConfig_base" form="form_base" onclick="getConfigBase()">获取</button>
+        </div>
+    </form>
+    <br>
+    <!--    distance-->
+    <form name="form_distance" id="form_distance">
+        <!--        透视变换最左边的直线与Y轴之间的实际测量距离 double float64-->
+        <label for="x_distance">x_distance</label>
+        <input type="number" id="x_distance" name="x_distance" step="any" value="0">
+        <!--        透视变换最左边的直线与X轴之间的实际测量距离 double float64-->
+        <label for="y_distance">y_distance</label>
+        <input type="number" id="y_distance" name="y_distance" step="any" value="0">
+        <!--        double float64-->
+        <label for="altitude">altitude</label>
+        <input type="number" id="altitude" name="altitude" step="any" value="0">
+        <!--        &lt;!&ndash;        double float64&ndash;&gt;-->
+        <!--        <label for="y_value">y_value</label>-->
+        <!--        <input type="number" id="y_value" name="y_value" step="any" value="0">-->
+        <!--        double float64-->
+        <label for="coefficient">coefficient</label>
+        <input type="number" id="coefficient" name="coefficient" step="any" value="0">
+        <!--        透视变换用系数矩阵 double[3][3] float64-->
+        <label for="matrix00">matrix00</label>
+        <input type="number" id="matrix00" name="matrix00" step="any" value="0">
+        <label for="matrix01">matrix01</label>
+        <input type="number" id="matrix01" name="matrix01" step="any" value="0">
+        <label for="matrix02">matrix02</label>
+        <input type="number" id="matrix02" name="matrix02" step="any" value="0">
+        <label for="matrix10">matrix10</label>
+        <input type="number" id="matrix10" name="matrix10" step="any" value="0">
+        <label for="matrix11">matrix11</label>
+        <input type="number" id="matrix11" name="matrix11" step="any" value="0">
+        <label for="matrix12">matrix12</label>
+        <input type="number" id="matrix12" name="matrix12" step="any" value="0">
+        <label for="matrix20">matrix20</label>
+        <input type="number" id="matrix20" name="matrix20" step="any" value="0">
+        <label for="matrix21">matrix21</label>
+        <input type="number" id="matrix21" name="matrix21" step="any" value="0">
+        <label for="matrix22">matrix22</label>
+        <input type="number" id="matrix22" name="matrix22" step="any" value="0">
+        <!--        雷达偏移量x float64-->
+        <label for="radar_x">radar_x</label>
+        <input type="number" id="radar_x" name="radar_x" step="any" value="0">
+        <!--        雷达偏移量y float64-->
+        <label for="radar_y">radar_y</label>
+        <input type="number" id="radar_y" name="radar_y" step="any" value="0">
+        <!--        雷达校正参数 double float64-->
+        <label for="radar_theta">radar_theta</label>
+        <input type="number" id="radar_theta" name="radar_theta" step="any" value="0">
+        <!--        摄像头偏移量x float64-->
+        <label for="camera_x">camera_x</label>
+        <input type="number" id="camera_x" name="camera_x" step="any" value="0">
+        <!--        摄像头偏移量y float64-->
+        <label for="camera_y">camera_y</label>
+        <input type="number" id="camera_y" name="camera_y" step="any" value="0">
+        <!--        摄像头校正参数 double float64-->
+        <label for="camera_theta">camera_theta</label>
+        <input type="number" id="camera_theta" name="camera_theta" step="any" value="0">
+        <!--        宽度米像素 double float64-->
+        <label for="MPPW">MPPW</label>
+        <input type="number" id="MPPW" name="MPPW" step="any" value="0">
+        <!--        宽度米像素 double float64-->
+        <label for="MPPH">MPPH</label>
+        <input type="number" id="MPPH" name="MPPH" step="any" value="0">
+        <div class="label_right">
+            <button type="button" id="setConfig_distance" form="form_distance" onclick="setConfig(id,form)">设置</button>
+            <button type="button" id="getConfig_distance" form="form_distance" onclick="getConfigDistance()">获取</button>
+        </div>
+    </form>
+    <br>
+    <!--    vibrate_setting-->
+    <form name="form_vibrate_setting" id="form_vibrate_setting">
+        <!--        抖动位移x方向阈值 float float64-->
+        <label for="x_vibrate_max">x_vibrate_max</label>
+        <input type="number" id="x_vibrate_max" name="x_vibrate_max" step="any" value="0">
+        <!--        抖动位移y方向阈值 float float64-->
+        <label for="y_vibrate_max">y_vibrate_max</label>
+        <input type="number" id="y_vibrate_max" name="y_vibrate_max" step="any" value="0">
+        <!--        float64-->
+        <label for="matchBoxX">matchBoxX</label>
+        <input type="number" id="matchBoxX" name="matchBoxX" step="any" value="0">
+        <label for="matchBoxY">matchBoxY</label>
+        <input type="number" id="matchBoxY" name="matchBoxY" step="any" value="0">
+        <label for="matchBoxWidth">matchBoxWidth</label>
+        <input type="number" id="matchBoxWidth" name="matchBoxWidth" step="any" value="0">
+        <label for="matchBoxHeight">matchBoxHeight</label>
+        <input type="number" id="matchBoxHeight" name="matchBoxHeight" step="any" value="0">
+        <div class="label_right">
+            <button type="button" id="setConfig_vibrate_setting" form="form_vibrate_setting"
+                    onclick="setConfig(id,form)">设置
+            </button>
+            <button type="button" id="getConfig_vibrate_setting" form="form_vibrate_setting"
+                    onclick="getConfigVibrate_setting()">获取
+            </button>
+        </div>
+    </form>
+    <br>
+    <!--    crossing_setting-->
+    <form name="form_crossing_setting" id="form_crossing_setting">
+        <!--        相机朝向 int 1：东 2：南 3：西 4：北-->
+        <label for="orientations">orientations</label>
+        <input type="number" id="orientations" name="orientations" max="4" min="1" step="1" value="1"
+               placeholder="相机朝向 1：东 2：南 3：西 4：北">
+        <!--        转换为路口坐标系的偏移量x double float64-->
+        <label for="deltax_south">deltax_south</label>
+        <input type="number" id="deltax_south" name="deltax_south" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量y double float64-->
+        <label for="deltay_south">deltay_south</label>
+        <input type="number" id="deltay_south" name="deltay_south" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量x double float64-->
+        <label for="deltax_north">deltax_north</label>
+        <input type="number" id="deltax_north" name="deltax_north" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量y double float64-->
+        <label for="deltay_north">deltay_north</label>
+        <input type="number" id="deltay_north" name="deltay_north" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量x double float64-->
+        <label for="deltax_west">deltax_west</label>
+        <input type="number" id="deltax_west" name="deltax_west" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量y double float64-->
+        <label for="deltay_west">deltay_west</label>
+        <input type="number" id="deltay_west" name="deltay_west" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量x double float64-->
+        <label for="deltax_east">deltax_east</label>
+        <input type="number" id="deltax_east" name="deltax_east" step="any" value="0">
+        <!--        转换为路口坐标系的偏移量y double float64-->
+        <label for="deltay_east">deltay_east</label>
+        <input type="number" id="deltay_east" name="deltay_east" step="any" value="0">
+        <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label for="flag_south">flag_south</label>
+        <input type="number" id="flag_south" name="flag_south" max="1" min="0" step="1" value="0">
+        <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label for="flag_north">flag_north</label>
+        <input type="number" id="flag_north" name="flag_north" max="1" min="0" step="1" value="0">
+        <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label for="flag_west">flag_west</label>
+        <input type="number" id="flag_west" name="flag_west" max="1" min="0" step="1" value="0">
+        <!--        十字路口设定标志位 int 1有这个方向的路 0没有这个方向的路-->
+        <label for="flag_east">flag_east</label>
+        <input type="number" id="flag_east" name="flag_east" max="1" min="0" step="1" value="0">
+        <!--        融合前去除重合车辆用偏移量x double float64-->
+        <label for="widthX">widthX</label>
+        <input type="number" id="widthX" name="widthX" step="any" value="0">
+        <!--        融合前去除重合车辆用偏移量y double float64-->
+        <label for="widthY">widthY</label>
+        <input type="number" id="widthY" name="widthY" step="any" value="0">
+        <div class="label_right">
+            <button type="button" id="setConfig_crossing_setting" form="form_crossing_setting"
+                    onclick="setConfig(id,form)">设置
+            </button>
+            <button type="button" id="getConfig_crossing_setting" form="form_crossing_setting"
+                    onclick="getConfigCrossing_setting()">获取
+            </button>
+        </div>
+    </form>
 </div>
 
 <script src="js/index.js"></script>
+<script src="js/distance.js"></script>
 </body>
 </html>
