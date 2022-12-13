@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>设备远程控制</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+</head>
+<body>
+<script src="js/jQuery.js"></script>
+<div style="width: 810px;text-align: right;">
+    <!--    设备远程控制-->
+    <form id="cameraForm" name="cameraForm" action="">
+        <label for="cameraRemoteIP">远程IP</label>
+        <input type="text" id="cameraRemoteIP" name="ip" value="192.168.8.1">
+        <br>
+        <label for="cameraStopAfterTime">多少小时后结束(单位分钟，0表示不结束)</label>
+        <input type="number" id="cameraStopAfterTime" name="time" value="60" min="0" max="65536">
+    </form>
+    <div CLASS="label_right">
+        <button type="button" id="setInfo_CameraRemote" onclick="setInfoCameraRemote()">
+            设置相机远程网络
+        </button>
+    </div>
+</div>
+<script src="js/index.js"></script>
+<script src="js/remoteControl.js"></script>
+</body>
+</html>

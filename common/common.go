@@ -176,3 +176,9 @@ type Net struct {
 	Eoc      Eoc    `json:"eoc"`
 	City     string `json:"city"`
 }
+
+/********************setInfoCameraRemote******************************/
+type CameraRemote struct {
+	Ip   string `json:"ip"`
+	Time int    `json:"time,string"`
+}

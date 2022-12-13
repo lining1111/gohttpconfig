@@ -23,6 +23,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var IndexPath string = "./html"
@@ -153,11 +154,76 @@ func Run(port int, htmlPath string) {
 	/**getInfoNet**/
 	http.HandleFunc("/getInfoNet", getInfoNet)
 
+	/**setInfoCameraRemote**/
+	http.HandleFunc("/setInfoCameraRemote", setInfoCameraRemote)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func setInfoCameraRemote(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	//1.解析http请求
+	rBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Printf("req body read err:%v\n", err.Error())
+		return
+	}
+	fmt.Printf("body:%s\n", rBody)
+
+	//2.将请求主体转换为json结构体
+	var req common.CameraRemote
+	//2.1 读取
+	err = json.Unmarshal(rBody, &req)
+	if err != nil {
+		fmt.Printf("json unmarshal err:%v\n", err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：json解析失败"))
+		return
+	}
+	//2.2获取本地的ip port
+	ip := req.Ip
+	timeDelay := req.Time
+
+	//2.3设置相机远程脚本
+	shell := "/home/nvidianx/bin/camera_proxy/remote_proxy.sh " + ip
+	cmd := exec.Command("/bin/bash", "-c", shell)
+	err = cmd.Run()
+	if err != nil {
+		fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+		w.WriteHeader(http.StatusGone)
+		w.Write([]byte("失败：设置网络信息失败"))
+		return
+	}
+
+	//开启延迟关闭
+	if timeDelay == 0 {
+		fmt.Println("time=0")
+	} else {
+		go func() {
+			time.AfterFunc(time.Duration(timeDelay)*time.Minute, func() {
+				fmt.Printf("延迟任务关闭相机远程")
+				shell := "pkill rinetd"
+				cmd := exec.Command("/bin/bash", "-c", shell)
+				err = cmd.Run()
+				if err != nil {
+					fmt.Printf("cmd %s exec fail:%v\n", cmd.String(), err.Error())
+				}
+			})
+		}()
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("成功：设置网络信息成功"))
 }
 
 func getInfoNet(w http.ResponseWriter, r *http.Request) {
