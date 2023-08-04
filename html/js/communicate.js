@@ -108,6 +108,17 @@ function getConfigCommunicate() {
             //hardinfo
             form_hardinfo.MatrixNo.value = res.hardinfo.MatrixNo
             form_hardinfo.hard_code.value = res.hardinfo.hard_code
+
+            //AbnormalStop
+            AbnormalStopForm.AbnormalStopControl.value = res.abnormalStop.control
+            AbnormalStopForm.AbnormalStopDurationFrom.value = res.abnormalStop.timeFrom
+            AbnormalStopForm.AbnormalStopDurationTo.value = res.abnormalStop.timeTo
+
+            //LogControl
+            LogControl.value = res.logControl.control
+
+            //OSD
+            OSD.value = res.OSD.content
         },
         error(res) {
             alert(res.responseText)
@@ -329,6 +340,70 @@ function getConfigCommunicateHardinfo() {
         success(res) {
             form_hardinfo.MatrixNo.value = res.MatrixNo
             form_hardinfo.hard_code.value = res.hard_code
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+//异常停车事件
+function setControlAbnormalStop() {
+    var queryBody = {}
+    var obj_abnormalStop = $('#AbnormalStopForm').serializeArray()
+    $.each(obj_abnormalStop, function (i, field) {
+        queryBody[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setControlAbnormalStop',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(queryBody),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+//日志打印
+function setControlLogControl() {
+    var queryBody = {}
+    var obj_log = $('#LogControl').serializeArray()
+    $.each(obj_log, function (i, field) {
+        queryBody[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setControlLogControl',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(queryBody),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+//OSD叠加字符串
+function setInfoOSD() {
+    var queryBody = {}
+    var obj_OSD = $('#OSD').serializeArray()
+    $.each(obj_OSD, function (i, field) {
+        queryBody[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setInfoOSD',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(queryBody),
+        success(res) {
+            alert(res)
         },
         error(res) {
             alert(res.responseText)

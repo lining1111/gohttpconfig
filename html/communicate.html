@@ -118,6 +118,47 @@
             </button>
         </div>
     </form>
+    <br>
+    <!--    异常停车事件-->
+    <div CLASS="label_right">
+        <form id="AbnormalStopForm" name="AbnormalStopForm" action="">
+            <label for="AbnormalStopControl">异常停车事件上报</label>
+            <select id="AbnormalStopControl" name="control">
+                <option value="0">不上报</option>
+                <option value="1">上报</option>
+            </select>
+            <br>
+            <label id="AbnormalStopDuration">异常停车事件时间段</label>
+            <br>
+            <label for="AbnormalStopDurationFrom">开始时间</label>
+            <input type="time" id="AbnormalStopDurationFrom" name="timeFrom">
+            <br>
+            <label for="AbnormalStopDurationTo">结束时间</label>
+            <input type="time" id="AbnormalStopDurationTo" name="timeTo">
+        </form>
+        <button type="button" id="setContorl_AbnormalStop" onclick="setControlAbnormalStop()">
+            设置异常停车事件
+        </button>
+    </div>
+    <br>
+    <!--    日志打印-->
+    <div CLASS="label_right">
+        <label for="LogControl">日志打印标志位</label>
+        <select id="LogControl" name="control" onchange="setControlLogControl()">
+            <option value="0">不打印</option>
+            <option value="1">打印</option>
+        </select>
+    </div>
+    <br>
+    <!--    OSD叠加字符串-->
+    <div CLASS="label_right">
+        <label for="OSD">OSD叠加字符串</label>
+        <input type="text" name="content" id="OSD">
+        <br>
+        <button type="button" id="setInfo_OSD" onclick="setInfoOSD()">
+            OSD叠加字符串提交
+        </button>
+    </div>
 </div>
 
 <script src="js/index.js"></script>

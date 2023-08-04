@@ -1,3 +1,4 @@
+// 相机远程控制
 function setInfoCameraRemote() {
     if (!checkIp(cameraForm.ip.value)) {
         alert("cameraForm ip 格式不对")

@@ -136,11 +136,14 @@ type HardInfo struct {
 
 //communicate
 type Communicate struct {
-	Camera     Camera     `json:"camera" ini:"camera"`
-	Cloud      Cloud      `json:"cloud" ini:"cloud"`
-	Radar      Radar      `json:"radar" ini:"radar"`
-	Annuciator Annuciator `json:"annuciator" ini:"annuciator"`
-	HardInfo   HardInfo   `json:"hardinfo" ini:"hardinfo"`
+	Camera       Camera       `json:"camera" ini:"camera"`
+	Cloud        Cloud        `json:"cloud" ini:"cloud"`
+	Radar        Radar        `json:"radar" ini:"radar"`
+	Annuciator   Annuciator   `json:"annuciator" ini:"annuciator"`
+	HardInfo     HardInfo     `json:"hardinfo" ini:"hardinfo"`
+	AbnormalStop AbnormalStop `json:"abnormalStop" ini:"abnormalStop"`
+	LogControl   LogControl   `json:"logControl" ini:"logControl"`
+	OSD          OSD          `json:"OSD" ini:"OSD"`
 }
 
 /***************reset proc*********************/
@@ -181,4 +184,21 @@ type Net struct {
 type CameraRemote struct {
 	Ip   string `json:"ip"`
 	Time int    `json:"time,string"`
+}
+
+/*******************setControlAbnormalStop***************************/
+type AbnormalStop struct {
+	Control  int    `json:"control,string" ini:"control"`
+	TimeFrom string `json:"timeFrom" ini:"timeFrom"`
+	TimeTo   string `json:"timeTo" ini:"timeTo"`
+}
+
+/*******************setControlLog***************************/
+type LogControl struct {
+	Control int `json:"control,string" ini:"control"`
+}
+
+/*******************setInfoOSD***************************/
+type OSD struct {
+	Content string `json:"content" ini:"content"`
 }

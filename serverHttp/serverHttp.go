@@ -157,11 +157,53 @@ func Run(port int, htmlPath string) {
 	/**setInfoCameraRemote**/
 	http.HandleFunc("/setInfoCameraRemote", setInfoCameraRemote)
 
+	/**setControlAbnormalStop**/
+	http.HandleFunc("/setControlAbnormalStop", setControlAbnormalStop)
+
+	/**setControlLogControl**/
+	http.HandleFunc("/setControlLogControl", setControlLogControl)
+
+	/**setInfoOSD**/
+	http.HandleFunc("/setInfoOSD", setInfoOSD)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func setInfoOSD(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	setConfigIniCommunicate(w, r, "OSD")
+}
+
+func setControlLogControl(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	setConfigIniCommunicate(w, r, "logControl")
+}
+
+func setControlAbnormalStop(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+	setConfigIniCommunicate(w, r, "abnormalStop")
 }
 
 func setInfoCameraRemote(w http.ResponseWriter, r *http.Request) {
@@ -1332,6 +1374,13 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.Annuciator{}
 	case "hardinfo":
 		msg = &common.HardInfo{}
+	case "abnormalStop":
+		msg = &common.AbnormalStop{}
+	case "logControl":
+		msg = &common.LogControl{}
+	case "OSD":
+		msg = &common.OSD{}
+
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
