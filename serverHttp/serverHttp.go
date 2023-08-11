@@ -166,11 +166,97 @@ func Run(port int, htmlPath string) {
 	/**setInfoOSD**/
 	http.HandleFunc("/setInfoOSD", setInfoOSD)
 
+	http.HandleFunc("/setConfig_jamParam", setConfig_jamParam)
+	http.HandleFunc("/getConfig_jamParam", getConfig_jamParam)
+
+	http.HandleFunc("/setConfig_overFlowParam", setConfig_overFlowParam)
+	http.HandleFunc("/getConfig_overFlowParam", getConfig_overFlowParam)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getConfig_overFlowParam(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "overFlowParam")
+}
+
+func setConfig_overFlowParam(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "overFlowParam")
+}
+
+func getConfig_jamParam(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "jamParam")
+}
+
+func setConfig_jamParam(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "jamParam")
 }
 
 func setInfoOSD(w http.ResponseWriter, r *http.Request) {
@@ -1303,6 +1389,11 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.Annuciator{}
 	case "hardinfo":
 		msg = &common.HardInfo{}
+	case "jamParam":
+		msg = &common.JamParam{}
+	case "overFlowParam":
+		msg = &common.OverFlowParam{}
+
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
@@ -1380,6 +1471,10 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.LogControl{}
 	case "OSD":
 		msg = &common.OSD{}
+	case "jamParam":
+		msg = &common.JamParam{}
+	case "overFlowParam":
+		msg = &common.OverFlowParam{}
 
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)

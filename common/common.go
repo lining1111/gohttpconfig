@@ -136,14 +136,16 @@ type HardInfo struct {
 
 //communicate
 type Communicate struct {
-	Camera       Camera       `json:"camera" ini:"camera"`
-	Cloud        Cloud        `json:"cloud" ini:"cloud"`
-	Radar        Radar        `json:"radar" ini:"radar"`
-	Annuciator   Annuciator   `json:"annuciator" ini:"annuciator"`
-	HardInfo     HardInfo     `json:"hardinfo" ini:"hardinfo"`
-	AbnormalStop AbnormalStop `json:"abnormalStop" ini:"abnormalStop"`
-	LogControl   LogControl   `json:"logControl" ini:"logControl"`
-	OSD          OSD          `json:"OSD" ini:"OSD"`
+	Camera        Camera        `json:"camera" ini:"camera"`
+	Cloud         Cloud         `json:"cloud" ini:"cloud"`
+	Radar         Radar         `json:"radar" ini:"radar"`
+	Annuciator    Annuciator    `json:"annuciator" ini:"annuciator"`
+	HardInfo      HardInfo      `json:"hardinfo" ini:"hardinfo"`
+	AbnormalStop  AbnormalStop  `json:"abnormalStop" ini:"abnormalStop"`
+	LogControl    LogControl    `json:"logControl" ini:"logControl"`
+	OSD           OSD           `json:"OSD" ini:"OSD"`
+	JamParam      JamParam      `json:"jamParam" ini:"jamParam"`
+	OverFlowParam OverFlowParam `json:"overFlowParam" ini:"overFlowParam"`
 }
 
 /***************reset proc*********************/
@@ -201,4 +203,17 @@ type LogControl struct {
 /*******************setInfoOSD***************************/
 type OSD struct {
 	Content string `json:"content" ini:"content"`
+}
+
+/*******************JamParam**************************/
+type JamParam struct {
+	AreaVehicle    int     `json:"areaVehicle,string" ini:"areaVehicle"`
+	VehicleSpeed   float64 `json:"vehicleSpeed,string" ini:"vehicleSpeed"`
+	DetectDuration int     `json:"detectDuration,string" ini:"detectDuration"`
+}
+
+/*******************OverFlowParam**************************/
+type OverFlowParam struct {
+	StopVehicle    int `json:"stopVehicle,string" ini:"stopVehicle"`
+	DetectDuration int `json:"detectDuration,string" ini:"detectDuration"`
 }

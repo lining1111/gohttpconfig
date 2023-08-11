@@ -57,12 +57,48 @@ function setConfigCommunicate() {
     $.each(obj_hardinfo, function (i, field) {
         hardinfo[field.name] = field.value
     })
+    //abnormalStop
+    var abnormalStop = {}
+    var obj_abnormalStop = $('#AbnormalStopForm').serializeArray()
+    $.each(obj_abnormalStop, function (i, field) {
+        abnormalStop[field.name] = field.value
+    })
+    //logControl
+    var logControl = {}
+    var obj_logControl = $('#LogControl').serializeArray()
+    $.each(obj_logControl, function (i, field) {
+        logControl[field.name] = field.value
+    })
+    //OSD
+    var OSD = {}
+    var obj_OSD = $('#OSD').serializeArray()
+    $.each(obj_OSD, function (i, field) {
+        OSD[field.name] = field.value
+    })
+    //jamParam
+    var jamParam = {}
+    var obj_jamParam = $('#JamParam').serializeArray()
+    $.each(obj_jamParam, function (i, field) {
+        jamParam[field.name] = field.value
+    })
+    //overFlowParam
+    var overFlowParam = {}
+    var obj_overFlowParam = $('#overFlowParam').serializeArray()
+    $.each(obj_overFlowParam, function (i, field) {
+        overFlowParam[field.name] = field.value
+    })
+
 
     queryBody["camera"] = camera
     queryBody["cloud"] = cloud
     queryBody["radar"] = radar
     queryBody["annuciator"] = annuciator
     queryBody["hardinfo"] = hardinfo
+    queryBody["abnormalStop"] = abnormalStop
+    queryBody["logControl"] = logControl
+    queryBody["OSD"] = OSD
+    queryBody["jamParam"] = jamParam
+    queryBody["overFlowParam"] = overFlowParam
 
     console.log(queryBody)
     $.ajax({
@@ -119,6 +155,16 @@ function getConfigCommunicate() {
 
             //OSD
             OSD.value = res.OSD.content
+
+            //jamParam
+            jamParam.areaVehicle.value = res.jamParam.areaVehicle
+            jamParam.vehicleSpeed.value = res.jamParam.vehicleSpeed
+            jamParam.detectDuration.value = res.jamParam.detectDuration
+
+            //overFlowParam
+            overFlowParam.stopVehicle.value = res.overFlowParam.stopVehicle
+            overFlowParam.detectDuration.value = res.overFlowParam.detectDuration
+
         },
         error(res) {
             alert(res.responseText)
@@ -368,11 +414,12 @@ function setControlAbnormalStop() {
         }
     })
 }
+
 //日志打印
 function setControlLogControl() {
     var queryBody = {}
-    var obj_log = $('#LogControl').serializeArray()
-    $.each(obj_log, function (i, field) {
+    var obj_logControl = $('#LogControl').serializeArray()
+    $.each(obj_logControl, function (i, field) {
         queryBody[field.name] = field.value
     })
 
@@ -389,6 +436,7 @@ function setControlLogControl() {
         }
     })
 }
+
 //OSD叠加字符串
 function setInfoOSD() {
     var queryBody = {}
@@ -404,6 +452,85 @@ function setInfoOSD() {
         data: JSON.stringify(queryBody),
         success(res) {
             alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+//拥堵判断参数
+function setConfigCommunicateJamParam() {
+
+    var jamParam = {}
+    var obj_jamParam = $('#jamParam').serializeArray()
+    $.each(obj_jamParam, function (i, field) {
+        jamParam[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setConfig_jamParam',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(jamParam),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+function getConfigCommunicateJamParam() {
+    $.ajax({
+        url: 'getConfig_jamParam',
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'get',
+        success(res) {
+            jamParam.areaVehicle.value = res.areaVehicle
+            jamParam.vehicleSpeed.value = res.vehicleSpeed
+            jamParam.detectDuration.value = res.detectDuration
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+//溢出判断参数
+function setConfigCommunicateOverFlowParam() {
+
+    var overFlowParam = {}
+    var obj_overFlowParam = $('#overFlowParam').serializeArray()
+    $.each(obj_overFlowParam, function (i, field) {
+        overFlowParam[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setConfig_overFlowParam',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(overFlowParam),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+function getConfigCommunicateOverFlowParam() {
+    $.ajax({
+        url: 'getConfig_overFlowParam',
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'get',
+        success(res) {
+            overFlowParam.stopVehicle.value = res.stopVehicle
+            overFlowParam.detectDuration.value = res.detectDuration
         },
         error(res) {
             alert(res.responseText)

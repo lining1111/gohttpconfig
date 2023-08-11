@@ -159,6 +159,56 @@
             OSD叠加字符串提交
         </button>
     </div>
+    <br>
+    <!--    拥堵判断参数-->
+    <div CLASS="label_right">
+        <label for="jamParam">拥堵判断参数</label>
+        <form id="jamParam" name="jamParam">
+            <!--        int-->
+            <label for="areaVehicle">区域内车数</label>
+            <input type="number" id="areaVehicle" name="areaVehicle" min="0" step="1" value="0"/>
+            <br>
+            <!--        double-->
+            <label for="vehicleSpeed">速度</label>
+            <input type="number" id="vehicleSpeed" name="vehicleSpeed" min="0" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="detectDuration">检测时长(秒)</label>
+            <input type="number" id="detectDuration" name="detectDuration" min="0" step="1" value="0"/>
+            <div class="label_right">
+                <button type="button" id="setConfig_jamParam" form="jamParam" onclick="setConfigCommunicateJamParam()">
+                    设置
+                </button>
+                <button type="button" id="getConfig_jamParam" form="jamParam" onclick="getConfigCommunicateJamParam()">
+                    获取
+                </button>
+            </div>
+        </form>
+    </div>
+    <br>
+    <!--    溢出判断参数-->
+    <div CLASS="label_right">
+        <label for="overFlowParam">溢出判断参数</label>
+        <form id="overFlowParam" name="overFlowParam">
+            <!--        int-->
+            <label for="stopVehicle">滞留车数</label>
+            <input type="number" id="stopVehicle" name="stopVehicle" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="detectDuration1">检测时长(秒)</label>
+            <input type="number" id="detectDuration1" name="detectDuration" min="0" step="1" value="0"/>
+            <div class="label_right">
+                <button type="button" id="setConfig_overFlowParam" form="overFlowParam"
+                        onclick="setConfigCommunicateOverFlowParam()">
+                    设置
+                </button>
+                <button type="button" id="getConfig_overFlowParam" form="overFlowParam"
+                        onclick="getConfigCommunicateOverFlowParam()">
+                    获取
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script src="js/index.js"></script>
