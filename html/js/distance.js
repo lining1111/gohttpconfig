@@ -72,6 +72,18 @@ function getConfigInfo() {
             // form_pixel_loc.pixel_top_point_y.value = res.pixel_loc.pixel_top_point_y
             // form_pixel_loc.pixel_bottom_point_x.value = res.pixel_loc.pixel_bottom_point_x
             // form_pixel_loc.pixel_bottom_point_y.value = res.pixel_loc.pixel_bottom_point_y
+            form_laneAssociation.laneCode1.value = res.laneAssociation.laneCode1
+            form_laneAssociation.laneCode2.value = res.laneAssociation.laneCode2
+            form_laneAssociation.laneCode3.value = res.laneAssociation.laneCode3
+            form_laneAssociation.laneCode4.value = res.laneAssociation.laneCode4
+            form_laneAssociation.laneCode5.value = res.laneAssociation.laneCode5
+            form_laneAssociation.laneCode6.value = res.laneAssociation.laneCode6
+            form_laneAssociation.laneCode7.value = res.laneAssociation.laneCode7
+            form_laneAssociation.laneCode8.value = res.laneAssociation.laneCode8
+            form_laneAssociation.laneCode9.value = res.laneAssociation.laneCode9
+            form_laneAssociation.laneCode10.value = res.laneAssociation.laneCode10
+            form_laneAssociation.laneCode11.value = res.laneAssociation.laneCode11
+            form_laneAssociation.laneCode12.value = res.laneAssociation.laneCode12
         },
         error(res) {
             alert(res.responseText)
@@ -108,11 +120,18 @@ function setConfigInfo() {
     $.each(obj_crossing_setting, function (i, field) {
         crossing_setting[field.name] = field.value
     })
+    //laneAssociation
+    var laneAssociation = {}
+    var obj_laneAssociation = $('#form_laneAssociation').serializeArray()
+    $.each(obj_laneAssociation, function (i, field) {
+        laneAssociation[field.name] = field.value
+    })
 
     queryBody["base"] = base
     queryBody["distance"] = distance
     queryBody["vibrate_setting"] = vibrate_setting
     queryBody["crossing_setting"] = crossing_setting
+    queryBody["laneAssociation"] = laneAssociation
 
     $.ajax({
         url: urlPath,
@@ -222,6 +241,32 @@ function getConfigCrossing_setting() {
             form_crossing_setting.flag_east.value = res.flag_east
             form_crossing_setting.widthX.value = res.widthX
             form_crossing_setting.widthY.value = res.widthY
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+function getConfigLaneAssociation() {
+    $.ajax({
+        url: 'getConfig_laneAssociation',
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'get',
+        success(res) {
+            form_laneAssociation.laneCode1.value = res.laneCode1
+            form_laneAssociation.laneCode2.value = res.laneCode2
+            form_laneAssociation.laneCode3.value = res.laneCode3
+            form_laneAssociation.laneCode4.value = res.laneCode4
+            form_laneAssociation.laneCode5.value = res.laneCode5
+            form_laneAssociation.laneCode6.value = res.laneCode6
+            form_laneAssociation.laneCode7.value = res.laneCode7
+            form_laneAssociation.laneCode8.value = res.laneCode8
+            form_laneAssociation.laneCode9.value = res.laneCode9
+            form_laneAssociation.laneCode10.value = res.laneCode10
+            form_laneAssociation.laneCode11.value = res.laneCode11
+            form_laneAssociation.laneCode12.value = res.laneCode12
         },
         error(res) {
             alert(res.responseText)

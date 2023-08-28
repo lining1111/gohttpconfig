@@ -104,6 +104,7 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/setConfig_crossing_setting", setConfig_crossing_setting)
 	http.HandleFunc("/setConfig_real_loc", setConfig_real_loc)
 	http.HandleFunc("/setConfig_pixel_loc", setConfig_pixel_loc)
+	http.HandleFunc("/setConfig_laneAssociation", setConfig_laneAssociation)
 	http.HandleFunc("/setConfig_info", setConfig_info)
 	//get
 	http.HandleFunc("/getConfig_base", getConfig_base)
@@ -112,6 +113,7 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/getConfig_crossing_setting", getConfig_crossing_setting)
 	http.HandleFunc("/getConfig_real_loc", getConfig_real_loc)
 	http.HandleFunc("/getConfig_pixel_loc", getConfig_pixel_loc)
+	http.HandleFunc("/getConfig_laneAssociation", getConfig_laneAssociation)
 	http.HandleFunc("/getConfig_info", getConfig_info)
 
 	/**config communicate**/
@@ -176,6 +178,40 @@ func Run(port int, htmlPath string) {
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+func getConfig_laneAssociation(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	switch ConfigType {
+	case ConfigIni:
+		getConfigIni(w, r, "laneAssociation")
+	case ConfigSqlite:
+		getConfigDb(w, r, "laneAssociation")
+	}
+}
+
+func setConfig_laneAssociation(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	switch ConfigType {
+	case ConfigIni:
+		setConfigIni(w, r, "laneAssociation")
+	case ConfigSqlite:
+		setConfigDb(w, r, "laneAssociation")
 	}
 }
 
@@ -882,6 +918,8 @@ func getConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 		msg = &common.Real_loc{}
 	case "pixel_loc":
 		msg = &common.Pixel_loc{}
+	case "laneAssociation":
+		msg = &common.LaneAssociation{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
@@ -953,6 +991,8 @@ func setConfigIni(w http.ResponseWriter, r *http.Request, sectionName string) er
 		msg = &common.Real_loc{}
 	case "pixel_loc":
 		msg = &common.Pixel_loc{}
+	case "laneAssociation":
+		msg = &common.LaneAssociation{}
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
 		return errors.New("unknown name")
@@ -1022,6 +1062,8 @@ func getConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		msg = &common.Real_loc{}
 	case "pixel_loc":
 		msg = &common.Pixel_loc{}
+	case "laneAssociation":
+		msg = &common.LaneAssociation{}
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")
@@ -1081,6 +1123,8 @@ func setConfigDb(w http.ResponseWriter, r *http.Request, tableName string) error
 		msg = &common.Real_loc{}
 	case "pixel_loc":
 		msg = &common.Pixel_loc{}
+	case "laneAssociation":
+		msg = &common.LaneAssociation{}
 	default:
 		fmt.Printf("unknown name:%s\n", tableName)
 		return errors.New("unknown name")

@@ -102,6 +102,20 @@ func getConfig_pixel_loc(result *common.Pixel_loc) error {
 	return nil
 }
 
+func getConfig_laneAssociation(result *common.LaneAssociation) error {
+	sqlCmd := "select * from  laneAssociation"
+	row := ConfigDb.QueryRowx(sqlCmd)
+	if row.Err() != nil {
+		return row.Err()
+	}
+	err := row.StructScan(result)
+	if err != nil {
+		fmt.Printf(err.Error())
+		return err
+	}
+	return nil
+}
+
 func getConfig_info(result *common.Info) error {
 	err := getConfig_base(&(result.Base))
 	if err != nil {
@@ -127,6 +141,10 @@ func getConfig_info(result *common.Info) error {
 	//if err != nil {
 	//	return err
 	//}
+	err = getConfig_laneAssociation(&(result.LaneAssociation))
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -148,6 +166,8 @@ func GetConfig(tableName string, result interface{}) error {
 		err = getConfig_real_loc(result.(*common.Real_loc))
 	case "pixel_loc": //pixel_loc
 		err = getConfig_pixel_loc(result.(*common.Pixel_loc))
+	case "laneAssociation":
+		err = getConfig_laneAssociation(result.(*common.LaneAssociation))
 	default:
 		err = errors.New("unknown name" + tableName)
 	}
@@ -367,6 +387,38 @@ func setConfig_pixel_loc(result *common.Pixel_loc) error {
 	return err
 }
 
+func setConfig_laneAssociation(result *common.LaneAssociation) error {
+	ConfigDb.Exec("delete from laneAssociation")
+	_, err := ConfigDb.Exec("replace into laneAssociation("+
+		"laneCode1,"+
+		"laneCode2,"+
+		"laneCode3,"+
+		"laneCode4,"+
+		"laneCode5,"+
+		"laneCode6,"+
+		"laneCode7,"+
+		"laneCode8,"+
+		"laneCode9,"+
+		"laneCode10,"+
+		"laneCode11,"+
+		"laneCode12) "+
+		"values(?,?,?,?,?,?,?,?,?,?,?,?)",
+		result.LaneCode1,
+		result.LaneCode2,
+		result.LaneCode3,
+		result.LaneCode4,
+		result.LaneCode5,
+		result.LaneCode6,
+		result.LaneCode7,
+		result.LaneCode8,
+		result.LaneCode9,
+		result.LaneCode10,
+		result.LaneCode11,
+		result.LaneCode12)
+
+	return err
+}
+
 func setConfig_info(result *common.Info) error {
 	err := setConfig_base(&(result.Base))
 	if err != nil {
@@ -413,6 +465,8 @@ func SetConfig(tableName string, result interface{}) error {
 		err = setConfig_real_loc(result.(*common.Real_loc))
 	case "pixel_loc": //pixel_loc
 		err = setConfig_pixel_loc(result.(*common.Pixel_loc))
+	case "laneAssociation":
+		err = setConfig_laneAssociation(result.(*common.LaneAssociation))
 	default:
 		err = errors.New("unknown name" + tableName)
 	}

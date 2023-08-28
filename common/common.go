@@ -93,6 +93,7 @@ type Info struct {
 	Distance         Distance         `json:"distance" ini:"distance"`
 	Vibrate_setting  Vibrate_setting  `json:"vibrate_setting" ini:"vibrate_setting"`
 	Crossing_setting Crossing_setting `json:"crossing_setting" ini:"crossing_setting"`
+	LaneAssociation  LaneAssociation  `json:"laneAssociation" ini:"laneAssociation"`
 	//Real_loc         Real_loc         `json:"real_loc"`
 	//Pixel_loc        Pixel_loc        `json:"pixel_loc"`
 }
@@ -216,4 +217,19 @@ type JamParam struct {
 type OverFlowParam struct {
 	StopVehicle    int `json:"stopVehicle,string" ini:"stopVehicle"`
 	DetectDuration int `json:"detectDuration,string" ini:"detectDuration"`
+}
+
+type LaneAssociation struct {
+	LaneCode1  string `json:"laneCode1" ini:"laneCode1" db:"laneCode1"`
+	LaneCode2  string `json:"laneCode2" ini:"laneCode2" db:"laneCode2"`
+	LaneCode3  string `json:"laneCode3" ini:"laneCode3" db:"laneCode3"`
+	LaneCode4  string `json:"laneCode4" ini:"laneCode4" db:"laneCode4"`
+	LaneCode5  string `json:"laneCode5" ini:"laneCode5" db:"laneCode5"`
+	LaneCode6  string `json:"laneCode6" ini:"laneCode6" db:"laneCode6"`
+	LaneCode7  string `json:"laneCode7" ini:"laneCode7" db:"laneCode7"`
+	LaneCode8  string `json:"laneCode8" ini:"laneCode8" db:"laneCode8"`
+	LaneCode9  string `json:"laneCode9" ini:"laneCode9" db:"laneCode9"`
+	LaneCode10 string `json:"laneCode10" ini:"laneCode10" db:"laneCode10"`
+	LaneCode11 string `json:"laneCode11" ini:"laneCode11" db:"laneCode11"`
+	LaneCode12 string `json:"laneCode12" ini:"laneCode12" db:"laneCode12"`
 }
