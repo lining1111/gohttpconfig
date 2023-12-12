@@ -1,7 +1,8 @@
 label {
-    width: 160px;
+    width: 300px;
     text-align: right;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .label_right {

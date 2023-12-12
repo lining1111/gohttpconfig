@@ -35,6 +35,7 @@
         <!--        string-->
         <label for="camera_delay_time">相机延迟时间</label>
         <input type="number" id="camera_delay_time" name="delay_time" value="130"/>
+        <br>
         <div class="label_right">
             <button type="button" id="setConfig_camera" form="form_camera" onclick="setConfigCommunicateCamera()">设置
             </button>
@@ -120,22 +121,21 @@
     </form>
     <br>
     <!--    异常停车事件-->
+    <form id="AbnormalStopForm" name="AbnormalStopForm" action="">
+        <label for="AbnormalStopControl">异常停车事件上报</label>
+        <select id="AbnormalStopControl" name="control">
+            <option value="0">不上报</option>
+            <option value="1">上报</option>
+        </select>
+        <br>
+        <label id="AbnormalStopDuration">异常停车事件时间段</label>
+        <br>
+        <label for="AbnormalStopDurationFrom">开始时间</label>
+        <input type="time" id="AbnormalStopDurationFrom" name="timeFrom">
+        <label for="AbnormalStopDurationTo">结束时间</label>
+        <input type="time" id="AbnormalStopDurationTo" name="timeTo">
+    </form>
     <div CLASS="label_right">
-        <form id="AbnormalStopForm" name="AbnormalStopForm" action="">
-            <label for="AbnormalStopControl">异常停车事件上报</label>
-            <select id="AbnormalStopControl" name="control">
-                <option value="0">不上报</option>
-                <option value="1">上报</option>
-            </select>
-            <br>
-            <label id="AbnormalStopDuration">异常停车事件时间段</label>
-            <br>
-            <label for="AbnormalStopDurationFrom">开始时间</label>
-            <input type="time" id="AbnormalStopDurationFrom" name="timeFrom">
-            <br>
-            <label for="AbnormalStopDurationTo">结束时间</label>
-            <input type="time" id="AbnormalStopDurationTo" name="timeTo">
-        </form>
         <button type="button" id="setContorl_AbnormalStop" onclick="setControlAbnormalStop()">
             设置异常停车事件
         </button>
@@ -151,64 +151,112 @@
     </div>
     <br>
     <!--    OSD叠加字符串-->
+    <label for="OSD">OSD叠加字符串</label>
+    <input type="text" name="content" id="OSD">
     <div CLASS="label_right">
-        <label for="OSD">OSD叠加字符串</label>
-        <input type="text" name="content" id="OSD">
-        <br>
         <button type="button" id="setInfo_OSD" onclick="setInfoOSD()">
             OSD叠加字符串提交
         </button>
     </div>
     <br>
     <!--    拥堵判断参数-->
-    <div CLASS="label_right">
-        <label for="jamParam">拥堵判断参数</label>
-        <form id="jamParam" name="jamParam">
-            <!--        int-->
-            <label for="areaVehicle">区域内车数</label>
-            <input type="number" id="areaVehicle" name="areaVehicle" min="0" step="1" value="0"/>
-            <br>
-            <!--        double-->
-            <label for="vehicleSpeed">速度</label>
-            <input type="number" id="vehicleSpeed" name="vehicleSpeed" min="0" value="0"/>
-            <br>
-            <!--        int-->
-            <label for="detectDuration">检测时长(秒)</label>
-            <input type="number" id="detectDuration" name="detectDuration" min="0" step="1" value="0"/>
-            <div class="label_right">
-                <button type="button" id="setConfig_jamParam" form="jamParam" onclick="setConfigCommunicateJamParam()">
-                    设置
-                </button>
-                <button type="button" id="getConfig_jamParam" form="jamParam" onclick="getConfigCommunicateJamParam()">
-                    获取
-                </button>
-            </div>
-        </form>
-    </div>
+    <label for="jamParam">拥堵判断参数</label>
+    <form id="jamParam" name="jamParam">
+        <!--        int-->
+        <label for="areaVehicle">区域内车数</label>
+        <input type="number" id="areaVehicle" name="areaVehicle" min="0" step="1" value="0"/>
+        <!--        double-->
+        <label for="vehicleSpeed">速度</label>
+        <input type="number" id="vehicleSpeed" name="vehicleSpeed" min="0" value="0"/>
+        <br>
+        <!--        int-->
+        <label for="detectDuration">检测时长(秒)</label>
+        <input type="number" id="detectDuration" name="detectDuration" min="0" step="1" value="0"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_jamParam" form="jamParam" onclick="setConfigCommunicateJamParam()">
+                设置
+            </button>
+            <button type="button" id="getConfig_jamParam" form="jamParam" onclick="getConfigCommunicateJamParam()">
+                获取
+            </button>
+        </div>
+    </form>
     <br>
     <!--    溢出判断参数-->
-    <div CLASS="label_right">
-        <label for="overFlowParam">溢出判断参数</label>
-        <form id="overFlowParam" name="overFlowParam">
+    <label for="overFlowParam">溢出判断参数</label>
+    <form id="overFlowParam" name="overFlowParam">
+        <!--        int-->
+        <label for="stopVehicle">滞留车数</label>
+        <input type="number" id="stopVehicle" name="stopVehicle" min="0" step="1" value="0"/>
+        <!--        int-->
+        <label for="detectDuration1">检测时长(秒)</label>
+        <input type="number" id="detectDuration1" name="detectDuration" min="0" step="1" value="0"/>
+        <div class="label_right">
+            <button type="button" id="setConfig_overFlowParam" form="overFlowParam"
+                    onclick="setConfigCommunicateOverFlowParam()">
+                设置
+            </button>
+            <button type="button" id="getConfig_overFlowParam" form="overFlowParam"
+                    onclick="getConfigCommunicateOverFlowParam()">
+                获取
+            </button>
+        </div>
+    </form>
+    <br>
+    <!--    调试开关-->
+    <label for="debug">调试开关</label>
+    <form id="debug" name="debug">
             <!--        int-->
-            <label for="stopVehicle">滞留车数</label>
-            <input type="number" id="stopVehicle" name="stopVehicle" min="0" step="1" value="0"/>
+            <label for="print_json">打印发送给主控机的json信息</label>
+            <input type="number" id="print_json" name="print_json" min="0" step="1" value="0"/>
             <br>
             <!--        int-->
-            <label for="detectDuration1">检测时长(秒)</label>
-            <input type="number" id="detectDuration1" name="detectDuration" min="0" step="1" value="0"/>
-            <div class="label_right">
-                <button type="button" id="setConfig_overFlowParam" form="overFlowParam"
-                        onclick="setConfigCommunicateOverFlowParam()">
-                    设置
-                </button>
-                <button type="button" id="getConfig_overFlowParam" form="overFlowParam"
-                        onclick="getConfigCommunicateOverFlowParam()">
-                    获取
-                </button>
-            </div>
-        </form>
-    </div>
+            <label for="drawCoilArea">绘制线圈区域和检测车框并保存图片</label>
+            <input type="number" id="drawCoilArea" name="drawCoilArea" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawPassStopLine">绘制停止线和过线车框</label>
+            <input type="number" id="drawPassStopLine" name="drawPassStopLine" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawPass42mLine">绘制42m线和过线车框</label>
+            <input type="number" id="drawPass42mLine" name="drawPass42mLine" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawPass60mLine">绘制60m线和过线车框</label>
+            <input type="number" id="drawPass60mLine" name="drawPass60mLine" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawAbnormalStop">绘制异常停车区域和异常车框并保存图片</label>
+            <input type="number" id="drawAbnormalStop" name="drawAbnormalStop" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawCrossingCongestion">绘制路口拥堵区域并保存图片</label>
+            <input type="number" id="drawCrossingCongestion" name="drawCrossingCongestion" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawOverFlow">绘制路口溢出区域并保存图片</label>
+            <input type="number" id="drawOverFlow" name="drawOverFlow" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawLaneLength">绘制车道排队长度</label>
+            <input type="number" id="drawLaneLength" name="drawLaneLength" min="0" step="1" value="0"/>
+            <br>
+            <!--        int-->
+            <label for="drawTestInfo">绘制线圈/检测线和测试信息</label>
+            <input type="number" id="drawTestInfo" name="drawTestInfo" min="0" step="1" value="0"/>
+            <br>
+        <div class="label_right">
+            <button type="button" id="setConfig_debug" form="debug"
+                    onclick="setConfigCommunicateDebug()">
+                设置
+            </button>
+            <button type="button" id="getConfig_debug" form="debug"
+                    onclick="getConfigCommunicateDebug()">
+                获取
+            </button>
+        </div>
+    </form>
 </div>
 
 <script src="js/index.js"></script>

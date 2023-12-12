@@ -147,6 +147,7 @@ type Communicate struct {
 	OSD           OSD           `json:"OSD" ini:"OSD"`
 	JamParam      JamParam      `json:"jamParam" ini:"jamParam"`
 	OverFlowParam OverFlowParam `json:"overFlowParam" ini:"overFlowParam"`
+	Debug         Debug         `json:"debug" ini:"debug"`
 }
 
 /***************reset proc*********************/
@@ -217,6 +218,19 @@ type JamParam struct {
 type OverFlowParam struct {
 	StopVehicle    int `json:"stopVehicle,string" ini:"stopVehicle"`
 	DetectDuration int `json:"detectDuration,string" ini:"detectDuration"`
+}
+
+type Debug struct {
+	Print_json             int `json:"print_json,string" ini:"print_json"`
+	DrawCoilArea           int `json:"drawCoilArea,string" ini:"drawCoilArea"`
+	DrawPassStopLine       int `json:"drawPassStopLine,string" ini:"drawPassStopLine"`
+	DrawPass42mLine        int `json:"drawPass42mLine,string" ini:"drawPass42mLine"`
+	DrawPass60mLine        int `json:"drawPass60mLine,string" ini:"drawPass60mLine"`
+	DrawAbnormalStop       int `json:"drawAbnormalStop,string" ini:"drawAbnormalStop"`
+	DrawCrossingCongestion int `json:"drawCrossingCongestion,string" ini:"drawCrossingCongestion"`
+	DrawOverFlow           int `json:"drawOverFlow,string" ini:"drawOverFlow"`
+	DrawLaneLength         int `json:"drawLaneLength,string" ini:"drawLaneLength"`
+	DrawTestInfo           int `json:"drawTestInfo,string" ini:"drawTestInfo"`
 }
 
 type LaneAssociation struct {

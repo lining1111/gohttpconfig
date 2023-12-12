@@ -87,7 +87,12 @@ function setConfigCommunicate() {
     $.each(obj_overFlowParam, function (i, field) {
         overFlowParam[field.name] = field.value
     })
-
+    //debug
+    var debug = {}
+    var obj_debug = $('#debug').serializeArray()
+    $.each(obj_debug, function (i, field) {
+        debug[field.name] = field.value
+    })
 
     queryBody["camera"] = camera
     queryBody["cloud"] = cloud
@@ -99,6 +104,7 @@ function setConfigCommunicate() {
     queryBody["OSD"] = OSD
     queryBody["jamParam"] = jamParam
     queryBody["overFlowParam"] = overFlowParam
+    queryBody["debug"] = debug
 
     console.log(queryBody)
     $.ajax({
@@ -164,6 +170,18 @@ function getConfigCommunicate() {
             //overFlowParam
             overFlowParam.stopVehicle.value = res.overFlowParam.stopVehicle
             overFlowParam.detectDuration.value = res.overFlowParam.detectDuration
+
+            //debug
+            debug.print_json.value = res.debug.print_json
+            debug.drawCoilArea.value = res.debug.drawCoilArea
+            debug.drawPassStopLine.value = res.debug.drawPassStopLine
+            debug.drawPass42mLine.value = res.debug.drawPass42mLine
+            debug.drawPass60mLine.value = res.debug.drawPass60mLine
+            debug.drawAbnormalStop.value = res.debug.drawAbnormalStop
+            debug.drawCrossingCongestion.value = res.debug.drawCrossingCongestion
+            debug.drawOverFlow.value = res.debug.drawOverFlow
+            debug.drawLaneLength.value = res.debug.drawLaneLength
+            debug.drawTestInfo.value = res.debug.drawTestInfo
 
         },
         error(res) {
@@ -531,6 +549,54 @@ function getConfigCommunicateOverFlowParam() {
         success(res) {
             overFlowParam.stopVehicle.value = res.stopVehicle
             overFlowParam.detectDuration.value = res.detectDuration
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+
+//调试开关
+function setConfigCommunicateDebug() {
+
+    var debug = {}
+    var obj_debug = $('#debug').serializeArray()
+    $.each(obj_debug, function (i, field) {
+        debug[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setConfig_debug',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(debug),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+function getConfigCommunicateDebug() {
+    $.ajax({
+        url: 'getConfig_debug',
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'get',
+        success(res) {
+            debug.print_json.value = res.print_json
+            debug.drawCoilArea.value = res.drawCoilArea
+            debug.drawPassStopLine.value = res.drawPassStopLine
+            debug.drawPass42mLine.value = res.drawPass42mLine
+            debug.drawPass60mLine.value = res.drawPass60mLine
+            debug.drawAbnormalStop.value = res.drawAbnormalStop
+            debug.drawCrossingCongestion.value = res.drawCrossingCongestion
+            debug.drawOverFlow.value = res.drawOverFlow
+            debug.drawLaneLength.value = res.drawLaneLength
+            debug.drawTestInfo.value = res.drawTestInfo
         },
         error(res) {
             alert(res.responseText)

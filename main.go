@@ -29,18 +29,20 @@ func main() {
 	var path string
 	var dbPath string
 	var configWay int
+	var deviceType int
 	var htmlPath string
 	var pathCommunicate string
 	var staticFilesPath string
 	var updateFilePath string
 	var showVersion bool
-	var version = "1.0.4"
+	var version = "1.0.6"
 	//读取传入的参数
 	flag.BoolVar(&showVersion, "v", false, "显示版本号")
 	flag.IntVar(&port, "port", 8080, "http 端口号 默认 8080")
 	flag.StringVar(&path, "path", "./config/distanceN1.ini", "配置文件路径，默认 ./config/distanceN1.ini")
 	flag.StringVar(&dbPath, "dbPath", "./config/config.db", "配置文件路径，默认 ./config/config.db")
 	flag.IntVar(&configWay, "configWay", 1, "配置存放方式(默认为1)： 0：ini文件，1：sqlite")
+	flag.IntVar(&deviceType, "deviceType", 0, "设备类型(默认为0)： 0：雷视机，1：多目")
 	flag.StringVar(&htmlPath, "htmlPath", "./html", "html文件夹路径，默认 ./html")
 	flag.StringVar(&pathCommunicate, "pathCommunicate", "./config/communicate.ini",
 		"摄像头配置文件文件夹路径，默认 ./config/communicate.ini")
@@ -57,7 +59,12 @@ func main() {
 		serverHttp.ConfigType = serverHttp.ConfigIni
 	case 1:
 		serverHttp.ConfigType = serverHttp.ConfigSqlite
-
+	}
+	switch deviceType {
+	case 0:
+		serverHttp.HomePath = "/home/nvidianx/"
+	case 1:
+		serverHttp.HomePath = "/home/cambsom/"
 	}
 
 	//distanceN1

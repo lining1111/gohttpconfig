@@ -44,6 +44,8 @@ const (
 
 var ConfigType = ConfigSqlite
 
+var HomePath = "/home/nvidianx/"
+
 //dst 要修改的结构体 src 有数据的结构体
 func structAssign(dst interface{}, src interface{}) {
 	srcElem := reflect.ValueOf(src).Elem() //获取reflect.Type类型
@@ -174,11 +176,54 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/setConfig_overFlowParam", setConfig_overFlowParam)
 	http.HandleFunc("/getConfig_overFlowParam", getConfig_overFlowParam)
 
+	http.HandleFunc("/setConfig_debug", setConfig_debug)
+	http.HandleFunc("/getConfig_debug", getConfig_debug)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getConfig_debug(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "debug")
+}
+
+func setConfig_debug(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "debug")
 }
 
 func getConfig_laneAssociation(w http.ResponseWriter, r *http.Request) {
@@ -359,7 +404,7 @@ func setInfoCameraRemote(w http.ResponseWriter, r *http.Request) {
 	timeDelay := req.Time
 
 	//2.3设置相机远程脚本
-	shell := "/home/nvidianx/bin/camera_proxy/remote_proxy.sh " + ip
+	shell := HomePath + "bin/camera_proxy/remote_proxy.sh " + ip
 	cmd := exec.Command("/bin/bash", "-c", shell)
 	err = cmd.Run()
 	if err != nil {
@@ -1437,6 +1482,8 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.JamParam{}
 	case "overFlowParam":
 		msg = &common.OverFlowParam{}
+	case "debug":
+		msg = &common.Debug{}
 
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
@@ -1519,6 +1566,8 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.JamParam{}
 	case "overFlowParam":
 		msg = &common.OverFlowParam{}
+	case "debug":
+		msg = &common.Debug{}
 
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
