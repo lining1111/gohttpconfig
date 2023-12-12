@@ -148,6 +148,7 @@ type Communicate struct {
 	JamParam      JamParam      `json:"jamParam" ini:"jamParam"`
 	OverFlowParam OverFlowParam `json:"overFlowParam" ini:"overFlowParam"`
 	Debug         Debug         `json:"debug" ini:"debug"`
+	Wfzp          Wfzp          `json:"wfzp" ini:"wfzp"`
 }
 
 /***************reset proc*********************/
@@ -231,6 +232,15 @@ type Debug struct {
 	DrawOverFlow           int `json:"drawOverFlow,string" ini:"drawOverFlow"`
 	DrawLaneLength         int `json:"drawLaneLength,string" ini:"drawLaneLength"`
 	DrawTestInfo           int `json:"drawTestInfo,string" ini:"drawTestInfo"`
+}
+
+type Wfzp struct {
+	UseDjData             int `json:"useDjData,string" ini:"useDjData"`
+	JudgeRunRedLight      int `json:"judgeRunRedLight,string" ini:"judgeRunRedLight"`
+	JudgeNotFollowLane    int `json:"judgeNotFollowLane,string" ini:"judgeNotFollowLane"`
+	JudgeOverLane         int `json:"judgeOverLane,string" ini:"judgeOverLane"`
+	JudgeStayNonmotorArea int `json:"judgeStayNonmotorArea,string" ini:"judgeStayNonmotorArea"`
+	JudgeWrongDirection   int `json:"judgeWrongDirection,string" ini:"judgeWrongDirection"`
 }
 
 type LaneAssociation struct {

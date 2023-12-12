@@ -257,6 +257,44 @@
             </button>
         </div>
     </form>
+    <!--    违法抓拍-->
+    <label for="wfzp">违法抓拍</label>
+    <form id="wfzp" name="wfzp">
+        <!--        int-->
+        <label for="useDjData">是否使用电警相机数据</label>
+        <input type="number" id="useDjData" name="useDjData" min="0" step="1" value="255"/>
+        <br>
+        <!--        int-->
+        <label for="judgeRunRedLight">是否抓拍闯红灯(哪个电警相机抓拍哪位置1)</label>
+        <input type="number" id="judgeRunRedLight" name="judgeRunRedLight" min="0" step="1" value="255"/>
+        <br>
+        <!--        int-->
+        <label for="judgeNotFollowLane">是否抓拍不按道行驶</label>
+        <input type="number" id="judgeNotFollowLane" name="judgeNotFollowLane" min="0" step="1" value="255"/>
+        <br>
+        <!--        int-->
+        <label for="judgeOverLane">是否抓拍压线</label>
+        <input type="number" id="judgeOverLane" name="judgeOverLane" min="0" step="1" value="255"/>
+        <br>
+        <!--        int-->
+        <label for="judgeStayNonmotorArea">是否抓拍进非机动车道</label>
+        <input type="number" id="judgeStayNonmotorArea" name="judgeStayNonmotorArea" min="0" step="1" value="255"/>
+        <br>
+        <!--        int-->
+        <label for="judgeWrongDirection">是否抓拍逆行</label>
+        <input type="number" id="judgeWrongDirection" name="judgeWrongDirection" min="0" step="1" value="255"/>
+        <br>
+        <div class="label_right">
+            <button type="button" id="setConfig_wfzp" form="wfzp"
+                    onclick="setConfigCommunicateWfzp()">
+                设置
+            </button>
+            <button type="button" id="getConfig_wfzp" form="wfzp"
+                    onclick="getConfigCommunicateWfzp()">
+                获取
+            </button>
+        </div>
+    </form>
 </div>
 
 <script src="js/index.js"></script>

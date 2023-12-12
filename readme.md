@@ -10,4 +10,4 @@ CGO_ENABLED=1 GOOS=linux GOARCH=arm64 CC=aarch64-linux-gnu-gcc go build
     1.0.5 增加多目远程控制
 
 ### 20231212
-    1.0.6 增加调试控制
+    1.0.6 增加调试控制,增加违法抓拍控制

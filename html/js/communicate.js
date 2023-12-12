@@ -93,6 +93,12 @@ function setConfigCommunicate() {
     $.each(obj_debug, function (i, field) {
         debug[field.name] = field.value
     })
+    //wfzp
+    var wfzp = {}
+    var obj_wfzp = $('#wfzp').serializeArray()
+    $.each(obj_wfzp, function (i, field) {
+        wfzp[field.name] = field.value
+    })
 
     queryBody["camera"] = camera
     queryBody["cloud"] = cloud
@@ -105,6 +111,7 @@ function setConfigCommunicate() {
     queryBody["jamParam"] = jamParam
     queryBody["overFlowParam"] = overFlowParam
     queryBody["debug"] = debug
+    queryBody["wfzp"] = wfzp
 
     console.log(queryBody)
     $.ajax({
@@ -182,6 +189,14 @@ function getConfigCommunicate() {
             debug.drawOverFlow.value = res.debug.drawOverFlow
             debug.drawLaneLength.value = res.debug.drawLaneLength
             debug.drawTestInfo.value = res.debug.drawTestInfo
+
+            //wfzp
+            wfzp.useDjData.value = res.wfzp.useDjData
+            wfzp.judgeRunRedLight.value = res.wfzp.judgeRunRedLight
+            wfzp.judgeNotFollowLane.value = res.wfzp.judgeNotFollowLane
+            wfzp.judgeOverLane.value = res.wfzp.judgeOverLane
+            wfzp.judgeStayNonmotorArea.value = res.wfzp.judgeStayNonmotorArea
+            wfzp.judgeWrongDirection.value = res.wfzp.judgeWrongDirection
 
         },
         error(res) {
@@ -556,7 +571,6 @@ function getConfigCommunicateOverFlowParam() {
     })
 }
 
-
 //调试开关
 function setConfigCommunicateDebug() {
 
@@ -597,6 +611,49 @@ function getConfigCommunicateDebug() {
             debug.drawOverFlow.value = res.drawOverFlow
             debug.drawLaneLength.value = res.drawLaneLength
             debug.drawTestInfo.value = res.drawTestInfo
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+//违法抓拍
+function setConfigCommunicateWfzp() {
+
+    var wfzp = {}
+    var obj_wfzp = $('#wfzp').serializeArray()
+    $.each(obj_wfzp, function (i, field) {
+        wfzp[field.name] = field.value
+    })
+
+    $.ajax({
+        url: 'setConfig_wfzp',
+        contentType: 'application/json',
+        type: 'post',
+        data: JSON.stringify(wfzp),
+        success(res) {
+            alert(res)
+        },
+        error(res) {
+            alert(res.responseText)
+        }
+    })
+}
+
+function getConfigCommunicateWfzp() {
+    $.ajax({
+        url: 'getConfig_wfzp',
+        contentType: 'application/json',
+        dataType: 'json',
+        type: 'get',
+        success(res) {
+            wfzp.useDjData.value = res.useDjData
+            wfzp.judgeRunRedLight.value = res.judgeRunRedLight
+            wfzp.judgeNotFollowLane.value = res.judgeNotFollowLane
+            wfzp.judgeOverLane.value = res.judgeOverLane
+            wfzp.judgeStayNonmotorArea.value = res.judgeStayNonmotorArea
+            wfzp.judgeWrongDirection.value = res.judgeWrongDirection
         },
         error(res) {
             alert(res.responseText)

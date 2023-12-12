@@ -179,11 +179,54 @@ func Run(port int, htmlPath string) {
 	http.HandleFunc("/setConfig_debug", setConfig_debug)
 	http.HandleFunc("/getConfig_debug", getConfig_debug)
 
+	http.HandleFunc("/setConfig_wfzp", setConfig_wfzp)
+	http.HandleFunc("/getConfig_wfzp", getConfig_wfzp)
+
 	addr := ":" + strconv.Itoa(port)
 	err := http.ListenAndServe(addr, nil)
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func getConfig_wfzp(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	getConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	getConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	getConfigIniCommunicate(w, r, "wfzp")
+}
+
+func setConfig_wfzp(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		err := recover()
+		switch err.(type) {
+		case runtime.Error: //运行时错误
+			fmt.Println("run time err:", err)
+		}
+	}()
+
+	//switch ConfigType {
+	//case ConfigIni:
+	//	setConfigIni(w, r, "hardinfo")
+	//case ConfigSqlite:
+	//	setConfigDb(w, r, "hardinfo")
+	//}
+
+	//暂时强制配置方式为ini
+	setConfigIniCommunicate(w, r, "wfzp")
 }
 
 func getConfig_debug(w http.ResponseWriter, r *http.Request) {
@@ -1484,6 +1527,8 @@ func getConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.OverFlowParam{}
 	case "debug":
 		msg = &common.Debug{}
+	case "wfzp":
+		msg = &common.Wfzp{}
 
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
@@ -1568,6 +1613,8 @@ func setConfigIniCommunicate(w http.ResponseWriter, r *http.Request, sectionName
 		msg = &common.OverFlowParam{}
 	case "debug":
 		msg = &common.Debug{}
+	case "wfzp":
+		msg = &common.Wfzp{}
 
 	default:
 		fmt.Printf("unknown name:%s\n", sectionName)
