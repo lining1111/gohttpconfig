@@ -59,7 +59,7 @@ function getFile(name) {
 }
 
 /*************上传*****************/
-function getFiles() {
+function getFilesInfo() {
     location.href = '../getFiles.html'
 }
 
@@ -67,6 +67,7 @@ function getFiles() {
 
 //监听选择文件信息
 function fileSelect() {
+    console.log("fileSelect")
     var file = document.getElementById('userfile').files[0]
     if (file) {
         var fileSize = 0
